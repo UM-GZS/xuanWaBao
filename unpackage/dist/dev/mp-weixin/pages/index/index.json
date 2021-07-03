@@ -1,9 +1,0 @@
-{
-  "navigationBarTitleText": "旋挖宝",
-  "usingComponents": {
-    "home": "/pages/home/home",
-    "category": "/pages/category/category",
-    "information": "/pages/information/information",
-    "user": "/pages/user/user"
-  }
-}
