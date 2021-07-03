@@ -42,10 +42,10 @@
 </template>
 
 <script>
-	import home from "../home/home.vue";
-	import category from "../category/category.vue";
-	import information  from "../information/information.vue";
-	import user from "../user/user.vue"
+	import home from "@/pages/home/home.vue";
+	import information  from "@/pages/information/information.vue";
+	import category from "@/pages/category/category.vue";
+	import user from "@/pages/user/user.vue";
 	export default {
 		components: {
 			home,

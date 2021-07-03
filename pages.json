@@ -18,16 +18,25 @@
 			}
 		},
 		{
-			"path":"pages/home/home"
+			"path":"pages/home/home",
+			"style":{
+			}
 		},
 		{
-			"path":"pages/information/information"
+			"path":"pages/information/information",
+			"style":{
+			}
 		},
 		{
-			"path":"pages/category/category"
+			"path":"pages/category/category",
+			"style":{
+				
+			}
 		},
 		{
-			"path":"pages/user/user"
+			"path":"pages/user/user",
+			"style":{
+			}
 		}
 	],
 	"globalStyle": {

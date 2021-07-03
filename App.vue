@@ -1110,7 +1110,7 @@ export default {
 	page{
 		width: 100%;
 		height: 100%;
-		// background-color: $background_color;
+		background-color: $bk_color;
 	}
 	//! 引入uview样式文件
 @import 'uview-ui/index.scss';
