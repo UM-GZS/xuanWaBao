@@ -160,7 +160,6 @@
 			height: 90rpx;
 			background-color: #ffffff;
 			display: flex;
-
 			.tab_item {
 				flex: 1;
 				display: flex;
@@ -180,7 +179,7 @@
 			overflow-y: scroll;
 			padding: 0 20rpx;
 			box-sizing: border-box;
-
+			
 			.info_item {
 				width: 100%;
 				display: flex;

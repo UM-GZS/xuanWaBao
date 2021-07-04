@@ -50,6 +50,10 @@
 		},
 		data() {
 			return {
+				//! 服务列表
+				serviceList:[
+					{}
+				],
 				list: [{
 						image: 'https://cdn.uviewui.com/uview/swiper/1.jpg',
 						title: '昨夜星辰昨夜风，画楼西畔桂堂东'
