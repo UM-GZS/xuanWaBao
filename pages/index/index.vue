@@ -56,7 +56,7 @@
 			return {
 				//! 控制是否显示弹窗
 				showToast:false,
-				show_index: 0, //控制显示那个组件
+				show_index: 4, //控制显示那个组件
 				tab_nav_list: [{
 					'id': 0,
 					'name': '首页'
