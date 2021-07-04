@@ -24,13 +24,18 @@
 
 <style lang="scss" scoped>
 	.headerSearchs {
+		position: sticky;
+		top: 0;
+		left: 0;
+		z-index: 9999999;
 		width: 100%;
 		height: 100rpx;
 		display: flex;
 		justify-content: space-between;
+		background-color: #ffffff;
 		padding: 30rpx;
 		align-items: center;
-		color: #ffffff;
+		// color: #ffffff;
 		.center_input {
 			flex: 1;
 			margin: 0 20rpx ;

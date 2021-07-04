@@ -5,12 +5,11 @@
 			<home ref="home"></home>
 		</view>
 		<!-- 资讯 -->
-		<view :style="{'display':show_index == 1 ?'flex':'none'}">
+		<view :style="{'display':show_index == 1 ?'block':'none'}">
 			<information ref="information"></information>
 		</view>
-		<!-- 数据 -->
+		<!-- 弹窗按钮 -->
 		<view :style="{'display':show_index == 2? 'block':'none'}">
-			<!-- <tab-data ref="data"></tab-data> -->
 		</view>
 		<!-- 分类 -->
 		<view :style="{'display':show_index == 3 ?'block':'none'}">

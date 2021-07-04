@@ -1,8 +1,8 @@
 <template>
 	<view class="home_wrap">
+		<!-- 置顶在上方的按钮 -->
+		<head-search class="header_search"></head-search>
 		<view class="header">
-			<!-- 置顶在上方的按钮 -->
-			<head-search class="header_search"></head-search>
 			<!-- 背景轮播图 -->
 			<u-swiper height="380"  :list="list"></u-swiper>
 		 <!-- 定位在下方的工具栏 -->
@@ -12,21 +12,41 @@
 						<image src="../../static/uview/example/js_bak.png" class="s_icon"></image>
 						<view class="desc">车辆买卖</view>
 					</view>
+					<view class="service_item">
+						<image src="../../static/uview/example/js_bak.png" class="s_icon"></image>
+						<view class="desc">车辆买卖</view>
+					</view>
+					<view class="service_item">
+						<image src="../../static/uview/example/js_bak.png" class="s_icon"></image>
+						<view class="desc">车辆买卖</view>
+					</view>
+					<view class="service_item">
+						<image src="../../static/uview/example/js_bak.png" class="s_icon"></image>
+						<view class="desc">车辆买卖</view>
+					</view>
 				</view>
 			</view>
 		</view>
 		<!-- 热点推送 -->
 		<hot-info></hot-info>
+		<!-- 招聘信息 -->
+		<recruit-info></recruit-info>
+		<!-- 商品特惠 -->
+		<discount-info></discount-info>
 	</view>
 </template>
 
 <script>
 	import headSearch from "../../components/head-search/head-search.vue";
-	import hotInfo from "./childCmps/hot-info.vue"
+	import hotInfo from "./childCmps/hot-info.vue";
+	import recruitInfo from "./childCmps/recruit_info.vue";
+	import discountInfo from "./childCmps/discount_info.vue";
 	export default {
 		components: {
 			headSearch,
-			hotInfo
+			hotInfo,
+			recruitInfo,
+			discountInfo
 		},
 		data() {
 			return {
@@ -57,19 +77,14 @@
 	.home_wrap{
 		width: 100%;
 		height: 100%;
+		padding-bottom: 110rpx;
+		position: relative;
 		//! 头部内容
 		.header {
 			width: 100%;
-			height: 380rpx;
 			position: relative;
 			//! 头部搜索
-			.header_search {
-				width: 100%;
-				position: absolute;
-				top: 0;
-				left: 0;
-				z-index: 1000;
-			}
+			
 			.service_wrap {
 				position: absolute;
 				box-sizing: border-box;
