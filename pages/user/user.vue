@@ -3,11 +3,11 @@
 		
 		<!-- 用户信息 -->
 		<view class="user_info">
-			<view class="left_info">
+			<view class="left_info" >
 				<text class="name">用户名称</text>
 				<text class="phone">12345678900</text>
 			</view>
-			<view class="right_cover">
+			<view class="right_cover" @click="login">
 				<image src="../../static/index/sw1.jpg" mode=""></image>
 			</view>
 		</view>
@@ -16,11 +16,11 @@
 			<view class="send_collection_ctrl">
 					
 				<view class="">
-					<image src="../../static/uview/common/favicon.ico" mode=""></image>
+					<image src="/static/user/send.png" mode=""></image>
 					<text>我的发布</text>
 				</view>
 				<view>
-					<image src="../../static/uview/common/favicon.ico" mode=""></image>
+					<image src="/static/user/collaction.png" mode=""></image>
 					<text>我的收藏</text>
 				</view>
 			</view>
@@ -28,26 +28,26 @@
 		<!-- 按钮控制 -->
 		<view class="btn_control">
 			<u-cell-group>
-				<u-cell-item   title="个人中心" :arrow="false">
-					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/uview/common/favicon.ico" slot="icon"></u-image>
+				<u-cell-item   title="个人中心" :arrow="false" @click="goUserCenter">
+					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/usercenter.png" slot="icon"></u-image>
 				</u-cell-item>
 				<u-cell-item  title="我的车辆" :arrow="false">
-					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/uview/common/favicon.ico" slot="icon"></u-image>
+					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/cheliang.png" slot="icon"></u-image>
 				</u-cell-item>
 				<u-cell-item  title="认证信息" :arrow="false">
-					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/uview/common/favicon.ico" slot="icon"></u-image>
+					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/renzhengxinxi.png" slot="icon"></u-image>
 				</u-cell-item>
-				<u-cell-item  title="收货地址" :arrow="false">
-					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/uview/common/favicon.ico" slot="icon"></u-image>
+				<u-cell-item  title="收货地址" :arrow="false" @ @click="goAddress">
+					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/address_position.png" slot="icon"></u-image>
 				</u-cell-item>
 				<u-cell-item  title="联系客服" :arrow="false">
-					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/uview/common/favicon.ico" slot="icon"></u-image>
+					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/server.png" slot="icon"></u-image>
 				</u-cell-item>
 			</u-cell-group>
 		</view>
-		
+		<!-- <button type="default" open-type="getUserInfo" @getuserinfo="getInfo" >getuserinfo</button> -->
 	</view>
-</template>
+</template>s
 
 <script>
 	export default {
@@ -59,8 +59,29 @@
 		methods: {
 			ontrueGetList() {
 				console.log("被调用");
-			}
-		},
+			},
+			login(){
+				uni.login({  
+				    success: (res) => {  
+						console.log(res.code)
+				    }
+				 })
+			},
+			getInfo(e){
+				console.log(e)
+			},
+			goAddress(){
+				uni.navigateTo({
+					url:"/pages/address/address"
+				})
+			},
+			goUserCenter(){
+				uni.navigateTo({
+					url:"/pages/user/user_tenter"
+				})
+			},
+		}
+		
 	}
 </script>
 
@@ -126,7 +147,7 @@
 		}
 		// 按钮操作
 		.btn_control{
-			padding-top: 50rpx;
+			padding-top: 40rpx;
 			/deep/ .u-border-bottom:after, .u-border-left:after, .u-border-right:after, .u-border-top-bottom:after, .u-border-top:after, .u-border:after {
 				border-bottom: 5rpx solid #e3e3e3;
 			}
