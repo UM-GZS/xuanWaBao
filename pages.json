@@ -53,6 +53,19 @@
 			}
 		}
 	],
+	"subPackages":[
+		{
+			"root":"subPackages",
+			"pages":[
+				{
+					"path":"home/repair",
+					"style":{
+						"navigationBarTitleText":"设备维修"
+					}
+				}
+			]
+		}
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "旋挖宝",

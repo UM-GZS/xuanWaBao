@@ -1,7 +1,7 @@
 <template>
 	<view class="recruit_wrap">
 		<view class="recruit_info">
-			<head-title title="招聘信息" img="../../static/tabBar/33.png"></head-title>
+			<head-title title="招聘信息" img="../../static/index/recruit2.png"></head-title>
 			<view class="recruit_list">
 				<view class="recruit_item">
 					<!-- 左边产品图片 -->

@@ -3,7 +3,7 @@ export default {
 	// 此处globalData为了演示其作用，不是uView框架的一部分
 	globalData: {
 		//全局开发者服务器接口地址
-		requesturl: 'http://192.168.2.111:9000',
+		requesturl: 'http://yuanhao.work:8989',
 		//全局服务器接口地址
 		socketurl: 'ws://localhost:8888',
 		//全局socketTask对象

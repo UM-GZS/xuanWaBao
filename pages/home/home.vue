@@ -8,21 +8,9 @@
 		 <!-- 定位在下方的工具栏 -->
 			<view class="service_wrap">
 				<view class="service_list">
-					<view class="service_item">
-						<image src="../../static/uview/example/js_bak.png" class="s_icon"></image>
-						<view class="desc">车辆买卖</view>
-					</view>
-					<view class="service_item">
-						<image src="../../static/uview/example/js_bak.png" class="s_icon"></image>
-						<view class="desc">车辆买卖</view>
-					</view>
-					<view class="service_item">
-						<image src="../../static/uview/example/js_bak.png" class="s_icon"></image>
-						<view class="desc">车辆买卖</view>
-					</view>
-					<view class="service_item">
-						<image src="../../static/uview/example/js_bak.png" class="s_icon"></image>
-						<view class="desc">车辆买卖</view>
+					<view class="service_item" v-for="(item,index) in  serviceList" @click="serviceClick(item.id)" :key="item.id">
+						<image :src="item.icon" class="s_icon"></image>
+						<view class="desc">{{ item.title }}</view>
 					</view>
 				</view>
 			</view>
@@ -52,7 +40,10 @@
 			return {
 				//! 服务列表
 				serviceList:[
-					{}
+					{id:1,title:'车辆买卖',icon:'../../static/index/vehicle_trading.png'},
+					{id:2,title:'设备维修',icon:'../../static/index/repair.png'},
+					{id:3,title:'旧机置换',icon:'../../static/index/substitution.png'},
+					{id:4,title:'求职招聘',icon:'../../static/index/recruit.png'}
 				],
 				list: [{
 						image: 'https://cdn.uviewui.com/uview/swiper/1.jpg',
@@ -72,6 +63,22 @@
 		methods: {
 			ontrueGetList() {
 				console.log("被调用");
+			},
+			//! 切换对应的页面
+			serviceClick(id) {
+				//! 根据id对应跳转界面
+				switch(id) {
+					case 1:
+						uni.navigateTo({
+							
+						});
+					break;
+					case 2:
+						uni.navigateTo({
+							url:"../../subPackages/home/repair"
+						})
+					break;
+				}
 			}
 		},
 	}
@@ -115,13 +122,13 @@
 						justify-content: center;
 						align-items: center;
 						.desc {
-							margin-top: 10rpx;
-							font-weight: 700;
+							margin-top: 20rpx;
+							font-weight: 400;
 							font-size: 28rpx;
 						}
 						.s_icon {
-							width: 110rpx;
-							height: 130rpx;
+							width:85rpx;
+							height: 110rpx;
 						}
 					}
 				}

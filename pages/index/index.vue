@@ -34,9 +34,8 @@
 					<view :class="{'tabBar_name':true,'nav_active':show_index == item.id}">{{item.name}}</view>
 				</view>
 			</view>
-		<!-- 弹出层 -->
-		<view class="toast" v-show="showToast"></view>
 		</view>
+	
 	</view>
 </template>
 
@@ -56,7 +55,7 @@
 			return {
 				//! 控制是否显示弹窗
 				showToast:false,
-				show_index: 0, //控制显示那个组件
+				show_index: 3, //控制显示那个组件
 				tab_nav_list: [{
 					'id': 0,
 					'name': '首页'
@@ -139,17 +138,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		//! 选择按钮的弹出层
-		.toast {
-			width: 160rpx;
-			height: 80rpx;
-			background-color: yellow;
-			position: fixed;
-			bottom: 140rpx;
-			left: 50%;
-			transform: translateX(-50%);
-			z-index: 100;
-		}
+		
 		.tabBar_list {
 			width: 86%;
 			display: flex;

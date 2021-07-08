@@ -23,11 +23,12 @@
 </script>
 
 <style lang="scss" scoped>
+		
 	.headerSearchs {
 		position: sticky;
 		top: 0;
 		left: 0;
-		z-index: 9999999;
+		z-index:8888;
 		width: 100%;
 		height: 100rpx;
 		display: flex;

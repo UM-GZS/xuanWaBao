@@ -5,10 +5,9 @@
 		<!-- 切换按钮 -->
 		<view class="swiper_tab">
 			<view class="tab_item" @click="changeTab(item.id,index)" v-for="(item,index) in tabList" :key="index">
-				<image style="width: 50rpx;height: 50rpx;" :src="current === index ? item.activeImg : item.img" ></image>
+				<image style="width: 40rpx;height: 40rpx;" :src="current === index ? item.activeImg : item.img" ></image>
 				<text style="margin-left: 10rpx;" :style="current === index ? 'color:black':'color:$gray_color'">{{ item.title }}</text>
 			</view>
-			
 		</view>
 
 		<!-- 内容区域 -->
@@ -33,7 +32,7 @@
 								<!-- 用户信息 -->
 								<view class="user_info">
 									<view class="name common">
-										<image style="width: 45rpx;height: 45rpx;" src="../../static/tabBar/11.png">
+										<image style="width: 30rpx;height: 30rpx;" src="../../static/user/usercenter.png">
 										</image>
 										<text style="margin-left: 10rpx;">用户名称</text>
 									</view>
@@ -43,13 +42,15 @@
 								</view>
 								<!-- 收藏以及分享 -->
 								<view class="edit">
-									<view class="collect common">
-										<image src="../../static/tabBar/22.png" style="width: 45rpx;height: 45rpx;">
+									<!-- 收藏 -->
+									<view class="collect common" @click="collect">
+										<image src="../../static/information/collect.png" style="width: 30rpx;height: 30rpx;">
 										</image>
 										<text style="margin-left: 10rpx;">收藏</text>
 									</view>
-									<view class="share common" style="margin-left: 30rpx;">
-										<image src="../../static/tabBar/33.png" style="width: 45rpx;height: 45rpx;">
+									<!-- 分享 -->
+									<view class="share common" style="margin-left: 30rpx;" @click="share">
+										<image src="../../static/information/share.png" style="width: 30rpx;height: 30rpx;">
 										</image>
 										<text style="margin-left: 10rpx;">分享</text>
 									</view>
@@ -79,8 +80,7 @@
 								<!-- 用户信息 -->
 								<view class="user_info">
 									<view class="name common">
-										<image style="width: 45rpx;height: 45rpx;" src="../../static/tabBar/11.png">
-										</image>
+										<image style="width: 30rpx;height: 30rpx;" src="../../static/user/usercenter.png">
 										<text style="margin-left: 10rpx;">用户名称</text>
 									</view>
 									<view class="time">
@@ -89,13 +89,13 @@
 								</view>
 								<!-- 收藏以及分享 -->
 								<view class="edit">
-									<view class="collect common">
-										<image src="../../static/tabBar/22.png" style="width: 45rpx;height: 45rpx;">
+									<view class="collect common"  @click="collect">
+										<image src="../../static/information/collect.png" style="width: 30rpx;height: 30rpx;">
 										</image>
 										<text style="margin-left: 10rpx;">收藏</text>
 									</view>
-									<view class="share common" style="margin-left: 30rpx;">
-										<image src="../../static/tabBar/33.png" style="width: 45rpx;height: 45rpx;">
+									<view class="share common" style="margin-left: 30rpx;" @click="share">
+										<image src="../../static/information/share.png" style="width: 30rpx;height: 30rpx;">
 										</image>
 										<text style="margin-left: 10rpx;">分享</text>
 									</view>
@@ -120,16 +120,25 @@
 			return {
 				//! 数据切换标题数据
 				tabList:[
-					{id:1,title:'热点推送',img:'../../static/tabBar/1.png',activeImg:'../../static/tabBar/22.png'},
-					{id:2,title:'行业动态',img:'../../static/tabBar/1.png',activeImg:'../../static/tabBar/22.png'}
+					{id:1,title:'热点推送',img:'../../static/information/hotInfo.png',activeImg:'../../static/information/hotInfo_active.png'},
+					{id:2,title:'行业动态',img:'../../static/information/industry.png',activeImg:'../../static/information/industry_active.png'}
 				],
 				current: 0, //! 默认选中的swiper下标
 				list: [{}, {}, {}, {}, {}]
 			}
 		},
 		methods: {
+			//! 用于当前组件的网络请求函数
 			ontrueGetList() {
 				console.log("被调用");
+			},
+			//! 点击收藏按钮
+			collect() {
+				console.log("收藏按钮");
+			},
+			//! 点击分享按钮
+			share() {
+				console.log("分享按钮");
 			},
 			//! 按钮点击的切换
 			changeTab(id,index) {

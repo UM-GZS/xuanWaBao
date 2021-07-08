@@ -2,13 +2,13 @@
 	<!-- 头部标题 -->
 	<view class="comm_title">
 		<view class="comm_left">
-			<image style="width: 60rpx;height: 60rpx;" :src="img"></image>
+			<image style="width: 45rpx;height: 45rpx;" :src="img"></image>
 			<text style="margin-left: 10rpx;font-weight: 800;">{{ title }}</text>
 		</view>
 		<view class="show_more">
-			<view>
-				<text>更多</text>
-				<text>></text>
+			<view style="display: flex;align-items: center;">
+				<text style="color: #817e7f;margin-right: 10rpx;">更多</text>
+				<image src="../../static/index/more.png" style="width: 25rpx;height: 30rpx;"></image>
 			</view>
 		</view>
 	</view>

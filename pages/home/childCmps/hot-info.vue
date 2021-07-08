@@ -1,12 +1,12 @@
 <template>
 	<view class="hot_wrap">
 		<view class="hot_info">
-			<head-title title="热点推送" img="../../static/tabBar/33.png"></head-title>
+			<head-title title="热点推送" img="../../static/index/hot.png"></head-title>
 			<view class="hot_list">
 				<view class="hot_item">
 					<!-- 左边产品图片 -->
 					<view class="left_img">
-						<image style="width: 100%;height: 100%;" src="../../../static/uview/common/logo.png" ></image>
+						<image style="width: 100%;height: 100%;"  src="../../../static/uview/common/logo.png" ></image>
 					</view>
 					<!-- 右边产品信息 -->
 					<view class="right_info">

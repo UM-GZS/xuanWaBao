@@ -1,7 +1,7 @@
 <template>
 	<view class="discount_wrap">
 		<view class="discount_info">
-			<head-title title="商品特惠" img="../../static/tabBar/33.png"></head-title>
+			<head-title title="商品特惠" img="../../static/index/car.png"></head-title>
 			<!--商品打折内容 -->
 			<view class="discount_list">
 				<view class="discount_item">
