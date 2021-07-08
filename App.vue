@@ -66,6 +66,7 @@ export default {
 					method: method,
 					dataType: 'json',
 					success: function(res) {
+						console.log("全局打印",res);
 						if (res.statusCode == 200) {
 							if (res.data.code == 200) {
 								//! 成功后走resolve方法
@@ -75,16 +76,13 @@ export default {
 								uni.showToast({
 									title: '登录已过期,请重新登录',
 									icon: 'none',
-									duration: 2000,
+									duration: 2500,
 									success:function(res) {
 										//! 清除缓存
 										uni.removeStorageSync("wxuser");
 										getApp().globalData.wxuser = null;
-										//! 跳转用户页面
-										// uni.switchTab({
-										// 	url:'./pages/user/user'
-										// })
-										getApp().globalData.global_switchTab('../../pages/user/user', function(res) {});
+										//! 在这里可以加上处理跳转页面的方法
+									
 									}
 								});
 							} else {

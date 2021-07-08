@@ -9,5 +9,7 @@
 const {global_request} = getApp().globalData;
 
 export default {
-	
+	getAddress(data) {
+		return global_request('/api/address/list',data,'GET');
+	}
 }

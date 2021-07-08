@@ -25,6 +25,9 @@
 </template>
 
 <script>
+	//! 网络请求
+	import homeApi from "../../network/home/homeApi.js";
+	//! 组件
 	import headSearch from "../../components/head-search/head-search.vue";
 	import hotInfo from "./childCmps/hot-info.vue";
 	import recruitInfo from "./childCmps/recruit_info.vue";
@@ -61,8 +64,9 @@
 			}
 		},
 		methods: {
+			//! 组件的网络请求
 			ontrueGetList() {
-				console.log("被调用");
+				
 			},
 			//! 切换对应的页面
 			serviceClick(id) {

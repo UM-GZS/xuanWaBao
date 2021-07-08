@@ -12,7 +12,7 @@
 					<view class="right_info">
 						<view class="head">
 							<view class="title">标题</view>
-							<view class="time">2021年4月25日</view>
+							<view class="money" style="color:#FDDF2F;">15K-20K</view>
 						</view>
 						<view class="content">xxx公司 200人</view>
 						<!-- 操作描述 -->
@@ -86,10 +86,9 @@
 								font-size: 30rpx;
 							}
 
-							.time {
-								font-weight: 500;
-								font-size: 25rpx;
-								color: $gray_color;
+							.money {
+								font-weight: 700;
+								font-size: 28rpx;
 							}
 						}
 

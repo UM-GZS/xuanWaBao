@@ -10,6 +10,6 @@ const {global_request} = getApp().globalData;
 
 export default {
 	login(data) {
-		return globalData('/api/wxuser/login',data,'POST');
+		return global_request('/api/wxuser/login',data,'POST');
 	}
 }
