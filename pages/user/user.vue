@@ -3,12 +3,12 @@
 		
 		<!-- 用户信息 -->
 		<view class="user_info">
-			<view class="left_info" >
-				<text class="name">用户名称</text>
-				<text class="phone">12345678900</text>
+			<view class="left_info" @click="login">
+				<text class="name">{{userInfo.uname}}</text>
+				<text class="phone">{{userInfo.phone}}</text>
 			</view>
 			<view class="right_cover" @click="login">
-				<image src="../../static/index/sw1.jpg" mode=""></image>
+				<image :src="userInfo.headpic_url" mode=""></image>
 			</view>
 		</view>
 		<!-- 发布和收藏 -->
@@ -45,30 +45,91 @@
 				</u-cell-item>
 			</u-cell-group>
 		</view>
-		<!-- <button type="default" open-type="getUserInfo" @getuserinfo="getInfo" >getuserinfo</button> -->
+		<!-- 登陆后没有手机号时弹出 -->
+		<u-modal v-model="addPhoneShow" :show-cancel-button="true" confirm-text="确定"
+				title="完善手机号" @cancel="cancel" @confirm="edituserInfo"
+			>
+				<view style="padding:40rpx">
+					<input type="number" v-model="phone" placeholder="填写手机号" />
+				</view>
+		</u-modal>
+		
+		
 	</view>
-</template>s
+</template>
 
 <script>
+	 import {userApi} from "../../network/index"
 	export default {
 		data() {
 			return {
-				
+				code:"",
+				userInfo:{
+					uname:"未登录",
+					headpic_url:"../../static/tabBar/5.png",
+					phone:"请登录获取手机号码"
+				},
+				addPhoneShow:false,
+				phone:""//用户手机号
 			}
 		},
 		methods: {
 			ontrueGetList() {
-				console.log("被调用");
+				let that = this
+				let wxuser = uni.getStorageSync('wxuser')
+				if(wxuser){
+					this.userInfo = wxuser
+				}
 			},
-			login(){
-				uni.login({  
-				    success: (res) => {  
-						console.log(res.code)
-				    }
-				 })
-			},
-			getInfo(e){
-				console.log(e)
+			async login(){
+				let that = this
+				let code = ''
+				uni.login({
+				  success (resCode) {
+					  code = resCode.code
+				  }
+				})
+				uni.getUserProfile({
+				    desc: '微信一键登录',
+				    lang:'zh_CN',
+				    success:async res=>{   
+							console.log(code)
+							let query = {
+								code:code,
+								userHead:res.userInfo.avatarUrl,
+								userName:res.userInfo.nickName,
+								userGender:res.userInfo.gender, // 0:未知,1:男,2:女
+								userCity:res.userInfo.city,
+								userProvince:res.userInfo.province
+							}
+							// let resData = await userApi.login(query)
+							let resData = {
+								code: 200,
+								data: {
+											id: 4,
+											account: "wx_223ad177c59540ce9a649bf89db3c1a7",
+											uname: "good  luck",
+											role_type: 3,
+											role_type_name: "用户",
+											phone: "",
+											headpic_url: "https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLmGjhW5Mzx0ibvKzQX8Jd6nbENqoyhUnfRJHNDDzockeaEQsfib3k9zt2KMpnADHrSBEGKpzqFvYkg/132",
+											description: "",
+											gender: 1,
+											gender_name: "男",
+											active: true,
+											create_time: 1625756638000,
+											last_login_time: 1625756638000,
+											open_id: "oeeLn5aUtPbYZJ1zQ3Jcr4ZSabpg",
+											token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3eF8yMjNhZDE3N2M1OTU0MGNlOWE2NDliZjg5ZGIzYzFhNyIsInJvbGVzIjoidXNlciIsImV4cCI6MTYyODM0ODYzOCwiaWF0IjoxNjI1NzU2NjM4LCJqdGkiOiI0In0.-UeND8K04dLWqSM7s5E15Lf-CeAqB8xPApy3NZBWeSc"
+										}
+							}
+							uni.setStorageSync('wxuser',resData.data)
+							that.userInfo = resData.data
+							if(!resData.data.phone){
+								that.addPhoneShow = true
+							}
+						}
+				})//getUserProfile end
 			},
 			goAddress(){
 				uni.navigateTo({
@@ -80,6 +141,26 @@
 					url:"/pages/user/user_tenter"
 				})
 			},
+			// 修改用户信息
+			edituserInfo(){
+				let query = {
+					phone : this.phone,
+					id:this.userInfo.id
+				}
+				userApi.edirUserInfo(query).then(res=>{
+					uni.setStorageSync('wxuser',res.data)
+					this.userInfo = res.data
+				})
+			},
+			cancel(){
+				uni.showToast({
+					title:"请在个人中心页完善信息",
+					icon:"none"
+				})
+			},
+			
+			
+			
 		}
 		
 	}
@@ -115,6 +196,11 @@
 				}
 			}
 			.right_cover{
+					height: 120rpx;	
+					width: 120rpx;
+					border-radius: 50%;
+					border: 2rpx solid #e3e3e3;
+					@include  flex-center;
 				image{
 					width: 110rpx;
 					height: 110rpx;				
@@ -152,6 +238,7 @@
 				border-bottom: 5rpx solid #e3e3e3;
 			}
 		}
+		
 		
 		
 	}

@@ -11,5 +11,9 @@ const {global_request} = getApp().globalData;
 export default {
 	login(data) {
 		return global_request('/api/wxuser/login',data,'POST');
-	}
+	},
+	edirUserInfo(data) {
+		return global_request('/api/user/update',data,'POST');
+	},
+	
 }
