@@ -1,8 +1,8 @@
 <template>
 	<view class="headerSearchs">
-		<view class="left_loc">
+		<view class="left_loc" @click="chooseLoc">
 			<u-icon name="map" size="40"></u-icon>
-			<text class="location">珠海</text>
+			<text class="location">{{ location }}</text>
 		</view>
 		<view class="center_input">
 			<u-search :show-action="false" input-align="center" height="65" placeholder="输入内容搜索" disabled></u-search>
@@ -15,8 +15,27 @@
 
 <script>
 	export default {
+		props: {
+			location: {
+				type: String,
+				default: '正在获取'
+			},
+		},
 		data() {
 			return {
+			}
+		},
+		methods: {
+			chooseLoc() {
+				this.$emit("clickLoc")
+			}
+		},
+		watch: {
+			location:{
+				handler(newValue,oldValue) {
+					this.location = newValue;
+				},
+				deep:true
 			}
 		},
 	}

@@ -31,7 +31,7 @@ export default {
 		//临时admin全局开发者服务器接口地址
 		admin_requesturl: 'http://localhost:8666',
 		//腾讯地图key
-		tx_map_key: 'RUFBZ-IH2KF-QQ2JS-NVOQG-7I3DQ-CMBR5',
+		tx_map_key: 'Z2PBZ-LZOLJ-GK5FY-KD22I-W2MFJ-PSBCQ',
 		//用户所在纬度
 		 latitude: '',
 		 //用户所在经度
