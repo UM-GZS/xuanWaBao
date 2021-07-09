@@ -34,7 +34,9 @@
 		},
 		methods: {
 			chooseCity(name) {
-				console.log("选择的城市",name);
+				uni.reLaunch({
+					url:`../../pages/index/index?location=${name}`
+				})
 			}
 		},
 		

@@ -12,7 +12,7 @@
 
 		<!-- 内容区域 -->
 		<swiper @change="change" :current="current" class="swiper_content" enable-flex>
-			<swiper-item>
+			<swiper-item v-for="(swiperItem,swiperIndex) in tabList" :key="swiperIndex">
 				<!-- 每一项内容区域 -->
 				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;" scroll-y enable-flex>
 					<view class="info_item" v-for="(item,index) in list" :key="index">
@@ -49,56 +49,11 @@
 										<text style="margin-left: 10rpx;">收藏</text>
 									</view>
 									<!-- 分享 -->
-									<view class="share common" style="margin-left: 30rpx;" @click="share">
+									<button open-type="share" class="share common" style="margin-left: 30rpx;" @click="share">
 										<image src="../../static/information/share.png" style="width: 30rpx;height: 30rpx;">
 										</image>
 										<text style="margin-left: 10rpx;">分享</text>
-									</view>
-								</view>
-							</view>
-						</view>
-					</view>
-				</scroll-view>
-			</swiper-item>
-			<swiper-item>
-				<!-- 每一项内容区域 -->
-				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;" scroll-y enable-flex>
-					<view class="info_item" v-for="(item,index) in list" :key="index">
-						<view class="info_title">
-							文章标题文章标题文章标题文章标题文章标题文章标题 文章标题文章标题
-						</view>
-						<!-- 图片以及文字内容 -->
-						<view class="info_content">
-							<view class="left_pic">
-								<image style="width: 100%;height: 100%;" src="../../static/uview/common/logo.png">
-								</image>
-							</view>
-							<view class="right_msg">
-								<view class="desc">
-									这是文章内容这是文章内容这是文章内容这是这是文章内容这是文章内容这是文章内容这是这是文章内容这是文章内容这是文章内容这是这是文章内容这是文章内容这是文章内容这是
-								</view>
-								<!-- 用户信息 -->
-								<view class="user_info">
-									<view class="name common">
-										<image style="width: 30rpx;height: 30rpx;" src="../../static/user/usercenter.png">
-										<text style="margin-left: 10rpx;">用户名称</text>
-									</view>
-									<view class="time">
-										2021年4月5日
-									</view>
-								</view>
-								<!-- 收藏以及分享 -->
-								<view class="edit">
-									<view class="collect common"  @click="collect">
-										<image src="../../static/information/collect.png" style="width: 30rpx;height: 30rpx;">
-										</image>
-										<text style="margin-left: 10rpx;">收藏</text>
-									</view>
-									<view class="share common" style="margin-left: 30rpx;" @click="share">
-										<image src="../../static/information/share.png" style="width: 30rpx;height: 30rpx;">
-										</image>
-										<text style="margin-left: 10rpx;">分享</text>
-									</view>
+									</button>
 								</view>
 							</view>
 						</view>
@@ -106,7 +61,6 @@
 				</scroll-view>
 			</swiper-item>
 		</swiper>
-
 	</view>
 </template>
 
@@ -138,7 +92,21 @@
 			},
 			//! 点击分享按钮
 			share() {
-				console.log("分享按钮");
+				console.log("share调用")
+				let data = {
+					msg:'wanghao'
+				}
+				uni.setStorageSync("shareInfo",data);
+				uni.showShareMenu({
+				  withShareTicket: true,
+				  menus: ['shareAppMessage', 'shareTimeline'],
+					success(res) {
+						console.log(res)
+					},
+					fail(err) {
+						console.warn(err)
+					}
+				})
 			},
 			//! 按钮点击的切换
 			changeTab(id,index) {
@@ -153,7 +121,8 @@
 			lower() {
 				console.log("到达底部");
 			}
-		},
+		},	
+		
 	}
 </script>
 
@@ -236,10 +205,20 @@
 							font-weight: 600;
 							overflow: hidden;
 						}
-
+						.share {
+							margin: 0;
+							padding: 0;
+							background: transparent;
+							// font-size: 25rpx;
+							color: $gray_color;
+							&::after{
+								border: none;
+							}
+						}
 						//! 公共样式
 						.common {
 							display: flex;
+							font-size: 28rpx;
 							align-items: center;
 						}
 

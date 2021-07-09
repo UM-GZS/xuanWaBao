@@ -16,9 +16,15 @@
 						</view>
 						<view class="content">内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容</view>
 						<!-- 操作描述 -->
-						<view class="other">
-							<view class="name">用户名称</view>
-							<view class="through">2036</view>
+						<view class="other" style="font-size: 24rpx;">
+							<view class="name" style="display: flex;align-items: center;margin-right: 30rpx;">
+								<image src="../../../static/user/usercenter.png" style="width: 25rpx;height: 25rpx;"></image>
+								<text style="margin-left: 10rpx;">用户名称</text>
+							</view>
+							<view class="through" style="display: flex;align-items: center;">
+								<image src="../../../static/index/see.png" style="width: 30rpx;height: 20rpx;"></image>
+								<text style="margin-left: 10rpx;">2300</text>
+							</view>
 						</view>
 					</view>
 				</view>

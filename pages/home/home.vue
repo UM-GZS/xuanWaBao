@@ -234,7 +234,7 @@
 				position: absolute;
 				box-sizing: border-box;
 				left: 0;
-				bottom: -120rpx;
+				bottom: -140rpx;
 				z-index: 100;
 				width: 100%;
 				padding: 0 30rpx;

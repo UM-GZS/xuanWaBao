@@ -35,13 +35,13 @@
 				</view>
 			</view>
 		</view>
-	
+
 	</view>
 </template>
 
 <script>
 	import home from "@/pages/home/home.vue";
-	import information  from "@/pages/information/information.vue";
+	import information from "@/pages/information/information.vue";
 	import category from "@/pages/category/category.vue";
 	import user from "@/pages/user/user.vue";
 	export default {
@@ -54,7 +54,7 @@
 		data() {
 			return {
 				//! 控制是否显示弹窗
-				showToast:false,
+				showToast: false,
 				show_index: 0, //控制显示那个组件
 				tab_nav_list: [{
 					'id': 0,
@@ -75,7 +75,8 @@
 				is_lhp: false
 			}
 		},
-		onLoad() {
+		onLoad(options) {
+			console.log("参数", options);
 			let _this = this
 			this.is_lhp = this.$is_bang
 			this.$nextTick(function() {
@@ -92,13 +93,13 @@
 			cut_index(type) {
 				let _this = this
 				//! 判断是否中间点击
-				if(type === 2) {
+				if (type === 2) {
 					_this.showToast = !_this.showToast;
-					return ;
+					return;
 				}
 				//! 记录选中的值
 				_this.show_index = type
-				
+
 				if (_this.show_index == 0) {
 					//! 调用home的方法
 					_this.$refs.home.ontrueGetList()
@@ -121,6 +122,24 @@
 				console.log('下拉刷新四个组件公用的下拉刷新方法,根据在哪个页面下拉执行哪个页面的刷新方方法即可')
 				console.log('如果想要自定义刷新的话，插件市场就有一个   非常好用也非常容易入手')
 			}
+		},
+		onShareAppMessage(options) {
+			if (options.from === "button") {
+				console.log(options)
+				//! 获取缓存中的数据，编辑转发的内容显示数据
+				let sharInfo = uni.getStorageSync("shareInfo");
+				return {
+					title: `${sharInfo.msg}`,
+					path: '/pages/index/index',
+					success: function(res) {
+						// 转发成功
+						console.log("成功转发")
+					},
+					fail: function(res) {
+						// 转发失败
+					}
+				}
+			}
 		}
 	}
 </script>
@@ -138,7 +157,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		
+
 		.tabBar_list {
 			width: 86%;
 			display: flex;
