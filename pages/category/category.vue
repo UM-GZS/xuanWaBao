@@ -7,7 +7,7 @@
 				<view class="cate_item" v-for="(item,index) in cate_list" :key="index" :class="index === current ? 'active_cate'  :''" @click="changeCate(index)">{{ item.title }}</view>
 			</scroll-view>
 			<scroll-view class="cate_content" scroll-y enable-flex>
-				<view class="content_item" v-for="item in cate_list" :key="item.id">
+				<view @click="detail(item.id)" class="content_item" v-for="item in cate_list" :key="item.id">
 					<image style="width: 100%;height: 130rpx;" src="../../static/index/recruit.png"></image>
 				</view>
 			</scroll-view>
@@ -53,6 +53,12 @@
 			//! 左边列表的切换
 			changeCate(index) {
 				this.current = index;
+			},
+			//! 跳转详情界面
+			detail(id) {
+				uni.navigateTo({
+					url:"../../subPackages/category/category_detail"
+				})
 			}
 		},
 	}
