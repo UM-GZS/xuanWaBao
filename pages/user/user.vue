@@ -15,7 +15,7 @@
 		<view class="send_collection_wrap">
 			<view class="send_collection_ctrl">
 
-				<view class="">
+				<view class="" @click="goMySend">
 					<image src="/static/user/send.png" mode=""></image>
 					<text>我的发布</text>
 				</view>
@@ -63,9 +63,7 @@
 </template>
 
 <script>
-	import {
-		userApi
-	} from "../../network/index.js"
+	import userApi from "../../network/user/userApi.js"
 	export default {
 		data() {
 			return {
@@ -100,7 +98,6 @@
 					desc: '微信一键登录',
 					lang: 'zh_CN',
 					success: async res => {
-						console.log("profie", code, res)
 						let query = {
 							code: code,
 							userHead: res.userInfo.avatarUrl,
@@ -110,7 +107,6 @@
 							userProvince: res.userInfo.province
 						}
 						let resData = await userApi.login(query)
-						console.log("打印结果", resData);
 						uni.setStorageSync('wxuser', resData.data)
 						that.userInfo = resData.data
 						if (!resData.data.phone) {
@@ -135,7 +131,7 @@
 					phone: this.phone,
 					id: this.userInfo.id
 				}
-				userApi.edirUserInfo(query).then(res => {
+				userApi.editUserInfo(query).then(res => {
 					uni.setStorageSync('wxuser', res.data)
 					this.userInfo = res.data
 				})
@@ -146,6 +142,11 @@
 					icon: "none"
 				})
 			},
+			goMySend(){
+				uni.navigateTo({
+					url: "../../subPackages/mySend/mySend"
+				})
+			}
 
 
 

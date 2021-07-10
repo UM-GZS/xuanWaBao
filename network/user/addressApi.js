@@ -10,11 +10,17 @@ const {global_request} = getApp().globalData;
 
 export default {
 	//! 用户登录
-	login(data) {
-		return global_request('/api/wxuser/login',data,'POST',true);
+	getAddressList(data) {
+		return global_request('/api/address/list',data,'GET',true);
 	},
-	editUserInfo(data) {
-		return global_request('/api/user/update',data,'POST',true);
+	editAddress(data) {
+		return global_request('/api/address/update',data,'POST',true);
+	},
+	addAddress(data) {
+		return global_request('/api/address/add',data,'POST',true);
+	},
+	deleteAddress(data) {
+		return global_request('/api/address/delete',data,'POST',true);
 	},
 	
 }

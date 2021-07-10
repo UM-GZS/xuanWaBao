@@ -68,7 +68,14 @@
 					"style":{
 						"navigationBarTitleText":"选择城市"
 					}
+				},
+				{
+					"path":"mySend/mySend",
+					"style":{
+						"navigationBarTitleText":"我的发布"
+					}
 				}
+				
 			]
 		}
 	],
