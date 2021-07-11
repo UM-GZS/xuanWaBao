@@ -2,11 +2,11 @@
 	<view class="content">
 		<!-- 首页 -->
 		<view :style="{'display':show_index == 0 ?'block':'none'}">
-			<home ref="home"></home>
+			<home ref="home" :locName="locName"></home>
 		</view>
 		<!-- 资讯 -->
 		<view :style="{'display':show_index == 1 ?'block':'none'}">
-			<information ref="information"></information>
+			<information ref="information" :locName="locName"></information>
 		</view>
 		<!-- 弹窗按钮 -->
 		<view :style="{'display':show_index == 2? 'block':'none'}">
@@ -36,14 +36,14 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<!-- 模态框遮罩层 -->
 		<view class="mask" v-if="showModal" @click="closeModel"></view>
-		<view class="model_wrap" :style="{bottom:is_lhp?'32rpx':'0rpx'}"  v-if="showModal">
+		<view class="model_wrap" :style="{bottom:is_lhp?'32rpx':'0rpx'}" v-if="showModal">
 			<view class="list" @click="closeModel">
 				<view class="item" v-for="item in modelList" :key="item.id" @click.stop="handelItem(item.id)">
 					<view class="icon">
-						<image  :src="item.icon"></image>
+						<image :src="item.icon"></image>
 					</view>
 					<view>{{item.name}}</view>
 				</view>
@@ -59,6 +59,10 @@
 </template>
 
 <script>
+	// 引入SDK核心类，js文件根据自己业务，位置可自行放置
+	let QQMapWX = require('../../utils/map/qqmap-wx-jssdk.js');
+	let qqmapsdk;
+	//! 页面组件
 	import home from "@/pages/home/home.vue";
 	import information from "@/pages/information/information.vue";
 	import category from "@/pages/category/category.vue";
@@ -72,52 +76,63 @@
 		},
 		data() {
 			return {
+				//! 记录用户的地理位置
+				location: null,
+				//! 地理位置的名称
+				locName:null,
 				//! 控制是否显示弹窗
 				showToast: false,
 				show_index: 0, //控制显示那个组件
 				tab_nav_list: [{
 					'id': 0,
 					'name': '首页'
-					}, {
-						'id': 1,
-						'name': '资讯'
-					}, {
-						'id': 2,
-						'name': ''
-					}, {
-						'id': 3,
-						'name': '分类'
-					}, {
-						'id': 4,
-						'name': '我的'
+				}, {
+					'id': 1,
+					'name': '资讯'
+				}, {
+					'id': 2,
+					'name': ''
+				}, {
+					'id': 3,
+					'name': '分类'
+				}, {
+					'id': 4,
+					'name': '我的'
 				}], //菜单列表
 				is_lhp: false,
 				showModal: false,
-				modelList:[
-					{
-						id:1,
-						name:"车辆买卖",
-						icon:"../../static/index/vehicle_trading.png"
-					},{
-						id:2,
-						name:"设备维修",
-						icon:"../../static/index/repair.png"
-					},{
-						id:3,
-						name:"求职招聘",
-						icon:"../../static/index/recruit.png"
-					},{
-						id:4,
-						name:"旧寄置换",
-						icon:"../../static/index/substitution.png"
-					},
-				]
+				modelList: [{
+					id: 1,
+					name: "车辆买卖",
+					icon: "../../static/index/vehicle_trading.png"
+				}, {
+					id: 2,
+					name: "设备维修",
+					icon: "../../static/index/repair.png"
+				}, {
+					id: 3,
+					name: "求职招聘",
+					icon: "../../static/index/recruit.png"
+				}, {
+					id: 4,
+					name: "旧寄置换",
+					icon: "../../static/index/substitution.png"
+				}, ]
 			}
 		},
 		onLoad(options) {
-			console.log("参数", options);
+			console.log("onload是否触发")
+			//！获取用户的地理位置
 			let _this = this
 			this.is_lhp = this.$is_bang
+			// 实例化API核心类
+			qqmapsdk = new QQMapWX({
+				key: getApp().globalData.tx_map_key
+			});
+			//！ 获取用户地理位置
+			_this.userLocation();
+			
+			//! 视图渲染完才调用
 			this.$nextTick(function() {
 				// 一定要等视图更新完再调用方法   -----------++++++++++++++++重要
 				setTimeout(function() {
@@ -127,7 +142,102 @@
 
 			console.log("是否为刘海屏", this.is_lhp)
 		},
+		onShow() {
+			const page = getCurrentPages();
+			//! 获取传递过来的参数值
+			const currentPage = page[page.length - 1];
+			if(currentPage.location) {
+				this.locName = currentPage.location;
+			}
+		},
 		methods: {
+			//! 判断用户是否授权获取地理位置
+			userLocation() {
+				const _this = this;
+				uni.getSetting({
+					success: (res) => {
+						// res.authSetting['scope.userLocation'] == undefined    表示 初始化进入该页面
+						// res.authSetting['scope.userLocation'] == false    表示 非初始化进入该页面,且未授权
+						// res.authSetting['scope.userLocation'] == true    表示 地理位置授权
+						if (res.authSetting['scope.userLocation'] != undefined && res.authSetting[
+								'scope.userLocation'] != true) {
+							//未授权
+							uni.showModal({
+								title: '请求授权当前位置',
+								content: '需要获取您的地理位置，请确认授权',
+								success: function(res) {
+									if (res.cancel) {
+										console.log("拒绝了")
+										//取消授权
+										wx.showToast({
+											title: '拒绝授权',
+											icon: 'none',
+											duration: 2000
+										})
+									} else if (res.confirm) {
+										//确定授权，通过wx.openSetting发起授权请求
+										uni.openSetting({
+											success: function(res) {
+												if (res.authSetting[
+														"scope.userLocation"] ==
+													true) {
+													wx.showToast({
+														title: '授权成功',
+														icon: 'none',
+														duration: 2000
+													})
+													//再次授权，调用wx.getLocation的API
+													_this.goAddress();
+												} else {
+													wx.showToast({
+														title: '授权失败',
+														icon: 'none',
+														duration: 2000
+													})
+													//! 用户拒绝地理位置则显示获取失败
+													_this.locName = "获取失败";
+												}
+											}
+										})
+									}
+								}
+							})
+						} else if (res.authSetting['scope.userLocation'] == undefined) {
+							//用户首次进入页面,调用wx.getLocation的API
+							_this.goAddress();
+						} else {
+							// console.log('授权成功')
+							//调用wx.getLocation的API
+							_this.goAddress();
+						}
+					}
+				})
+			},
+
+			//! 获取用户经纬度并解析出地址
+			goAddress() {
+				const _this = this;
+				uni.getLocation({
+					type: 'wgs84',
+					success(res) {
+						//根据坐标获取当前位置名称，显示在顶部:腾讯地图逆地址解析,前面已引入SDK
+						qqmapsdk.reverseGeocoder({
+							location: {
+								latitude: res.latitude,
+								longitude: res.longitude
+							},
+							success: function(addressRes) {
+								_this.location = addressRes.result.ad_info;
+								_this.locName = addressRes.result.ad_info.city;
+							}
+						})
+					},
+					fail: function(err) {
+						//! 说明用户拒绝了首次的获取地理位置
+						_this.locName = "获取失败";
+					}
+				})
+			},
 			// 切换组件
 			cut_index(type) {
 				let _this = this
@@ -165,13 +275,13 @@
 			closeModel() {
 				this.showModal = false
 			},
-			handelItem(id){
+			handelItem(id) {
 				this.showModal = false
 				//! 根据id对应跳转界面
 				switch (id) {
 					case 1:
 						uni.navigateTo({
-							url:"../../subPackages/vehicleBuy/vehicleBuy"
+							url: "../../subPackages/vehicleBuy/vehicleBuy"
 						})
 						break;
 					case 2:
@@ -179,10 +289,10 @@
 							url: "../../subPackages/home/repair"
 						})
 						break;
-					}
+				}
 			}
-			
-			
+
+
 		},
 		onShareAppMessage(options) {
 			if (options.from === "button") {
@@ -287,8 +397,8 @@
 	.nav_active {
 		color: $black_color;
 	}
-	
-		
+
+
 	// 遮罩以及模态框
 	.mask {
 		width: 100%;
@@ -301,6 +411,7 @@
 		z-index: 99999;
 		opacity: 0.6;
 	}
+
 	.model_wrap {
 		position: fixed;
 		z-index: 100000;
@@ -309,17 +420,20 @@
 		animation: showZeroAlert .3s;
 		display: flex;
 		transform: translateX(-50%);
-		.list{
+
+		.list {
 			position: relative;
 			@include flex-center;
+
 			.item {
-				.icon{
+				.icon {
 					background-color: #fff;
 					width: 120rpx;
 					height: 120rpx;
 					border-radius: 50%;
 					overflow: hidden;
 					@include flex-center;
+
 					image {
 						width: 80rpx;
 						height: 80rpx;
@@ -327,50 +441,53 @@
 					}
 				}
 			}
-	
-			.item:nth-child(2){
+
+			.item:nth-child(2) {
 				margin-bottom: 200rpx;
 				margin-left: 30rpx;
 				margin-right: 30rpx;
 			}
+
 			.item:nth-child(3) {
 				margin-bottom: 200rpx;
 				margin-right: 30rpx;
 			}
-		
-			.close_icon{
+
+			.close_icon {
 				position: absolute;
-				bottom:30rpx;
+				bottom: 30rpx;
 				left: 50%;
 				transform: translateX(-50%);
-				image{
+
+				image {
 					width: 100rpx;
 					height: 100rpx;
-					background-color:#000;
+					background-color: #000;
 					border-radius: 50%;
 					transform: rotate(45deg);
 				}
 			}
 		}
-			
-			
+
+
 	}
+
 	@keyframes showZeroAlert {
 		0% {
-			transform: translate(-50%,100px);
+			transform: translate(-50%, 100px);
 		}
-	
+
 		100% {
-			transform: translate(-50%,0);
+			transform: translate(-50%, 0);
 		}
 	}
+
 	.rotate-star {
 		// 展示遮罩层时把外层加号隐藏，避免视图混淆
-		opacity:0;
+		opacity: 0;
 	}
+
 	.rotate-end {
-		opacity:1;
+		opacity: 1;
 	}
-	
-		
 </style>
