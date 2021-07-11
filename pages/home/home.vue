@@ -203,7 +203,7 @@
 				switch (id) {
 					case 1:
 						uni.navigateTo({
-
+							url:"../../subPackages/vehicleBuy/vehicleBuy"
 						});
 						break;
 					case 2:

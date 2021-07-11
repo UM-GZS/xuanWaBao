@@ -15,7 +15,7 @@
 				></u-field>
 			</view>
 			<u-form-item label-position="top" label-width="150" >
-				<u-upload multiple :file-list="fileList" :show-progress="true" ref="uUpload" :action="action"
+				<u-upload multiple :file-list="fileList" :show-progress="false" ref="uUpload" :action="action"
 					:auto-upload="true" @on-remove="onRemove" @on-success="onSuccess"></u-upload>
 			</u-form-item>
 			

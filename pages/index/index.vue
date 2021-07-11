@@ -166,9 +166,23 @@
 				this.showModal = false
 			},
 			handelItem(id){
-				console.log("点击的id为："+id)
 				this.showModal = false
+				//! 根据id对应跳转界面
+				switch (id) {
+					case 1:
+						uni.navigateTo({
+							url:"../../subPackages/vehicleBuy/vehicleBuy"
+						})
+						break;
+					case 2:
+						uni.navigateTo({
+							url: "../../subPackages/home/repair"
+						})
+						break;
+					}
 			}
+			
+			
 		},
 		onShareAppMessage(options) {
 			if (options.from === "button") {
