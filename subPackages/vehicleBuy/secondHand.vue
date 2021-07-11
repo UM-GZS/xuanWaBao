@@ -1,0 +1,241 @@
+<template>
+	<view class="repair_wrap">
+		<view class="form">
+			<view class="title">
+					<u-field v-model="formData.title" placeholder="编辑发布商品标题" type="textarea"
+							label-width="0" focus border-bottom 
+							:field-style="inputCssObj"
+							placeholder-style="color:#000;font-weight:600;font-size:34rpx;"
+					></u-field>
+			</view>
+			<view class="detail">
+				<u-field v-model="formData.detail" placeholder="编辑宝贝转手原因，入手渠道等基本信息" type="textarea"
+						label-width="0" class="detail_inpit"
+						placeholder-style="color:#808080;font-size:30rpx"
+				></u-field>
+			</view>
+			<u-form-item label-position="top" label-width="150" >
+				<u-upload multiple :file-list="fileList" :show-progress="true" ref="uUpload" :action="action"
+					:auto-upload="true" @on-remove="onRemove" @on-success="onSuccess"></u-upload>
+			</u-form-item>
+			
+			<u-cell-group>
+				<u-cell-item  title="宝贝价格" arrow-direction="right" value="￥2000/面议"  @click="priceShow=true">
+				</u-cell-item>
+				<u-cell-item  title="我的身份"  :arrow="false">
+					<view class="flex cell" slot="right-icon">
+						<u-radio-group v-model="formData.radioValue" class="flex" v-for="(item,index) in redioList">
+							<view class="radio_list" :class="item.name==formData.radioValue?'active':''">
+								<text>{{item.name}}</text>
+									<u-radio :name="item.name" shape="circle" active-color="#40e09c"
+										@change="radioChange" 
+										></u-radio>
+							</view>
+						</u-radio-group>
+					</view>
+				</u-cell-item>
+				
+				<u-cell-item  title="个人信息" arrow-direction="right" >
+				</u-cell-item>
+				
+				<u-cell-item  title="位置信息" arrow-direction="right" :value="formData.address" @click="addressShow=true">
+				</u-cell-item>
+			</u-cell-group>
+
+		</view>
+		<!-- 提交维修订单 -->
+		<view class="footer">
+			<view class="submit" @click="submit">确认发布</view>
+		</view>
+		
+		<u-picker mode="region" v-model="addressShow" :area-code='["11", "1101", "110101"]' @confirm="fonfirmAddress">
+		</u-picker>
+		<u-modal v-model="priceShow" title="宝贝价格" class="model_wrap" title-style="modelTitle">
+			<!-- <view class=""> -->
+				<!-- <view class="">
+					<view class=""></view>
+				</view>
+			</view>
+			<input type="text" placeholder="价格" /> -->
+			<u-radio-group v-model="formData.priceSelect" class="flex model_list" style="width:100%" >
+				<view class="radio_list flex price_self"  style="margin-top:30rpx" >
+					<u-radio name="定价" shape="circle" active-color="#40e09c"
+						@change="radioChange" 
+						>定价</u-radio>
+					<input  placeholder="请输入价格" v-model="priceSelf" type="number"/>
+				</view>
+				<view class="radio_list"  style="margin-top:30rpx" >
+					<u-radio name="面议" shape="circle" active-color="#40e09c"
+						@change="radioChange" 
+						>面议</u-radio>
+				</view>
+			</u-radio-group>
+			
+		</u-modal>
+		
+		
+		
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				//! 自动上传图片的地址
+				action: '',
+				//默认显示的图片列表
+				fileList: [],
+				//! 控制显示组件
+				showDevice:false,
+				showDeviceBrand:false,
+				showDeviceType:false,
+				//! 对应的数据列表
+				list: [{
+						value: '1',
+						label: '江'
+					},
+					{
+						value: '2',
+						label: '湖'
+					}
+				],
+				formData:{
+					title:"",
+					detail:"",
+					radioValue:"个人",
+					address:"",
+					priceSelect:"定价",
+				},
+				// 商品标题的输入框样式
+				inputCssObj:{
+					color:'#000',
+					fontWeight:'600',
+					fontSize:'34rpx',
+					'borderBottom':"2rpx solid #e3e3e3",
+				},
+				redioList:[
+					{
+						name:"个人",
+					},{
+						name:"商家",
+					},
+				],
+				addressShow: false, // 选择地区控件显示
+				priceShow: false, // 选择价格/面议控件显示
+				priceSelf:"",
+				modelTitle:{
+					fontSize:"30rpx",
+					fontWeight:600,
+				}
+			}
+		},
+		onLoad() {
+			//! 上传地址
+			this.action = getApp().globalData.requesturl + '/api/upload/pic';
+		},
+		methods: {
+			//! 监听图片的上传
+			onSuccess(data, index, lists, name) {
+				//! 追加数据
+				this.fileList = lists;
+			},
+			//! 监听图片的删除函数
+			onRemove(index, lists, name) {
+				this.fileList = lists;
+			},
+			radioChange(e){
+				console.log(e)
+			},
+			submit(){
+				console.log(this.formData)
+				if(this.formData.priceSelect=='定价'){
+					console.log(this.priceSelf)
+				}
+			},
+			fonfirmAddress(e) {
+				this.formData.address = e.province.label + e.city.label + e.area.label
+			},
+		},
+	}
+</script>
+
+<style lang="scss" scoped>
+	.repair_wrap {
+		width: 100%;
+		height: 100%;
+		.form {
+			width: 100%;
+			background-color: #ffffff;
+			padding: 18rpx 10rpx 90rpx 10rpx;
+			.detail{
+				padding: 18rpx 10rpx 0rpx 10rpx;
+				/deep/ .u-textarea-class{
+					min-height: 200rpx !important;
+				}
+			}
+			.cell{
+				.radio_list{
+					margin-left: 15rpx;
+					@include  flex-center;
+					color: #808080;
+					display: flex;
+					background-color: #f2f2f2;
+					padding: 8rpx;
+					text{
+						margin-right: 15rpx;
+					}
+					/deep/ .u-radio__label {
+						margin-right: 0;
+					}
+				}
+				.active{
+					background-color: #d8f6f0;
+					color: #40e09c;
+				}
+				
+			}
+		
+		}
+
+		.footer {
+			margin-top: 30rpx;
+			width: 100%;
+			padding: 10rpx 80rpx;
+			height: 90rpx;
+			background-color: #ffffff;
+			position: fixed;
+			bottom: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			.submit {
+				width: 100%;
+				height: 100%;
+				@include flex-center;
+				font-weight: 800;
+				font-size: 30rpx;
+				border-radius: 30rpx;
+				background-color: $page_color;
+			}
+		}
+		
+		.flex{
+			display: flex;
+		}
+		.model_wrap{
+			padding: 40rpx 20rpx;
+			.model_list{
+				padding: 20rpx;
+				.price_self{
+					width: 100%;
+					@include  flex-jcsb;
+					input{
+						border: 1px solid #e3e3e3;
+						text-align: center;
+						margin-left: 30rpx;
+					}
+				}
+			}
+		}
+	}
+</style>

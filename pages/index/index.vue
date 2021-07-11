@@ -30,11 +30,30 @@
 					:class="{'tabBar_item':item.id!=2,'tabBar_item2':item.id==2}" @tap="cut_index(item.id)">
 					<image v-if="show_index == item.id" :src="`../../static/tabBar/${item.id+1}${item.id+1}.png`">
 					</image>
-					<image v-else :src="`../../static/tabBar/${item.id+1}.png`"></image>
+					<image v-else :src="`../../static/tabBar/${item.id+1}.png`"
+						:class="item.id==2&&showModal?'rotate-star':'rotate-end'"></image>
 					<view :class="{'tabBar_name':true,'nav_active':show_index == item.id}">{{item.name}}</view>
 				</view>
 			</view>
 		</view>
+		
+		<!-- 模态框遮罩层 -->
+		<view class="mask" v-if="showModal" @click="closeModel"></view>
+		<view class="model_wrap" :style="{bottom:is_lhp?'32rpx':'0rpx'}"  v-if="showModal">
+			<view class="list" @click="closeModel">
+				<view class="item" v-for="item in modelList" :key="item.id" @click.stop="handelItem(item.id)">
+					<view class="icon">
+						<image  :src="item.icon"></image>
+					</view>
+					<view>{{item.name}}</view>
+				</view>
+				<view class="close_icon" @click.stop="showModal=false">
+					<image src="../../static/uview/example/min_button.png"></image>
+				</view>
+			</view>
+		</view>
+
+
 
 	</view>
 </template>
@@ -59,20 +78,40 @@
 				tab_nav_list: [{
 					'id': 0,
 					'name': '首页'
-				}, {
-					'id': 1,
-					'name': '资讯'
-				}, {
-					'id': 2,
-					'name': ''
-				}, {
-					'id': 3,
-					'name': '分类'
-				}, {
-					'id': 4,
-					'name': '我的'
+					}, {
+						'id': 1,
+						'name': '资讯'
+					}, {
+						'id': 2,
+						'name': ''
+					}, {
+						'id': 3,
+						'name': '分类'
+					}, {
+						'id': 4,
+						'name': '我的'
 				}], //菜单列表
-				is_lhp: false
+				is_lhp: false,
+				showModal: false,
+				modelList:[
+					{
+						id:1,
+						name:"车辆买卖",
+						icon:"../../static/index/vehicle_trading.png"
+					},{
+						id:2,
+						name:"设备维修",
+						icon:"../../static/index/repair.png"
+					},{
+						id:3,
+						name:"求职招聘",
+						icon:"../../static/index/recruit.png"
+					},{
+						id:4,
+						name:"旧寄置换",
+						icon:"../../static/index/substitution.png"
+					},
+				]
 			}
 		},
 		onLoad(options) {
@@ -94,6 +133,7 @@
 				let _this = this
 				//! 判断是否中间点击
 				if (type === 2) {
+					this.showModal = true
 					_this.showToast = !_this.showToast;
 					return;
 				}
@@ -121,6 +161,13 @@
 				}, 2000)
 				console.log('下拉刷新四个组件公用的下拉刷新方法,根据在哪个页面下拉执行哪个页面的刷新方方法即可')
 				console.log('如果想要自定义刷新的话，插件市场就有一个   非常好用也非常容易入手')
+			},
+			closeModel() {
+				this.showModal = false
+			},
+			handelItem(id){
+				console.log("点击的id为："+id)
+				this.showModal = false
 			}
 		},
 		onShareAppMessage(options) {
@@ -226,4 +273,90 @@
 	.nav_active {
 		color: $black_color;
 	}
+	
+		
+	// 遮罩以及模态框
+	.mask {
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		background: #000;
+		z-index: 99999;
+		opacity: 0.6;
+	}
+	.model_wrap {
+		position: fixed;
+		z-index: 100000;
+		left: 50%;
+		color: #fff;
+		animation: showZeroAlert .3s;
+		display: flex;
+		transform: translateX(-50%);
+		.list{
+			position: relative;
+			@include flex-center;
+			.item {
+				.icon{
+					background-color: #fff;
+					width: 120rpx;
+					height: 120rpx;
+					border-radius: 50%;
+					overflow: hidden;
+					@include flex-center;
+					image {
+						width: 80rpx;
+						height: 80rpx;
+						border-bottom: 10rpx;
+					}
+				}
+			}
+	
+			.item:nth-child(2){
+				margin-bottom: 200rpx;
+				margin-left: 30rpx;
+				margin-right: 30rpx;
+			}
+			.item:nth-child(3) {
+				margin-bottom: 200rpx;
+				margin-right: 30rpx;
+			}
+		
+			.close_icon{
+				position: absolute;
+				bottom:30rpx;
+				left: 50%;
+				transform: translateX(-50%);
+				image{
+					width: 100rpx;
+					height: 100rpx;
+					background-color:#000;
+					border-radius: 50%;
+					transform: rotate(45deg);
+				}
+			}
+		}
+			
+			
+	}
+	@keyframes showZeroAlert {
+		0% {
+			transform: translate(-50%,100px);
+		}
+	
+		100% {
+			transform: translate(-50%,0);
+		}
+	}
+	.rotate-star {
+		// 展示遮罩层时把外层加号隐藏，避免视图混淆
+		opacity:0;
+	}
+	.rotate-end {
+		opacity:1;
+	}
+	
+		
 </style>

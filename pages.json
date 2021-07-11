@@ -74,6 +74,18 @@
 					"style":{
 						"navigationBarTitleText":"我的发布"
 					}
+				},
+				{
+					"path":"vehicleBuy/vehicleBuy",
+					"style":{
+						"navigationBarTitleText":"车辆买卖"
+					}
+				},
+				{
+					"path":"vehicleBuy/secondHand",
+					"style":{
+						"navigationBarTitleText":"二手发布"
+					}
 				}
 				
 			]
