@@ -1,7 +1,7 @@
 <template>
 	<view class="info_wrap">
 		<!-- 头部搜索框 -->
-		<head-search></head-search>
+		<head-search :location="locName"></head-search>
 		<!-- 切换按钮 -->
 		<view class="swiper_tab">
 			<view class="tab_item" @click="changeTab(item.id,index)" v-for="(item,index) in tabList" :key="index">
@@ -69,6 +69,12 @@
 	export default {
 		components: {
 			headSearch
+		},
+		props: {
+			locName: {
+				type: String,
+				default: '正在获取'
+			},
 		},
 		data() {
 			return {

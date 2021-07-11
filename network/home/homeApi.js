@@ -9,7 +9,10 @@
 const {global_request} = getApp().globalData;
 
 export default {
-	getAddress(data) {
-		return global_request('/api/address/list',data,'GET');
+	/**
+	 * 获取首页轮播图数据
+	 */
+	bannerList(data) {
+		return global_request('/api/topbanner/list',data,'GET');
 	}
 }

@@ -33,10 +33,9 @@
 			this.scrollTop = e.scrollTop;
 		},
 		methods: {
+			//! 获取选择的地址
 			chooseCity(name) {
-				uni.reLaunch({
-					url:`../../pages/index/index?location=${name}`
-				})
+				
 			}
 		},
 		

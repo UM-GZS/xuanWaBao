@@ -66,7 +66,6 @@ export default {
 					method: method,
 					dataType: 'json',
 					success: function(res) {
-						console.log("全局打印",res);
 						if (res.statusCode == 200) {
 							if (res.data.code == 200) {
 								//! 成功后走resolve方法

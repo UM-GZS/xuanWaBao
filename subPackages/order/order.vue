@@ -170,7 +170,7 @@
 				this.$refs.uTips.show({
 					title:'长按客服号码,可复制联系方式',
 					type:'success',
-					duration:5000
+					duration:'5000'
 				})
 			},
 			//! 点击完成后回退页面
