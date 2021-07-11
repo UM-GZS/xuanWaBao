@@ -17,7 +17,7 @@
 						<!-- 图片以及文字内容 -->
 						<view class="info_content">
 							<view class="left_pic">
-								<image style="width: 100%;height: 100%;" :src="item.small_img_urls">
+								<image style="width: 100%;height: 100%;" :src="baseUrl+item.small_img_urls">
 								</image>
 							</view>
 							<view class="right_msg">
@@ -53,7 +53,7 @@
 						<!-- 图片以及文字内容 -->
 						<view class="info_content">
 							<view class="left_pic">
-								<image style="width: 100%;height: 100%;" :src="item.small_img_urls">
+								<image style="width: 100%;height: 100%;" :src="baseUrl+item.small_img_urls">
 								</image>
 							</view>
 							<view class="right_msg">
@@ -148,8 +148,10 @@
 				})
 			},
 			goDetail(id){
-				console.log(id);
-				console.log('跳转到详情');
+				console.log(id);console.log('跳转到详情');
+				uni.navigateTo({
+					url:"./secondHandDetail?id="+id
+				})
 			}
 		},	
 		

@@ -1,5 +1,5 @@
 <template>
-<view class="container">
+<view class="container" v-if="detail">
     <view class="userInfo_wrap">
         <view class="user_cover">
             <image :src="userCover"  />
@@ -24,7 +24,6 @@
         <image :src="item.img"  v-for="(item,index) in detail.img_urls" :key="index" />
     </view>
 
-
 </view>
 </template>
 
@@ -46,7 +45,7 @@ export default {
     methods: {
         getDetai(){
             let query = {
-                id:6
+                id:this.pageId
             }
             
             API.detail(query).then(res=>{
@@ -61,8 +60,6 @@ export default {
                 })
 
             })
-            
-
 
         }
 

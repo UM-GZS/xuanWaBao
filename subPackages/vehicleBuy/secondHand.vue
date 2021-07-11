@@ -132,7 +132,7 @@ import { log } from 'util';
 					fontWeight:600,
 				},
 				showPrice:'',
-				userInfoShow:false
+				userInfoShow:false,
 			}
 		},
 		onLoad() {
@@ -162,6 +162,7 @@ import { log } from 'util';
 				// console.log(e)
 			},
 			submit(){
+
 				let data = this.formData
 				if(!data.title){
 					this.$u.toast("请填写标题名称")
@@ -195,7 +196,7 @@ import { log } from 'util';
 				let imgs = []
 				this.fileList.forEach(el => {
 					imgs.push({
-						img:el.url
+						img:el.response.data.url
 					})
 				});
 				let smallImg = imgs[0].img
