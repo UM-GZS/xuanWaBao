@@ -94,6 +94,12 @@
 					"style":{
 						"navigationBarTitleText":"二手发布"
 					}
+				},
+				{
+					"path":"vehicleBuy/secondHandDetail",
+					"style":{
+						"navigationBarTitleText":"二手详情"
+					}
 				}
 			]
 		}

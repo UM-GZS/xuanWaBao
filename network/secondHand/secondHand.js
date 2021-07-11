@@ -10,15 +10,15 @@ const {global_request} = getApp().globalData;
 
 export default {
 	//! 用户登录
-	login(data) {
-		return global_request('/api/wxuser/login',data,'POST',true);
+	getList(data) {
+		return global_request('/api/transaction/list',data,'GET',true);
 	},
-	editUserInfo(data) {
-		return global_request('/api/user/update',data,'POST',true);
+	add(data) {
+		return global_request('/api/transaction/add',data,'POST',true);
 	},
 	detail(data) {
-		return global_request('/api/user/get',data,'GET',true);
-	}
+		return global_request('/api/transaction/get',data,'GET',true);
+	},
 	
 	
 }

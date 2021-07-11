@@ -108,6 +108,7 @@
 						}
 						let resData = await userApi.login(query)
 						uni.setStorageSync('wxuser', resData.data)
+						getApp().globalData.wxuser = resData.data
 						that.userInfo = resData.data
 						if (!resData.data.phone) {
 							that.addPhoneShow = true

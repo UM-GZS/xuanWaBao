@@ -10,40 +10,78 @@
 		<!-- 内容区域 -->
 		<swiper @change="change" :current="current" class="swiper_content" :style="{'padding-bottom':current==1?'115rpx':'0rpx'}"  enable-flex>
 			<swiper-item v-for="(swiperItem,swiperIndex) in tabList" :key="swiperIndex" class="swiper_wrap">
-				<!-- 每一项内容区域 -->
-				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;" scroll-y enable-flex>
-					<view class="info_item" v-for="(item,index) in list" :key="index">
+				<!-- 二手交易 -->
+				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;padding-bottom:10rpx;" 
+								scroll-y enable-flex v-if="swiperIndex==1">
+					<view class="info_item" v-for="(item,index) in list" :key="index" @click="goDetail(item.id)">
 						<!-- 图片以及文字内容 -->
 						<view class="info_content">
 							<view class="left_pic">
-								<image style="width: 100%;height: 100%;" src="../../static/uview/common/logo.png">
+								<image style="width: 100%;height: 100%;" :src="item.small_img_urls">
 								</image>
 							</view>
 							<view class="right_msg">
 								<view class="desc">
-									这是文章内容这是文章内容这是文章内容这是这是文章内容这是文章内容这是文章内容这是这是文章内容这是文章内容这是文章内容这是这是文章内容这是文章内容这是文章内容这是
+									{{item.name}}
 								</view>
 								<!-- 用户信息 -->
 								<view class="user_info">
 									<view class="base_info">
-										基础信息基础信息基础信息基础信息基础信息基础信息基础信息
+										{{item.info}}
 									</view>
 								</view>
 								<!-- 收藏以及分享 -->
 								<view class="edit">
 									<!-- 收藏 -->
-									<view class="collect common" >
-										<text style="margin-left: 10rpx;">个人</text>
+									<view class="collect common userBg" >
+										<text style="margin-left: 10rpx;">{{item.person_type_name}}</text>
 									</view>
 									<!-- 分享 -->
 									<view  class="share common"  >
-										<text style="margin-left: 10rpx;">￥200</text>
+										<text style="color:#000;">￥{{item.price}}</text>
 									</view>
-								</view>
+								</view>	
 							</view>
 						</view>
 					</view>
 				</scroll-view>
+
+				<!-- 二手交易之外的tans—panel -->
+				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;padding-bottom:10rpx;" 
+							scroll-y enable-flex v-else>
+					<view class="info_item" v-for="(item,index) in list" :key="index" >
+						<!-- 图片以及文字内容 -->
+						<view class="info_content">
+							<view class="left_pic">
+								<image style="width: 100%;height: 100%;" :src="item.small_img_urls">
+								</image>
+							</view>
+							<view class="right_msg">
+								<view class="desc">
+									{{item.name}}
+								</view>
+								<!-- 用户信息 -->
+								<view class="user_info">
+									<view class="base_info">
+										{{item.info}}
+									</view>
+								</view>
+								<!-- 收藏以及分享 -->
+								<view class="edit">
+									<!-- 收藏 -->
+									<view class="collect common userBg" >
+										<text style="margin-left: 10rpx;">{{item.person_type_name}}</text>
+									</view>
+									<!-- 分享 -->
+									<view  class="share common"  >
+										<text style="color:#000;">￥{{item.price}}</text>
+									</view>
+								</view>	
+							</view>
+						</view>
+					</view>
+				</scroll-view>
+
 			</swiper-item>
 			
 		</swiper>
@@ -58,6 +96,7 @@
 </template>
 
 <script>
+	import API from "../../network/secondHand/secondHand"
 	export default {
 		components: {
 		},
@@ -70,13 +109,25 @@
 					{id:2,title:'车辆租赁',img:'../../static/information/industry.png',activeImg:'../../static/vehicle/chuzu2.png'}
 				],
 				current: 0, //! 默认选中的swiper下标
-				list: [{}, {}, {}, {}, {}]
+				list: [],
+				baseUrl:""
 			}
 		},
+		onLoad(){
+			this.getList()
+			this.baseUrl  =  getApp().globalData.requesturl
+		},
 		methods: {
-			//! 用于当前组件的网络请求函数
-			ontrueGetList() {
-				console.log("被调用");
+		
+			getList(){
+				let query = {
+					page_num:1,
+					page_size:99,
+				}
+				
+				API.getList(query).then(res=>{
+					this.list = res.data.list
+				})
 			},
 			//! 按钮点击的切换
 			changeTab(id,index) {
@@ -95,6 +146,10 @@
 				uni.navigateTo({
 					url:"../vehicleBuy/secondHand"
 				})
+			},
+			goDetail(id){
+				console.log(id);
+				console.log('跳转到详情');
 			}
 		},	
 		
@@ -159,6 +214,7 @@
 						flex: 1;
 						margin-left: 10rpx;
 						display: flex;
+						height: 100%;
 						flex-direction: column;
 
 						.desc {
@@ -202,6 +258,13 @@
 							color: $gray_color;
 							flex-direction: column;
 							align-items: flex-start;
+							.userBg{
+								background-color: #ffa02e;
+								color: #ffffff;
+								min-width: 80rpx;
+								padding-right: 10rpx;
+								@include flex-center;
+							}
 						}
 						
 					}

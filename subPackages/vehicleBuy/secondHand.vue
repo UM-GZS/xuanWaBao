@@ -20,11 +20,11 @@
 			</u-form-item>
 			
 			<u-cell-group>
-				<u-cell-item  title="宝贝价格" arrow-direction="right" value="￥2000/面议"  @click="priceShow=true">
+				<u-cell-item  title="宝贝价格" arrow-direction="right" :value="showPrice"  @click="priceShow=true">
 				</u-cell-item>
 				<u-cell-item  title="我的身份"  :arrow="false">
 					<view class="flex cell" slot="right-icon">
-						<u-radio-group v-model="formData.radioValue" class="flex" v-for="(item,index) in redioList">
+						<u-radio-group v-model="formData.radioValue" class="flex" v-for="(item,index) in redioList" :key="index">
 							<view class="radio_list" :class="item.name==formData.radioValue?'active':''">
 								<text>{{item.name}}</text>
 									<u-radio :name="item.name" shape="circle" active-color="#40e09c"
@@ -35,7 +35,7 @@
 					</view>
 				</u-cell-item>
 				
-				<u-cell-item  title="个人信息" arrow-direction="right" >
+				<u-cell-item  title="个人信息" arrow-direction="right"  @click="userInfoShow=true" :value="userInfo">
 				</u-cell-item>
 				
 				<u-cell-item  title="位置信息" arrow-direction="right" :value="formData.address" @click="addressShow=true">
@@ -50,16 +50,10 @@
 		
 		<u-picker mode="region" v-model="addressShow" :area-code='["11", "1101", "110101"]' @confirm="fonfirmAddress">
 		</u-picker>
-		<u-modal v-model="priceShow" title="宝贝价格" class="model_wrap" title-style="modelTitle">
-			<!-- <view class=""> -->
-				<!-- <view class="">
-					<view class=""></view>
-				</view>
-			</view>
-			<input type="text" placeholder="价格" /> -->
+		<u-modal v-model="priceShow" title="宝贝价格" class="model_wrap" title-style="modelTitle" @confirm="confirmModel">
 			<u-radio-group v-model="formData.priceSelect" class="flex model_list" style="width:100%" >
 				<view class="radio_list flex price_self"  style="margin-top:30rpx" >
-					<u-radio name="定价" shape="circle" active-color="#40e09c"
+					<u-radio name="定价" shape="circle" active-color="#40e09c" class="price_label"
 						@change="radioChange" 
 						>定价</u-radio>
 					<input  placeholder="请输入价格" v-model="priceSelf" type="number"/>
@@ -72,6 +66,21 @@
 			</u-radio-group>
 			
 		</u-modal>
+
+		<u-modal v-model="userInfoShow" title="个人信息" class="model_wrap" title-style="modelTitle" @confirm="confirmModel">
+			<u-radio-group v-model="formData.priceSelect" class="flex model_list" style="width:100%" >
+				<view class="radio_list flex price_self"  style="margin-top:30rpx;padding-top:30rpx;" >
+					姓名
+					<input  placeholder="请输入姓名" v-model="formData.name" type="text"  maxlength="20" />
+				</view>
+				<view class="radio_list flex price_self"  style="margin-top:40rpx;padding-bottom:30rpx;"  >
+					联系方式
+					<input  placeholder="请输入联系方式" v-model="formData.phone" type="number" maxlength="11"/>
+				</view>
+				
+			</u-radio-group>
+			
+		</u-modal>
 		
 		
 		
@@ -79,6 +88,8 @@
 </template>
 
 <script>
+	import API from "../../network/secondHand/secondHand"
+import { log } from 'util';
 	export default {
 		data() {
 			return {
@@ -90,22 +101,14 @@
 				showDevice:false,
 				showDeviceBrand:false,
 				showDeviceType:false,
-				//! 对应的数据列表
-				list: [{
-						value: '1',
-						label: '江'
-					},
-					{
-						value: '2',
-						label: '湖'
-					}
-				],
 				formData:{
 					title:"",
 					detail:"",
 					radioValue:"个人",
 					address:"",
 					priceSelect:"定价",
+					name:'',
+					phone:''
 				},
 				// 商品标题的输入框样式
 				inputCssObj:{
@@ -127,12 +130,23 @@
 				modelTitle:{
 					fontSize:"30rpx",
 					fontWeight:600,
-				}
+				},
+				showPrice:'',
+				userInfoShow:false
 			}
 		},
 		onLoad() {
 			//! 上传地址
 			this.action = getApp().globalData.requesturl + '/api/upload/pic';
+		},
+		computed:{
+			userInfo(){
+				if(this.formData.name.length>=1&&this.formData.phone.length){
+					return this.formData.name+'--'+this.formData.phone
+				}else{
+					return this.formData.name+this.formData.phone
+				}
+			}
 		},
 		methods: {
 			//! 监听图片的上传
@@ -145,17 +159,92 @@
 				this.fileList = lists;
 			},
 			radioChange(e){
-				console.log(e)
+				// console.log(e)
 			},
 			submit(){
-				console.log(this.formData)
-				if(this.formData.priceSelect=='定价'){
-					console.log(this.priceSelf)
+				let data = this.formData
+				if(!data.title){
+					this.$u.toast("请填写标题名称")
+					return
 				}
+				if(!data.detail){
+					this.$u.toast("请填写发布详情信息")
+					return
+				}
+				if(this.fileList.length==0){
+					this.$u.toast("请至少选择一张图片")
+					return
+				}
+				if(!data.name){
+					this.$u.toast("请填写发布者姓名")
+					return
+				}
+				if(!this.showPrice){
+					this.$u.toast("请填写商品宝贝价格或者选择面议")
+					return
+				}
+				if(!data.phone){
+					this.$u.toast("请填写发布者联系电话")
+					return
+				}
+				if(!data.address){
+					this.$u.toast("请选择地址位置信息")
+					return
+				}
+
+				let imgs = []
+				this.fileList.forEach(el => {
+					imgs.push({
+						img:el.url
+					})
+				});
+				let smallImg = imgs[0].img
+				imgs = JSON.stringify(imgs)
+				// 个人或商家
+				let personType = ''
+				if(data.radioValue=='个人'){
+					personType = 0
+				}else{
+					personType = 1
+				}
+
+				let query = {
+					user_id:getApp().globalData.wxuser.id,
+					personType,
+					name:data.title,
+					info:data.detail,
+					position:data.address,
+					user_name:getApp().globalData.wxuser.uname,
+					phone:data.phone,
+					img_urls:imgs,
+					price:this.showPrice,
+					small_img_urls:smallImg
+				}
+				
+				
+				API.add(query).then(res=>{
+					this.$u.toast(res.msg)
+					setTimeout(() => {
+						uni.redirectTo({
+							url: './vehicleBuy'
+						});
+					}, 1200);
+					
+				})
+				
 			},
 			fonfirmAddress(e) {
 				this.formData.address = e.province.label + e.city.label + e.area.label
 			},
+			confirmModel(){
+				let price = '';
+				if(this.formData.priceSelect=='定价'){
+					price = this.priceSelf
+				}else{
+					price = '面议'
+				}
+				this.showPrice = price
+			}
 		},
 	}
 </script>
@@ -233,6 +322,9 @@
 						border: 1px solid #e3e3e3;
 						text-align: center;
 						margin-left: 30rpx;
+					}
+					.price_label{
+						width: 130rpx;
 					}
 				}
 			}

@@ -1,7 +1,8 @@
 <template>
 	<view class="container">
 		<view v-if="addressList.length>0">
-			<view v-for="(item,index) in addressList"   class="address_list"
+			<view v-for="(item,index) in addressList"   class="address_list" 
+				:key="index"
 				@click="clickAddressItem(item)">
 				<view class="address_item">
 					<view class="address_label">收货人名字:</view>
@@ -23,7 +24,7 @@
 					</view>
 					<view class="del_edit">
 						<text  @click="openDelete(item.id)">删除</text>
-						<text@click="openEdit(item)">修改</text>
+						<text @click="openEdit(item)">修改</text>
 					</view>
 				</view>
 			</view>
@@ -289,7 +290,7 @@
 		// 列表
 		.address_list {
 			background-color: #FFFFFF;
-			padding: 30rpx 80rpx;
+			padding: 30rpx 80rpx 100rpx 80rpx;
 			border-bottom: 3rpx solid #e3e3e3;
 
 			.address_item {
