@@ -8,7 +8,7 @@
 			</scroll-view>
 			<scroll-view class="cate_content" scroll-y enable-flex>
 				<view @click="detail(item.id)" class="content_item" v-for="item in cate_list" :key="item.id">
-					<image style="width: 100%;height: 130rpx;" src="../../static/index/recruit.png"></image>
+					<image style="width: 100%;height: 130rpx;border: 1rpx solid #b5b5b5;" src="../../static/index/recruit.png"></image>
 				</view>
 			</scroll-view>
 		</view>
@@ -97,7 +97,6 @@
 					float: left;
 					width: 33.3%;
 					padding: 20rpx 15rpx;
-					margin-bottom: 20rpx;
 				}
 			}
 		}

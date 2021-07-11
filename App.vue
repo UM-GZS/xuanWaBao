@@ -745,7 +745,7 @@ export default {
 				uni.showToast({
 					title: title,
 					icon: 'none',
-					duration: 5000,
+					duration: 2500,
 					success: function(res) {
 						callbcak(res);
 					}

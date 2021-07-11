@@ -1,6 +1,156 @@
 <template>
 	<view class="order_wrap">
-		订单界面
+		<!-- 头部信息 -->
+		<view class="goods_info">
+			<!-- 上边内容 -->
+			<view class="goods_content">
+				<!-- 左边图片 -->
+				<view class="left_pic">
+					<image style="width: 100%;height: 100%;" src="../../static/uview/common/logo.png"></image>
+				</view>
+				<!--右边详情 -->
+				<view class="right_msg">
+					<view class="name">
+						商品名称商品名称商品名称商品名称商品名称
+						商品名称商品名称商品名称商品名称商品名称
+						商品名称商品名称商品名称商品名称商品名称
+						商品名称商品名称商品名称商品名称商品名称
+					</view>
+					<!-- 车辆拥有的服务 -->
+					<view class="desc">
+						<view class="desc_item">直营汽车</view>
+						<view class="desc_item">分期</view>
+					</view>
+					<!-- 已选型号 -->
+					<view class="select_type">
+						<view class="type_title" style="margin-bottom: 10rpx;">
+							已选择：
+						</view>
+						<view class="select_item">
+							<view class="model">
+								型号1
+							</view>
+							<view class="model_count">
+								x1
+							</view>
+						</view>
+						<view class="select_item">
+							<view class="model">
+								型号1
+							</view>
+							<view class="model_count">
+								x1
+							</view>
+						</view>
+					</view>
+					<!-- 当前商品的价格 -->
+					<view class="price">
+						￥20000
+					</view>
+				</view>
+			</view>
+			<!-- 显示已选商品的数量 -->
+			<view class="select_goods">
+				<!-- 商品数量 -->
+				<view class="total_count">
+					<text>共1件</text>
+				</view>
+				<view class="total_price">
+					<text>商品小计:</text>
+					<text>￥20000</text>
+				</view>
+			</view>
+		</view>
+		<!-- 优惠券 -->
+		<view class="coupon">
+			<view>优惠券</view>
+			<view class="use_coupon">
+				<text style="margin-right: 15rpx;">暂无可用</text>
+				<image src="../../static/index/more.png" style="width: 20rpx;height: 30rpx;"></image>
+			</view>
+		</view>
+		<!--收货地址 -->
+		<view class="address">
+			<view class="address_info">
+				<view class="address_item">
+					<view class="title">
+						收货人
+					</view>
+					<view class="detail">
+						阿豪
+					</view>
+				</view>
+				<view class="address_item">
+					<view class="title">
+						联系电话
+					</view>
+					<view class="detail">
+						123456789
+					</view>
+				</view>
+				<view class="address_item">
+					<view class="title">
+						收货地址
+					</view>
+					<view class="detail">
+						广东省惠州市.....
+					</view>
+				</view>
+				<view class="address_item">
+					<view class="title">
+						订单编号
+					</view>
+					<view class="detail">
+						56451556156
+					</view>
+				</view>
+			</view>
+			<view class="right_icon">
+				<image src="../../static/index/more.png" style="width: 20rpx;height: 30rpx;"></image>
+			</view>
+		</view>
+		<!-- 买家留言 -->
+		<view class="message">
+			<text>买家留言</text>
+			<u-input input-align="right" height="60" type="text" placeholder="留言建议提前协商" trim />
+		</view>
+		<!-- 订单提交 -->
+		<view class="order_submit">
+			<view class="order_price">
+				<text>应付:</text>
+				<text style="color: #ff0101;
+						font-weight: 600;
+						font-size: 30rpx;">￥20000</text>
+			</view>
+			<view class="submit" @click="submit">
+				提交订单
+			</view>
+		</view>
+		<!-- 提示用户复制客服电话 -->
+		<u-top-tips ref="uTips" z-index="10080"></u-top-tips>
+		<!-- 订单提交成功的遮罩层 -->
+		<u-mask :show="showOrder" @click="showOrder = false">
+			<view class="warp">
+				<view class="rect" @tap.stop>
+					<view class="title">
+						<text>订单提交成功</text>
+					</view>
+					<view class="tips">
+						<view class="tips_content">
+							订单已成功提交,24小时内客服会进行受理
+						</view>
+						<view class="contact" @longtap="copy('1545645654')">
+							<text>客服联系方式:</text>
+							<text>131131234564</text>
+						</view>
+					</view>
+					<!-- 完成-->
+					<view class="accept" @click="accept">
+						完成
+					</view>
+				</view>
+			</view>
+		</u-mask>
 	</view>
 </template>
 
@@ -8,13 +158,254 @@
 	export default {
 		data() {
 			return {
+				//!显示遮罩层
+				showOrder: false
 			}
 		},
 		methods: {
-				
+			//! 提交订单
+			submit() {
+				this.showOrder = true;
+				//! 提示用户可复制客服电话号码
+				this.$refs.uTips.show({
+					title:'长按客服号码,可复制联系方式',
+					type:'success',
+					duration:5000
+				})
+			},
+			//! 点击完成后回退页面
+			accept() {
+				this.showOrder = false;
+				uni.navigateBack({
+					delta: 1
+				})
+			},
+			//!长按复制
+			copy(value) {
+				console.log(value)
+				uni.setClipboardData({
+					data: value,
+					success: function() {
+						getApp().globalData.global_Toast(true, "复制成功", function(res) {
+						})
+					},
+					fail:function(err){
+						console.log(err)
+					}
+				})
+			}
 		},
 	}
 </script>
 
 <style lang="scss" scoped>
+	.order_wrap {
+		width: 100%;
+		padding: 30rpx 0;
+
+		.goods_info {
+			width: 100%;
+			padding: 30rpx;
+			background-color: #ffffff;
+			border-radius: 15rpx;
+
+			.goods_content {
+				width: 100%;
+				display: flex;
+				align-items: flex-start;
+				justify-content: center;
+
+				.left_pic {
+					width: 160rpx;
+					height: 160rpx;
+					border: 1rpx solid $gray_color;
+				}
+
+				.right_msg {
+					flex: 1;
+					height: 100%;
+					margin-left: 20rpx;
+
+					.name {
+						width: 100%;
+						font-weight: 700;
+						display: -webkit-box;
+						-webkit-box-orient: vertical;
+						-webkit-line-clamp: 2;
+						font-size: 30rpx;
+						overflow: hidden;
+					}
+
+					//！ 拥有的服务
+					.desc {
+						width: 100%;
+						display: flex;
+						margin-bottom: 15rpx;
+
+						.desc_item {
+							margin-top: 15rpx;
+							padding: 6rpx 20rpx;
+							font-size: 22rpx;
+							@include flex-center;
+							color: #ffffff;
+							border-radius: 10rpx;
+							margin-right: 30rpx;
+							background-color: #ffa02e;
+						}
+					}
+
+					//! 已选型号
+					.select_type {
+						width: 100%;
+						display: flex;
+						flex-direction: column;
+						color: $gray_color;
+						align-items: flex-start;
+						flex-wrap: wrap;
+
+						.select_item {
+							width: 100%;
+							margin-bottom: 10rpx;
+							@include flex-jcsb;
+						}
+					}
+
+					//! 当前商品价格
+					.price {
+						color: #ff0101;
+						font-weight: 600;
+						font-size: 30rpx;
+						margin-bottom: 15rpx;
+					}
+				}
+			}
+
+			//!显示已选商品数据
+			.select_goods {
+				width: 100%;
+				margin-top: 30rpx;
+				display: flex;
+				justify-content: flex-end;
+
+				.total_price {
+					margin-left: 20rpx;
+				}
+			}
+		}
+
+		//! 优惠券
+		.coupon {
+			width: 100%;
+			padding: 30rpx;
+			margin-top: 20rpx;
+			background-color: #ffffff;
+			@include flex-jcsb;
+
+			.use_coupon {
+				@include flex-center;
+			}
+		}
+
+		//! 收货地址
+		.address {
+			width: 100%;
+			padding: 30rpx;
+			margin-top: 20rpx;
+			background-color: #ffffff;
+			@include flex-jcsb;
+
+			.address_item {
+				margin-bottom: 15rpx;
+				color: $gray_color;
+				display: flex;
+				align-items: center;
+
+				.title {
+					width: 150rpx;
+				}
+
+				.detail {
+					color: black;
+				}
+			}
+		}
+
+		//! 买家留言
+		.message {
+			width: 100%;
+			padding: 20rpx 30rpx;
+			margin-top: 20rpx;
+			@include flex-jcsb;
+			background-color: #ffffff;
+		}
+
+		.order_submit {
+			position: fixed;
+			left: 0;
+			bottom: 0;
+			width: 100%;
+			height: 90rpx;
+			padding: 10rpx 30rpx;
+			background-color: #ffffff;
+			@include flex-jcsb;
+			z-index: 1000;
+
+			.submit {
+				width: 300rpx;
+				font-weight: 600;
+				height: 100%;
+				border-radius: 50rpx;
+				background-color: $page_color;
+				@include flex-center;
+			}
+		}
+
+		//!遮罩层
+		.warp {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			padding: 0 30rpx;
+
+			.rect {
+				width: 100%;
+				padding: 30rpx;
+				border-radius: 15rpx;
+				background-color: #fff;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+
+				.title {
+					width: 100%;
+					text-align: center;
+					margin-bottom: 20rpx;
+					font-size: 30rpx;
+					font-weight: 600;
+				}
+
+				.tips {
+					width: 100%;
+
+					.tips_content {
+						margin-bottom: 30rpx;
+					}
+				}
+
+				.accept {
+					margin-top: 30rpx;
+					width: 350rpx;
+					height: 60rpx;
+					line-height: 60rpx;
+					text-align: center;
+					color: #ffffff;
+					background-color: $page_color;
+					border-radius: 15rpx;
+				}
+			}
+		}
+
+
+	}
 </style>

@@ -144,6 +144,7 @@
 			},
 			//!跳转订单界面
 			nextStep() {
+				this.showSelect = false;
 				uni.navigateTo({
 					url:"../order/order"
 				})
