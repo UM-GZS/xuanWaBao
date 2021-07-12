@@ -2,7 +2,7 @@
 	<view class="container">
 		<view class="label">求职招聘</view>
 		<view class="list">
-			<view class="item" v-for="(item,index) in sendList" :key="item.id">
+			<view class="item" v-for="item in sendList" :key="item.id">
 				<view class="left_cover">
 					<image :src="item.cover"></image>
 				</view>

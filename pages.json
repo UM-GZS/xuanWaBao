@@ -100,6 +100,18 @@
 					"style":{
 						"navigationBarTitleText":"二手详情"
 					}
+				},
+				{
+					"path":"oldMachine/oldMachineIndex",
+					"style":{
+						"navigationBarTitleText":"旧机置换"
+					}
+				},
+				{
+					"path":"recruitment/recruitmentIndex",
+					"style":{
+						"navigationBarTitleText":"求职招聘"
+					}
 				}
 			]
 		}
