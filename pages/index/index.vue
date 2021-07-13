@@ -79,7 +79,7 @@
 				//! 记录用户的地理位置
 				location: null,
 				//! 地理位置的名称
-				locName:null,
+				locName: null,
 				//! 控制是否显示弹窗
 				showToast: false,
 				show_index: 0, //控制显示那个组件
@@ -115,7 +115,7 @@
 					icon: "../../static/index/recruit.png"
 				}, {
 					id: 4,
-					name: "旧寄置换",
+					name: "旧机置换",
 					icon: "../../static/index/substitution.png"
 				}, ]
 			}
@@ -131,7 +131,7 @@
 			});
 			//！ 获取用户地理位置
 			_this.userLocation();
-			
+
 			//! 视图渲染完才调用
 			this.$nextTick(function() {
 				// 一定要等视图更新完再调用方法   -----------++++++++++++++++重要
@@ -146,7 +146,7 @@
 			const page = getCurrentPages();
 			//! 获取传递过来的参数值
 			const currentPage = page[page.length - 1];
-			if(currentPage.location) {
+			if (currentPage.location) {
 				this.locName = currentPage.location;
 			}
 		},
@@ -278,6 +278,7 @@
 			handelItem(id) {
 				this.showModal = false
 				//! 根据id对应跳转界面
+				console.log(id)
 				switch (id) {
 					case 1:
 						uni.navigateTo({
@@ -285,8 +286,24 @@
 						})
 						break;
 					case 2:
+						//! 设备维修 判断用户是否完成登录
+						if (!getApp().globalData.wxuser) {
+							getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+							return;
+						} else {
+							uni.navigateTo({
+								url: "../../subPackages/home/repair"
+							})
+						}
+						break;
+					case 3:
 						uni.navigateTo({
-							url: "../../subPackages/home/repair"
+							url: "../../subPackages/recruitment/recruitmentIndex"
+						})
+						break;
+					case 4:
+						uni.navigateTo({
+							url: "../../subPackages/oldMachine/oldMachineIndex"
 						})
 						break;
 				}

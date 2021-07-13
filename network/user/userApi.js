@@ -17,7 +17,7 @@ export default {
 		return global_request('/api/user/update',data,'POST',true);
 	},
 	detail(data) {
-		return global_request('/api/user/get',data,'GET',true);
+		return global_request('/api/user/get',data,'GET');
 	}
 	
 	

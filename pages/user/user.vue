@@ -50,13 +50,13 @@
 				</u-cell-item>
 			</u-cell-group>
 		</view>
-		<!-- 登陆后没有手机号时弹出 -->
-		<u-modal v-model="addPhoneShow" :show-cancel-button="true" confirm-text="确定" title="完善手机号" @cancel="cancel"
+		<!-- 登陆后没有手机号时弹出 暂时隐藏此功能 -->
+		<!-- <u-modal v-model="addPhoneShow" :show-cancel-button="true" confirm-text="确定" title="完善手机号" @cancel="cancel"
 			@confirm="edituserInfo">
 			<view style="padding:40rpx">
 				<input type="number" v-model="phone" placeholder="填写手机号" />
 			</view>
-		</u-modal>
+		</u-modal> -->
 
 
 	</view>
@@ -107,6 +107,7 @@
 							userProvince: res.userInfo.province
 						}
 						let resData = await userApi.login(query)
+						//! 存储到全局
 						uni.setStorageSync('wxuser', resData.data)
 						getApp().globalData.wxuser = resData.data
 						that.userInfo = resData.data
@@ -122,9 +123,16 @@
 				})
 			},
 			goUserCenter() {
-				uni.navigateTo({
-					url: "/pages/user/user_tenter"
-				})
+				//! 判断用户是否登录
+				if (!getApp().globalData.wxuser) {
+					getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+					return;
+				}else {
+					uni.navigateTo({
+						url: "/pages/user/user_tenter"
+					});
+				} 
+				
 			},
 			// 修改用户信息
 			edituserInfo() {

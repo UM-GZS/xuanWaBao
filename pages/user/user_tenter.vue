@@ -2,29 +2,29 @@
 <view class="user_tenter_wrap">
 	
 	<view class="cover_wrap">
-		<image class="cover" src="/static/index/sw1.jpg" mode=""></image>
+		<image class="cover" :src="user.headpic_url" mode=""></image>
 	</view>
 	<!-- 操作行 -->
 	<view class="user_cell">
 		
 		<view class="cell_row">
 			<view class="label">用户名称:</view>
-			<view class="content">请输入用户名称</view>
+			<view class="content">{{ user.uname }}</view>
 		</view>
 		<view class="cell_row">
 			<view class="label">手机号:</view>
-			<view class="content">请输入用户名称</view>
+			<view class="content">{{ user.phone ? user.phone : '' }}</view>
 		</view>
 		<view class="cell_row">
 			<view class="label">企业身份:</view>
 			<view class="content" @click="show_company=true">
-				{{companyTitle}}
+				{{ user.role_type_name }}
 			</view>
 		</view>
 		<view class="cell_row">
 			<view class="label">个人身份:</view>
 			<view class="content" @click="user_show=true">
-				{{userTitle}}
+				{{ user.role_type_name }}
 			</view>
 		</view>
 		
@@ -43,11 +43,12 @@
 </template>
 
 <script>
+	import userApi from "../../network/user/userApi.js"
 	export default {
 		data() {
 			return {
-				
-				
+				//! 用户消息对象
+				user:null,
 				show_company:false,
 				user_show:false,
 				company_options: ['文员', '技工', '管理','销售'],
@@ -56,7 +57,19 @@
 				userTitle:"身份"
 			}
 		},
+		onShow() {
+			//! 获取用户的信息
+			let wxuser = getApp().globalData.wxuser;
+			if(wxuser) {
+				this.userInfo(wxuser.id)
+			}
+		},
 		methods: {
+			//! 获取用户信息函数
+			async userInfo(id) {
+				const infoRes = await userApi.detail({id});
+				this.user = infoRes.data;
+			},
 			companyClick(e){
 				let value = this.company_options[e[0]]
 				this.companyTitle = value

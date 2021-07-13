@@ -49,7 +49,7 @@
 		data() {
 			return {
 				//! 是否重新请求判断
-				flag:false,
+				flag: false,
 				//! 服务列表
 				serviceList: [{
 						id: 1,
@@ -78,21 +78,21 @@
 		},
 		//! 实例化组件
 		created() {
-			
+
 		},
 		watch: {
-			locName:{
-				handler(newValue,oldValue) {
-					console.log("home的监听",newValue,oldValue)
+			locName: {
+				handler(newValue, oldValue) {
+					console.log("home的监听", newValue, oldValue)
 				},
-				immediate:true,
-				deep:true
+				immediate: true,
+				deep: true
 			}
 		},
 		methods: {
 			//! 组件的网络请求
 			ontrueGetList() {
-				if(!this.flag) {
+				if (!this.flag) {
 					this.getBannerList();
 					this.flag = true;
 				}
@@ -100,15 +100,18 @@
 			//! 获取首页轮播图
 			async getBannerList() {
 				let queryInfo = {
-					sort:'id desc'
+					sort: 'id desc'
 				}
 				let arr = [];
-				const {data} = await homeApi.bannerList(queryInfo);
-				for(let item of data.list) {
+				const {
+					data
+				} = await homeApi.bannerList(queryInfo);
+				for (let item of data.list) {
 					//! 拼接地址
-					arr.push(
-						{...item,image:getApp().globalData.requesturl + item.img_url}
-					);
+					arr.push({
+						...item,
+						image: getApp().globalData.requesturl + item.img_url
+					});
 				}
 				//! 存储数据
 				this.bannerList = arr;
@@ -125,19 +128,29 @@
 				switch (id) {
 					case 1:
 						uni.navigateTo({
-							url:"../../subPackages/vehicleBuy/vehicleBuy"
+							url: "../../subPackages/vehicleBuy/vehicleBuy"
 						});
 						break;
 					case 2:
-					//! 设备维修 判断用户是否完成登录
-						if(!getApp().globalData.wxuser) {
-							getApp().globalData.global_Toast(true,"请先完成登录",function(res){});
+						//! 设备维修 判断用户是否完成登录
+						if (!getApp().globalData.wxuser) {
+							getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
 							return;
-						}else {
+						} else {
 							uni.navigateTo({
-								url:"../../subPackages/home/repair"
+								url: "../../subPackages/home/repair"
 							})
 						}
+						break;
+					case 3:
+						uni.navigateTo({
+							url: "../../subPackages/oldMachine/oldMachineIndex"
+						})
+						break;
+					case 4:
+						uni.navigateTo({
+							url: "../../subPackages/recruitment/recruitmentIndex"
+						})
 						break;
 				}
 			}
