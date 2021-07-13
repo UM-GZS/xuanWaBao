@@ -44,7 +44,8 @@
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;"
 						src="/static/user/address_position.png" slot="icon"></u-image>
 				</u-cell-item>
-				<u-cell-item title="联系客服" :arrow="false">
+				<u-cell-item title="联系客服" :arrow="false" class="serve_wrap">
+					<button class="iconText contact" open-type="contact"></button>
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/server.png"
 						slot="icon"></u-image>
 				</u-cell-item>
@@ -244,6 +245,17 @@
 		// 按钮操作
 		.btn_control {
 			padding-top: 40rpx;
+			.serve_wrap{
+				position: relative;
+				button{
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					opacity: 0;
+				}
+			}
 
 			/deep/ .u-border-bottom:after,
 			.u-border-left:after,

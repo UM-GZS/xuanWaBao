@@ -70,12 +70,12 @@
 		<u-modal v-model="userInfoShow" title="个人信息" class="model_wrap" title-style="modelTitle" @confirm="confirmModel">
 			<u-radio-group v-model="formData.priceSelect" class="flex model_list" style="width:100%" >
 				<view class="radio_list flex price_self"  style="margin-top:30rpx;padding-top:30rpx;" >
-					姓名
-					<input  placeholder="请输入姓名" v-model="formData.name" type="text"  maxlength="20" />
+					<view>姓名</view>
+					<input  placeholder="请输入姓名" v-model="formData.name" type="text"  maxlength="20"  />
 				</view>
 				<view class="radio_list flex price_self"  style="margin-top:40rpx;padding-bottom:30rpx;"  >
-					联系方式
-					<input  placeholder="请输入联系方式" v-model="formData.phone" type="number" maxlength="11"/>
+					<view>联系方式</view>
+					<input  placeholder="请输入联系方式" v-model="formData.phone" type="number" maxlength="11" />
 				</view>
 				
 			</u-radio-group>
@@ -315,17 +315,21 @@ import { log } from 'util';
 		.model_wrap{
 			padding: 40rpx 20rpx;
 			.model_list{
-				padding: 20rpx;
+				padding: 20rpx 15rpx;
 				.price_self{
 					width: 100%;
 					@include  flex-jcsb;
+					view{
+						width: 150rpx;
+					}
 					input{
+						flex: 1;
 						border: 1px solid #e3e3e3;
 						text-align: center;
-						margin-left: 30rpx;
+						margin-left: 10rpx;
 					}
 					.price_label{
-						width: 130rpx;
+						width: 150rpx;
 					}
 				}
 			}
