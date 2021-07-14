@@ -50,13 +50,16 @@
 		
 		<u-picker mode="region" v-model="addressShow" :area-code='["11", "1101", "110101"]' @confirm="fonfirmAddress">
 		</u-picker>
-		<u-modal v-model="priceShow" title="宝贝价格" class="model_wrap" title-style="modelTitle" @confirm="confirmModel">
-			<u-radio-group v-model="formData.priceSelect" class="flex model_list" style="width:100%" >
-				<view class="radio_list flex price_self"  style="margin-top:30rpx" >
+
+
+		<u-popup v-model="priceShow" mode='center' width="90%" height="500" border-radius="20" class="model_wrap">
+			<view class="title">宝贝价格</view>
+			<u-radio-group v-model="formData.priceSelect" class="flex model_list"  >
+				<view class="radio_list  price_self"  style="margin-top:30rpx;width:70vw !important;" >
 					<u-radio name="定价" shape="circle" active-color="#40e09c" class="price_label"
 						@change="radioChange" 
 						>定价</u-radio>
-					<input  placeholder="请输入价格" v-model="priceSelf" type="number"/>
+					<input  placeholder="请输入价格" v-model="priceSelf" type="number" class="price_input"/>
 				</view>
 				<view class="radio_list"  style="margin-top:30rpx" >
 					<u-radio name="面议" shape="circle" active-color="#40e09c"
@@ -64,10 +67,38 @@
 						>面议</u-radio>
 				</view>
 			</u-radio-group>
-			
-		</u-modal>
+			<view class="btn_ctrl">
+				<view @click.stop="handelPrice">确认</view>
+			</view>
 
-		<u-modal v-model="userInfoShow" title="个人信息" class="model_wrap" title-style="modelTitle" @confirm="confirmModel">
+		</u-popup>
+
+
+
+		<u-popup v-model="userInfoShow" mode='center' width="90%" height="520" border-radius="20"  >
+			<view class="info_wrap"> 
+				<view class="title">个人信息</view>
+				<u-form :model="formData" label-width="150rpx" :rules="rules" ref="uForm"  class="info_form">
+
+					<u-form-item label="姓名" prop="name">
+						<u-input  placeholder="请输入姓名" v-model="formData.name" type="text"  maxlength="20"  />
+					</u-form-item>
+
+					<u-form-item label="联系方式" prop="phone">
+						<u-input v-model="formData.phone"  placeholder="请输入联系电话"  />
+					</u-form-item>
+				</u-form>
+
+				<view class="btn_ctrl">
+					<view @click.stop="confirmModelValid">确认</view>
+				</view>
+			</view>
+		</u-popup>
+
+
+			
+
+		<!-- <u-modal :v-model="false" title="个人信息" class="model_wrap" title-style="modelTitle" @confirm="confirmModel">
 			<u-radio-group v-model="formData.priceSelect" class="flex model_list" style="width:100%" >
 				<view class="radio_list flex price_self"  style="margin-top:30rpx;padding-top:30rpx;" >
 					<view>姓名</view>
@@ -80,7 +111,7 @@
 				
 			</u-radio-group>
 			
-		</u-modal>
+		</u-modal> -->
 		
 		
 		
@@ -133,11 +164,44 @@ import { log } from 'util';
 				},
 				showPrice:'',
 				userInfoShow:false,
+				
+				rules: {
+					name: [{
+						required: true,
+						message: '请输入姓名',
+						// 可以单个或者同时写两个触发验证方式 
+						trigger: ['change', 'blur'],
+					}],
+					phone: [{
+							required: true,
+							message: '请输入手机号',
+							trigger: ['change', 'blur'],
+						},
+						{
+							// 自定义验证函数，见上说明
+							validator: (rule, value, callback) => {
+								// 上面有说，返回true表示校验通过，返回false表示不通过
+								// this.$u.test.mobile()就是返回true或者false的
+								return this.$u.test.mobile(value);
+							},
+							message: '手机号码不正确',
+							// 触发器可以同时用blur和change
+							trigger: ['change', 'blur'],
+						}
+					]
+
+				},
+				
+
+
 			}
 		},
 		onLoad() {
 			//! 上传地址
 			this.action = getApp().globalData.requesturl + '/api/upload/pic';
+		},
+		onReady() {
+			this.$refs.uForm.setRules(this.rules);
 		},
 		computed:{
 			userInfo(){
@@ -245,6 +309,40 @@ import { log } from 'util';
 					price = '面议'
 				}
 				this.showPrice = price
+			},
+			// 价格点击
+			handelPrice(){
+				let price = '';
+				if(this.formData.priceSelect=='定价'){
+					
+
+					if(this.priceSelf==''){
+						uni.showToast({
+							title: '定价选择请填写价格',
+							position:'bottom',
+							duration: 2000,
+							icon:"none",
+							mask:true,
+						});
+						return
+					}
+
+					price = this.priceSelf
+				}else{
+					price = '面议'
+				}
+				this.showPrice = price
+				this.priceShow = false
+			},
+			confirmModelValid() {
+				let that =this
+				that.$refs.uForm.validate(valid => {
+					if (valid) {
+						console.log('通过');
+						that.userInfoShow = false
+					} else {
+					}
+				});
 			}
 		},
 	}
@@ -267,6 +365,7 @@ import { log } from 'util';
 			.cell{
 				.radio_list{
 					margin-left: 15rpx;
+					margin-bottom: 15rpx;
 					@include  flex-center;
 					color: #808080;
 					display: flex;
@@ -314,26 +413,95 @@ import { log } from 'util';
 		}
 		.model_wrap{
 			padding: 40rpx 20rpx;
+			.title{
+				width:100%;
+				@include flex-center;
+				height: 100rpx;
+				font-weight: 560;
+				font-size:32rpx;
+			}
 			.model_list{
-				box-sizing: border-box;
-				padding: 20rpx;
+				padding: 0 0rpx 50rpx 40rpx;
 				.price_self{
-					width: 100%;
 					@include  flex-jcsb;
+					position: relative;
+					width: 100%;
 					view{
 						width: 150rpx;
 					}
 					input{
 						flex: 1;
+						transform: translateY(-50%);
 						border: 1px solid #e3e3e3;
 						text-align: center;
-						margin-left: 10rpx;
+					}
+					.price_input{
+						position: absolute;
+						right: 0;
+						top:50%;
+						transform: translateY(-50%);
+						border: 1px solid #e3e3e3;
+						text-align: center;
 					}
 					.price_label{
 						width: 150rpx;
 					}
 				}
 			}
+			.btn_ctrl{
+				width:100%;
+				@include flex-center;
+				height: 100rpx;
+				font-weight: 550;
+				font-size:30rpx;
+				background-color: #fff;
+				view{
+					@include flex-center;
+					width: 70%;
+					background-color: #ffdf2c;
+					border-radius: 8rpx;
+					padding: 10rpx 0;
+					color: #fff;
+				}
+			}
 		}
+
+		.info_wrap{
+			width: 100%;
+			display: flex;
+			align-items: flex-start;
+			padding-left: 50rpx;
+			justify-content: flex-start;
+			flex-direction: column;
+			.title{
+				width: 100%;
+				margin: 15rpx 0 30rpx 0;
+				text-align: center;
+				color: #000;
+				font-size: 30rpx;
+				font-weight: 560;
+			}
+			.btn_ctrl{
+				width:100%;
+				@include flex-center;
+				height: 100rpx;
+				font-weight: 550;
+				font-size:30rpx;
+				background-color: #fff;
+				margin-top: 20rpx;
+				view{
+					@include flex-center;
+					width: 80%;
+					background-color: #ffdf2c;
+					border-radius: 8rpx;
+					padding: 10rpx 0;
+					color: #fff;
+				}
+			}
+		}
+
+	
+
+
 	}
 </style>

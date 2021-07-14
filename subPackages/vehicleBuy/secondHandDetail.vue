@@ -21,7 +21,7 @@
         <text>{{detail.info}}</text>
     </view>
     <view class="img">
-        <image :src="item.img"  v-for="(item,index) in detail.img_urls" :key="index" />
+        <image :src="baseUrl+item.img"  v-for="(item,index) in detail.img_urls" :key="index" />
     </view>
 
 </view>
@@ -35,10 +35,12 @@ export default {
         return {
             pageId:'',
             detail:{},
-            userCover:""
+            userCover:"",
+            baseUrl:""
         };
     },
     onLoad(options){
+        this.baseUrl = getApp().globalData.requesturl
         this.pageId = options.id
         this.getDetai()
     },
@@ -49,7 +51,8 @@ export default {
             }
             
             API.detail(query).then(res=>{
-                res.data.img_urls = JSON.parse( res.data.img_urls)
+                res.data.img_urls = JSON.parse(res.data.img_urls)
+                
                 this.detail = res.data
 
                 let userQuery = {

@@ -143,7 +143,7 @@
 					id: this.userInfo.id
 				}
 				userApi.editUserInfo(query).then(res => {
-					console.log("查看修改结果",res)
+					// console.log("查看修改结果",res)
 					uni.setStorageSync('wxuser', res.data)
 					this.userInfo = res.data
 				})
