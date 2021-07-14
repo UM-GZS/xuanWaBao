@@ -3,16 +3,18 @@
 		<!-- 切换按钮 -->
 		<view class="swiper_tab">
 			<view class="tab_item" @click="changeTab(item.id,index)" v-for="(item,index) in tabList" :key="index">
-				<image style="width: 40rpx;height: 40rpx;" :src="current === index ? item.activeImg : item.img" ></image>
-				<text style="margin-left: 10rpx;" :style="current === index ? 'color:black':'color:$gray_color'">{{ item.title }}</text>
+				<image style="width: 40rpx;height: 40rpx;" :src="current === index ? item.activeImg : item.img"></image>
+				<text style="margin-left: 10rpx;"
+					:style="current === index ? 'color:black':'color:$gray_color'">{{ item.title }}</text>
 			</view>
 		</view>
 		<!-- 内容区域 -->
-		<swiper @change="change" :current="current" class="swiper_content" :style="{'padding-bottom':current==1?'115rpx':'0rpx'}"  enable-flex>
+		<swiper @change="change" :current="current" class="swiper_content"
+			:style="{'padding-bottom':current==1?'115rpx':'0rpx'}" enable-flex>
 			<swiper-item v-for="(swiperItem,swiperIndex) in tabList" :key="swiperIndex" class="swiper_wrap">
 				<!-- 二手交易 -->
-				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;padding-bottom:10rpx;" 
-								scroll-y enable-flex v-if="swiperIndex==1">
+				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;padding-bottom:10rpx;" scroll-y
+					enable-flex v-if="swiperIndex==1">
 					<view class="info_item" v-for="(item,index) in list" :key="index" @click="goDetail(item.id)">
 						<!-- 图片以及文字内容 -->
 						<view class="info_content">
@@ -33,23 +35,23 @@
 								<!-- 收藏以及分享 -->
 								<view class="edit">
 									<!-- 收藏 -->
-									<view class="collect common userBg" >
+									<view class="collect common userBg">
 										<text style="margin-left: 10rpx;">{{item.person_type_name}}</text>
 									</view>
 									<!-- 分享 -->
-									<view  class="share common"  >
+									<view class="share common">
 										<text style="color:#000;">￥{{item.price}}</text>
 									</view>
-								</view>	
+								</view>
 							</view>
 						</view>
 					</view>
 				</scroll-view>
 
 				<!-- 二手交易之外的tans—panel -->
-				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;padding-bottom:10rpx;" 
-							scroll-y enable-flex v-else>
-					<view class="info_item" v-for="(item,index) in list" :key="index" >
+				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;padding-bottom:10rpx;" scroll-y
+					enable-flex v-else>
+					<view class="info_item" v-for="(item,index) in list" :key="index">
 						<!-- 图片以及文字内容 -->
 						<view class="info_content">
 							<view class="left_pic">
@@ -69,68 +71,80 @@
 								<!-- 收藏以及分享 -->
 								<view class="edit">
 									<!-- 收藏 -->
-									<view class="collect common userBg" >
+									<view class="collect common userBg">
 										<text style="margin-left: 10rpx;">{{item.person_type_name}}</text>
 									</view>
 									<!-- 分享 -->
-									<view  class="share common"  >
+									<view class="share common">
 										<text style="color:#000;">￥{{item.price}}</text>
 									</view>
-								</view>	
+								</view>
 							</view>
 						</view>
 					</view>
 				</scroll-view>
 
 			</swiper-item>
-			
+
 		</swiper>
-		
+
 		<view class="send_secondHand" v-if="current==1" @click="goSecondHand">
 			<view class="text">
 				发布交易信息
 			</view>
 		</view>
-		
+
 	</view>
 </template>
 
 <script>
 	import API from "../../network/secondHand/secondHand"
 	export default {
-		components: {
-		},
+		components: {},
 		data() {
 			return {
 				//! 数据切换标题数据
-				tabList:[
-					{id:1,title:'新机置换',img:'../../static/information/hotInfo.png',activeImg:'../../static/information/hotInfo_active.png'},
-					{id:2,title:'二手交易',img:'../../static/vehicle/ershou.png',activeImg:'../../static/vehicle/ershou2.png'},
-					{id:2,title:'车辆租赁',img:'../../static/information/industry.png',activeImg:'../../static/vehicle/chuzu2.png'}
+				tabList: [{
+						id: 1,
+						title: '新机置换',
+						img: '../../static/information/hotInfo.png',
+						activeImg: '../../static/information/hotInfo_active.png'
+					},
+					{
+						id: 2,
+						title: '二手交易',
+						img: '../../static/vehicle/ershou.png',
+						activeImg: '../../static/vehicle/ershou2.png'
+					},
+					{
+						id: 2,
+						title: '车辆租赁',
+						img: '../../static/information/industry.png',
+						activeImg: '../../static/vehicle/chuzu2.png'
+					}
 				],
 				current: 0, //! 默认选中的swiper下标
 				list: [],
-				baseUrl:""
+				baseUrl: ""
 			}
 		},
-		onLoad(){
+		onLoad() {
 			this.getList()
-			this.baseUrl  =  getApp().globalData.requesturl
+			this.baseUrl = getApp().globalData.requesturl
 		},
 		methods: {
-		
-			getList(){
+			getList() {
 				let query = {
-					page_num:1,
-					page_size:99,
+					page_num: 1,
+					page_size: 99,
 				}
-				
-				API.getList(query).then(res=>{
+
+				API.getList(query).then(res => {
 					this.list = res.data.list
 				})
 			},
 			//! 按钮点击的切换
-			changeTab(id,index) {
+			changeTab(id, index) {
 				console.log(id);
 				this.current = index;
 			},
@@ -142,19 +156,32 @@
 			lower() {
 				console.log("到达底部");
 			},
-			goSecondHand(){
-				uni.navigateTo({
-					url:"../vehicleBuy/secondHand"
-				})
+			goSecondHand() {
+				//! 判断用户是否已经完成登录
+				if (!getApp().globalData.wxuser) {
+					getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+					setTimeout(() => {
+						uni.redirectTo({
+							url: "../../pages/index/index"
+						})
+					},2500)
+					return;
+				} else {
+					uni.navigateTo({
+						url: "../vehicleBuy/secondHand"
+					})
+				}
+
 			},
-			goDetail(id){
-				console.log(id);console.log('跳转到详情');
+			goDetail(id) {
+				console.log(id);
+				console.log('跳转到详情');
 				uni.navigateTo({
-					url:"./secondHandDetail?id="+id
+					url: "./secondHandDetail?id=" + id
 				})
 			}
-		},	
-		
+		},
+
 	}
 </script>
 
@@ -164,12 +191,14 @@
 		height: 100%;
 		padding-bottom: 100rpx;
 		overflow-y: hidden;
+
 		.swiper_tab {
 			margin-top: 10rpx;
 			width: 100%;
 			height: 90rpx;
 			background-color: #ffffff;
 			display: flex;
+
 			.tab_item {
 				flex: 1;
 				display: flex;
@@ -189,6 +218,7 @@
 			overflow-y: scroll;
 			padding: 0 20rpx 0 20rpx;
 			box-sizing: border-box;
+
 			.info_item {
 				width: 100%;
 				display: flex;
@@ -209,7 +239,7 @@
 						width: 210rpx;
 						height: 230rpx;
 						border: 1rpx solid #bbbbbb;
-						@include  flex-center;
+						@include flex-center;
 					}
 
 					.right_msg {
@@ -228,16 +258,19 @@
 							font-weight: 600;
 							overflow: hidden;
 						}
+
 						.share {
 							margin: 0;
 							padding: 0;
 							background: transparent;
 							// font-size: 25rpx;
 							color: $gray_color;
-							&::after{
+
+							&::after {
 								border: none;
 							}
 						}
+
 						//! 公共样式
 						.common {
 							display: flex;
@@ -260,7 +293,8 @@
 							color: $gray_color;
 							flex-direction: column;
 							align-items: flex-start;
-							.userBg{
+
+							.userBg {
 								background-color: #ffa02e;
 								color: #ffffff;
 								min-width: 80rpx;
@@ -268,35 +302,37 @@
 								@include flex-center;
 							}
 						}
-						
+
 					}
-					
+
 				}
+
 				// 发布二手信息
-				
-				
+
+
 			}
 		}
-		
-		.send_secondHand{
+
+		.send_secondHand {
 			position: fixed;
 			bottom: 0;
 			left: 0;
 			height: 110rpx;
 			width: 100%;
-			@include  flex-center;
+			@include flex-center;
 			background-color: #fff;
-			.text{
-					width: 80%;
-					background-color: $page_color;
-					@include  flex-center;
-					height: 70%;
-					font-size: 34rpx;
-					font-weight: 600;
-					color: #38393B;
-					border-radius: 50rpx;
-				}
+
+			.text {
+				width: 80%;
+				background-color: $page_color;
+				@include flex-center;
+				height: 70%;
+				font-size: 34rpx;
+				font-weight: 600;
+				color: #38393B;
+				border-radius: 50rpx;
 			}
-		
+		}
+
 	}
 </style>

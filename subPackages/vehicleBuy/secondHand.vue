@@ -315,6 +315,7 @@ import { log } from 'util';
 		.model_wrap{
 			padding: 40rpx 20rpx;
 			.model_list{
+				box-sizing: border-box;
 				padding: 20rpx;
 				.price_self{
 					width: 100%;

@@ -100,7 +100,7 @@
 			share() {
 				console.log("share调用")
 				let data = {
-					msg:'wanghao'
+					msg:'旋挖宝资讯'
 				}
 				uni.setStorageSync("shareInfo",data);
 				uni.showShareMenu({

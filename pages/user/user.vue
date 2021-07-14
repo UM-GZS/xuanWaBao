@@ -44,19 +44,21 @@
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;"
 						src="/static/user/address_position.png" slot="icon"></u-image>
 				</u-cell-item>
-				<u-cell-item title="联系客服" :arrow="false">
-					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/server.png"
-						slot="icon"></u-image>
-				</u-cell-item>
+				<button class="customer" open-type="contact">
+					<u-cell-item title="联系客服" :arrow="false">
+						<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/server.png"
+							slot="icon"></u-image>
+					</u-cell-item>
+				</button>
 			</u-cell-group>
 		</view>
-		<!-- 登陆后没有手机号时弹出 暂时隐藏此功能 -->
-		<!-- <u-modal v-model="addPhoneShow" :show-cancel-button="true" confirm-text="确定" title="完善手机号" @cancel="cancel"
+		<!-- 登陆后没有手机号时弹出 -->
+		<u-modal v-model="addPhoneShow" :show-cancel-button="true" confirm-text="确定" title="完善手机号" @cancel="cancel"
 			@confirm="edituserInfo">
 			<view style="padding:40rpx">
 				<input type="number" v-model="phone" placeholder="填写手机号" />
 			</view>
-		</u-modal> -->
+		</u-modal>
 
 
 	</view>
@@ -141,6 +143,7 @@
 					id: this.userInfo.id
 				}
 				userApi.editUserInfo(query).then(res => {
+					console.log("查看修改结果",res)
 					uni.setStorageSync('wxuser', res.data)
 					this.userInfo = res.data
 				})
@@ -244,7 +247,15 @@
 		// 按钮操作
 		.btn_control {
 			padding-top: 40rpx;
-
+			// 去除联系客服样式
+			.customer {
+				margin: 0;
+				padding: 0;
+				background-color: transparent;
+				&::after{
+					border: none;
+				}
+			}
 			/deep/ .u-border-bottom:after,
 			.u-border-left:after,
 			.u-border-right:after,

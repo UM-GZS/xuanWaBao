@@ -7,7 +7,7 @@
 				<view class="discount_item">
 					<!--  头部照片 -->
 					<view class="pic">
-						<image style="width: 100%;height: 100%;" src="../../../static/uview/common/logo.png" ></image>
+						<image style="width: 100%;height: 100%;" src="../../../static/uview/common/logo.png"></image>
 					</view>
 					<!-- 产品描述 -->
 					<view class="info">

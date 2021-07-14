@@ -35,8 +35,24 @@
 		</view>
 		<!-- 提交维修订单 -->
 		<view class="footer">
-			<view class="submit" @click="submit">确认提交维修订单</view>
+			<view class="submit" @click="beforeSubmit">确认提交维修订单</view>
 		</view>
+		<!-- 弹窗提示用户确认信息 -->
+		<u-mask :show="showConfirm" @click="showConfirm = false">
+			<view class="warp">
+				<view class="rect" @tap.stop>
+					<view class="confirm_title">
+						确认提交
+					</view>
+					<view class="confirm_content">
+						确认提交维修订单吗?
+					</view>
+					<view class="confirm" @click="confirm">
+						确认
+					</view>
+				</view>
+			</view>
+		</u-mask>
 	</view>
 </template>
 
@@ -53,6 +69,8 @@
 				showDevice: false,
 				showDeviceBrand: false,
 				showDeviceType: false,
+				// 显示确认弹窗按钮
+				showConfirm: false,
 				/**
 				 * 用于显示选择的名称
 				 */
@@ -119,22 +137,35 @@
 		},
 		methods: {
 			//! 提交按钮
-			submit() {
+			beforeSubmit() {
 				this.$refs.uForm.validate(async valid => {
 					if (valid) {
-						let form = {...this.form,urls:JSON.stringify(this.form.urls)};
-						console.log(form);
-						const orderRes = await repair.deviceOrder(form);
-						if(orderRes.data.id) {
-							getApp().globalData.global_Toast(true,"设备维修订单提交成功",(res)=> {
-								//! 清除数据
-								this.clearForm();
-							})
-						}
+						// 显示弹窗
+						this.showConfirm = true;
 					} else {
 						console.log('验证失败');
 					}
 				});
+			},
+			//! 确认提交
+			async confirm() {
+				// 解构转换数据
+				let form = {
+					...this.form,
+					urls: JSON.stringify(this.form.urls)
+				};
+				// 发起提交请求
+				const orderRes = await repair.deviceOrder(form);
+				// 判断返回的结果是否成功
+				if (orderRes.data.id) {
+					// 隐藏确认按钮
+					this.showConfirm = false;
+					// 成功提示
+					getApp().globalData.global_Toast(true, "设备维修订单提交成功", (res) => {
+						//! 清除数据
+						this.clearForm();
+					})
+				}
 			},
 			/**
 			 * 点击各种类型切换时判断上一个是否已经选择
@@ -214,7 +245,7 @@
 			},
 			//! 清除数据
 			clearForm() {
-			 this.form = {
+				this.form = {
 					user_id: getApp().globalData.wxuser.id, // 用户id
 					name: '', // 名称
 					phone: '', // 手机号码
@@ -263,5 +294,44 @@
 				background-color: $page_color;
 			}
 		}
+
+		// 显示确认按钮弹窗
+		.warp {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			.rect {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				width: 90%;
+				border-radius: 20rpx;
+				padding: 30rpx;
+				background-color: #fff;
+				.confirm_title {
+					margin-bottom: 30rpx;
+					font-size: 35rpx;
+					font-weight: 600;
+				}
+				.confirm_content {
+					margin-bottom: 30rpx;
+					font-size: 28rpx;
+					font-weight: 300;
+					letter-spacing: 3rpx;
+				}
+				// 确认按钮
+				.confirm {
+					width: 80%;
+					padding: 8rpx;
+					color: #ffffff;
+					@include flex-center;
+					border-radius: 6rpx;
+					background-color: $page_color;
+				}
+			}
+		}
+
+		
 	}
 </style>

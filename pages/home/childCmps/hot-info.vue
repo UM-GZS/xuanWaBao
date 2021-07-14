@@ -6,7 +6,7 @@
 				<view class="hot_item">
 					<!-- 左边产品图片 -->
 					<view class="left_img">
-						<image style="width: 100%;height: 100%;"  src="../../../static/uview/common/logo.png" ></image>
+						<image style="width: 100%;height: 100%;" src="../../../static/uview/common/logo.png"></image>
 					</view>
 					<!-- 右边产品信息 -->
 					<view class="right_info">

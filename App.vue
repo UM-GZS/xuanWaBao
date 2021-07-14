@@ -4,6 +4,7 @@ export default {
 	globalData: {
 		//全局开发者服务器接口地址
 		requesturl: 'https://www.yuanhao.work',//! 线上地址
+		// requesturl: 'http://119.91.82.158:8989', // 测试地址
 		//全局服务器接口地址
 		socketurl: 'ws://localhost:8888',
 		//全局socketTask对象
