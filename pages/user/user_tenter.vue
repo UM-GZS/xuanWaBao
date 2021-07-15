@@ -11,7 +11,7 @@
 				<view class="label">用户名称:</view>
 				<view class="content">{{ user.uname }}</view>
 			</view>
-			<view class="cell_row">
+			<view class="cell_row" @click="handelPhone">
 				<view class="label">手机号:</view>
 				<view class="content">{{ user.phone ? user.phone : '' }}</view>
 			</view>
@@ -23,18 +23,6 @@
 					<image src="../../static/user/success.png" style="width: 25rpx; height: 25rpx;"></image>
 				</view>
 			</view>
-			<!-- 	<view class="cell_row">
-			<view class="label">企业身份:</view>
-			<view class="content" @click="show_company=true">
-				{{ user.role_type_name }}
-			</view>
-		</view>
-		<view class="cell_row">
-			<view class="label">个人身份:</view>
-			<view class="content" @click="user_show=true">
-				{{ user.role_type_name }}
-			</view>
-		</view> -->
 
 			<u-cell-group>
 				<u-cell-item icon="none" title="购买记录" :border-top="false"></u-cell-item>
@@ -44,6 +32,19 @@
 			<u-picker v-model="show_company" mode="selector" :range="company_options" @confirm="companyClick">
 			</u-picker>
 			<u-picker v-model="user_show" mode="selector" :range="user_options" @confirm="userClick"></u-picker>
+
+			<u-modal v-model="editPhoneShow" show-cancel-button="true" confirm-text="确定" title="完善手机号" 
+				@confirm="edituserInfo">
+				<view style="padding:40rpx">
+					<!-- <input type="number" v-model="phone" placeholder="填写手机号" /> -->
+
+					<u-form :model="form" :rules="rules" ref="uForm"  >
+						<u-form-item  prop="phone">
+							<u-input type="number" v-model="form.phone"  placeholder="填写手机号" :clearable="false" :focus="editPhoneShow" />
+						</u-form-item>
+					</u-form>
+				</view>
+			</u-modal>
 
 		</view>
 
@@ -63,7 +64,23 @@
 				company_options: ['文员', '技工', '管理', '销售'],
 				user_options: ['个人身份1', '个人身份2', '个人身份3', '个人身份4'],
 				companyTitle: "身份",
-				userTitle: "身份"
+				userTitle: "身份",
+				editPhoneShow:false,
+				form:{
+					phone:''
+				},
+				rules: {
+					phone: [
+						{
+							validator: (rule, value, callback) => {
+								return this.$u.test.mobile(value);
+							},
+							message: '手机号码不正确',
+							trigger: ['change','blur'],
+						}
+					]
+				}
+
 			}
 		},
 		onShow() {
@@ -72,6 +89,9 @@
 			if (wxuser) {
 				this.userInfo(wxuser.id)
 			}
+		},
+		onReady() {
+			this.$refs.uForm.setRules(this.rules);
 		},
 		methods: {
 			//! 获取用户信息函数
@@ -89,6 +109,36 @@
 				let value = this.user_options[e[0]]
 				this.userTitle = value
 			},
+			// 修改用户信息,手机号
+			edituserInfo() {
+				let that = this
+				
+				that.$refs.uForm.validate(valid => {
+					if (!valid) {
+						return
+					}
+					let query = {
+						phone: that.form.phone,
+						id: that.user.id
+					}
+					userApi.editUserInfo(query).then(res => {
+						if(res.code==200){
+							that.user.phone = that.form.phone
+						}
+						this.$u.toast(res.msg)
+					})
+				});
+
+				
+			},
+			handelPhone(){
+				if(this.user.phone){
+					return
+				}
+				this.editPhoneShow = true
+			}
+		
+
 		},
 	}
 </script>

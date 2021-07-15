@@ -225,8 +225,8 @@ import { log } from 'util';
 			radioChange(e){
 				// console.log(e)
 			},
+			//! 提交
 			submit(){
-
 				let data = this.formData
 				if(!data.title){
 					this.$u.toast("请填写标题名称")
@@ -290,9 +290,10 @@ import { log } from 'util';
 				API.add(query).then(res=>{
 					this.$u.toast(res.msg)
 					setTimeout(() => {
-						uni.redirectTo({
-							url: './vehicleBuy'
+						uni.navigateBack({
+							delta: 1
 						});
+
 					}, 1200);
 					
 				})
@@ -338,7 +339,6 @@ import { log } from 'util';
 				let that =this
 				that.$refs.uForm.validate(valid => {
 					if (valid) {
-						console.log('通过');
 						that.userInfoShow = false
 					} else {
 					}
