@@ -29,3 +29,9 @@ $gray_color:#b5b5b5; //! 可以用于描述等灰色按钮
     flex-direction: column;
   }
   
+	@mixin clamp2 {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		overflow: hidden;
+	}

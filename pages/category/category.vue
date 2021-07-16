@@ -2,14 +2,37 @@
 	<view class="cate_wrap">
 		<view class="content_wrap">
 			<!-- 左边的分类类别 -->
-			<scroll-view class="left_cate" scroll-y enable-flex>
+			<scroll-view @scrolltolower="cate_bottom" class="left_cate" scroll-y enable-flex>
 				<!-- 显示分类的每一项 -->
 				<view class="cate_item" v-for="(item,index) in cate_list" :key="index"
-					:class="index === current ? 'active_cate'  :''" @click="changeCate(index)">{{ item.title }}</view>
+					:class="index === current ? 'active_cate'  :''" @click="changeCate(index,true)">{{ item.name }}</view>
 			</scroll-view>
-			<scroll-view class="cate_content" scroll-y enable-flex>
-				<view @click="detail(item.id)" class="content_item" v-for="item in imgList" :key="item.id">
-					<image style="width: 100%;height: 130rpx;border: 1rpx solid #b5b5b5;" :src="url + item.img"></image>
+			<!-- 右边详情数据 -->
+			<scroll-view @scrolltolower="detail_bottom" class="cate_content" scroll-y enable-flex>
+				<!-- 商品子分类的标题 -->
+				<view style="margin: 25rpx 0;" v-for="(subItem,subIndex) in subCategory" :key="subIndex">
+					<view class="cate_title">
+						{{ subItem.name }}
+					</view>
+					<view class="content_box" v-for="(item,index) in cate_detail" :key="item.id">
+						<view class="content_item" v-if="item.goods_category_id === subItem.id" @click="detail(item.id)">
+							<image style="width: 100%;height: 150rpx;border: 1rpx solid #b5b5b5;"
+								:src="url + item.small_img_urls"></image>
+							<view class="goods_name">
+								{{ item.name }}
+							</view>
+							<view class="info">
+								<view class="price">
+									￥{{ item.price }}
+								</view>
+								<view class="sale">
+									<text>已售:</text>
+									<text>{{ item.sales }}</text>
+									<text>件</text>
+								</view>
+							</view>
+						</view>
+					</view>
 				</view>
 			</scroll-view>
 		</view>
@@ -17,123 +40,147 @@
 </template>
 
 <script>
+	import categoryApi from "../../network/category/category.js";
 	export default {
 		data() {
 			return {
+				//!判断是否再次请求
+				flag: false,
 				// 图片地址前缀
 				url: getApp().globalData.requesturl,
 				//! 默认请求下标为1的数据
 				current: 0,
+				//! 左边列表的请求参数
+				leftCateInfo: {
+					page_num: 1,
+					page_size: 20,
+					sort: 'id asc'
+				},
+				//! 右边详情的请求参数
+				rightDeatilInfo: {
+					page_num: 1,
+					page_size: 20,
+					sort: 'id asc', //!排序方式
+					shelf: true //! 上架的标识
+				},
+				//! 右边详情数据的总数
+				rightTotal:null,
+				//! 子分类的请求数据
+				subCateInfo: {
+					page_num: 1,
+					page_size: 20,
+					sort: 'id asc'
+				},
 				//! 左边分类数据
-				cate_list: [{
-						id: 1,
-						title: '钢锯'
-					},
-					{
-						id: 2,
-						title: '三通'
-					},
-					{
-						id: 3,
-						title: '合页'
-					},
-					{
-						id: 4,
-						title: '齿轮'
-					},
-					{
-						id: 5,
-						title: '弹簧'
-					},
-					{
-						id: 5,
-						title: '轴承'
-					}
-				],
-				// 右边图片数据
-				imgList: []
+				cate_list: [],
+				//! 子分类的数据
+				subCategory: [],
+				// 右边详情数据
+				cate_detail: [],
 			}
 		},
 		methods: {
 			//! 组件显示的时候调用的网络请求
 			ontrueGetList() {
-				this.changeCate(0);
-				console.log("被调用");
-			},
-			//! 左边列表的切换
-			changeCate(index) {
-				if (index === 0) {
-					this.imgList = [{
-							img: '/dl/img/201ca44c4a5529dd723b31fab613906fed1d0ddc.jpeg@360w_360h.jpeg'
-						},
-						{
-							img: '/dl/img/804352193601428daa1d616662551710b13e7fcb.jpeg@360w_360h.jpeg'
-						},
-						{
-							img: '/dl/img/dd9e70770f73acbc871b2e11f906353614d0d366.jpeg@360w_360h.jpeg'
-						},
-						{
-							img: '/dl/img/b52213d5b34cdc7dedfae616158ba743d3867705.jpeg@360w_360h.jpeg'
-						},
-						{
-							img: '/dl/img/4a8cb6ae7cb4f8dd0658cf730841dec67939eaee.jpeg@360w_360h.jpeg'
-						}
-					]
-				} else if (index === 1) {
-					this.imgList = [{
-							img: '/dl/img/1f069cbd8b542f98798db34a1656f1ee12337c6a.jpeg@525w_360h.jpeg'
-						},
-						{
-							img: '/dl/img/d07da3159ec8527df5475b97dd79956061c0e976.jpeg@480w_360h.jpeg'
-						},
-						{
-							img: '/dl/img/6388648da967386f1c567724f0c6074b18abb132.jpeg@360w_360h.jpeg'
-						},
-					]
-				} else if (index === 2) {
-					this.imgList = [{
-							img: '/dl/img/1cb4562e0699c08d0ea5a3a3b9327b9525714ec6.jpeg@480w_360h.jpeg'
-						},
-						{
-							img: '/dl/img/6e535e43916898096a4e7ee2f5885be8b7dc8847.jpeg@360w_360h.jpeg'
-						},
-						{
-							img: '/dl/img/5aeb4296b8ded12ed17c5e7f9451e708d696e9d7.jpeg@360w_360h.jpeg'
-						},
-					]
-				} else if (index === 3) {
-					this.imgList = [{
-							img: '/dl/img/2c5ee10139f06313ace43fb79dfd16b33bbd7e7f.jpeg@385w_360h.jpeg'
-						},
-						{
-							img: '/dl/img/bd854ffe16e5c6396820f1cb3e0234b068c9e691.jpeg@360w_402h.jpeg'
-						},
-						{
-							img: '/dl/img/0fce04146d9e714215153182c769c9b2271c3dd2.jpeg@480w_360h.jpeg'
-						},
-					]
-				} else if (index === 4) {
-					this.imgList = [{
-							img: '/dl/img/89434c44cb183241c569dd4b233a6852bdcb1e20.jpeg@360w_360h.jpeg'
-						},
-						{img:'/dl/img/8810af5ebde1da4fc1a7925c5b87cf07d1554f23.jpeg@429w_360h.jpeg'},
-						{img:'/dl/img/d6e43a5e9da353d26d8b602d0ed2004c6ad09f2c.jpeg@360w_360h.jpeg'}
-					]
-				}else if (index === 5) {
-					this.imgList = [{
-							img: '/dl/img/9fa6ab91e271021c4e52282ed5a6948729759f45.jpeg@360w_360h.jpeg'
-						},
-						{img:'/dl/img/c4f24eda508fdf2c949f54fe7a81cfe8a2b339af.jpeg@360w_360h.jpeg'},
-						{img:'/dl/img/6b966849a8e6b7c7002073d4001a02d7aacd4b7f.jpeg@360w_480h.jpeg'}
-					]
+				//! 判断当前界面是否发送过网络请求
+				if (!this.flag) {
+					this.categoryList(this.leftCateInfo);
+					//! 为true不在请求
+					this.flag = true;
 				}
+			},
+			// 左边分类列表
+			async categoryList(queryInfo) {
+				const res = await categoryApi.categoryList(queryInfo);
+				this.cate_list = res.data.list;
+				//! 调用分类详情的商品数据
+				//!默认请求数组第一个分类的内容
+				this.changeCate(0);
+			},
+			//! 左边列表的切换获取对应的右边数据详情
+			async changeCate(index,flag) {
+				/**
+				 * 根据flag来判断是否请求数据然后重新发起请求
+				 * true 表示要请求默认的数据 切换分类要重新请求
+				 */ 
+				if(flag) {
+					//! 清除数据
+					this.clearData(); 
+				}
+				
+				//! 请求分类对应商品详情数据
+				let params = {
+					//!取出对应的分类id
+					category_id: this.cate_list[index].id,
+					...this.rightDeatilInfo
+				}
+				//! 得到分类的详情数据
+				const res = await categoryApi.goodsList(params);
+				//! 存储数据 解构数据
+				this.cate_detail = [...this.cate_detail,...res.data.list];
+				//! 记录右边数据的总数
+				this.rightTotal = res.data.total;
+				//! 请求对应的子类数据，根据下标拿取分类的id
+				this.subCategoryList(this.cate_list[index].id,this.subCateInfo);
+				//! 切换显示下标
 				this.current = index;
+			},
+			//! 子分类的网络请求
+			async subCategoryList(category_id,queryInfo) {
+				let params = {
+					category_id,
+					...queryInfo
+				}
+				const subList = await categoryApi.subCategory(params);
+				//! 解构数据
+				this.subCategory = [...this.subCategory,...subList.data.list];
+			},
+			/**
+			 * 左边分类到达底部触发
+			 */
+			cate_bottom() {
+				console.log("到达底部")
+			},
+			/**
+			 * 右边详情页面到底函数
+			 */
+			detail_bottom() {
+				/**
+				 * 判断请求数量是否超出总数
+				 * 页面到底请求更多的详情数据
+				 */
+				let {page_num,page_size} = this.rightDeatilInfo;
+				if((page_num * page_size) >= this.rightTotal) {
+					return getApp().globalData.global_Toast(true,"没有更多数据了",function(res){})
+				}
+				//! 修改参数请求更多数据
+				this.rightDeatilInfo.page_num ++;
+				// 根据当前选中的下标获取对应分类数组中item项的id
+				this.changeCate(this.current,false);
+				
+			},
+			/**
+			 * 清除初始化数据
+			 */
+			clearData() {
+				//! 初始化请求参数
+				this.rightDeatilInfo = {
+					page_num: 1,
+					page_size: 20,
+					sort: 'id asc', //!排序方式
+					shelf: true //! 上架的标识
+				}
+				//! 清除详情数据
+				this.cate_detail = [];
+				//! 清除子类详情数据
+				this.subCategory = [];
 			},
 			//! 跳转详情界面
 			detail(id) {
-				uni.navigateTo({
-					url: "../../subPackages/category/category_detail"
-				})
+				console.log("传递的id",id)
+				// uni.navigateTo({
+				// 	url: "../../subPackages/category/category_detail"
+				// })
 			}
 		},
 	}
@@ -171,14 +218,57 @@
 				flex: 1;
 				width: 100%;
 				height: 100%;
-				padding-top: 50rpx;
+				display: flex;
+				flex-direction: column;
+				padding-top: 20rpx;
 
-				.content_item {
-					box-sizing: border-box;
-					float: left;
-					width: 33.3%;
-					padding: 10rpx 15rpx;
-					margin-bottom: 5rpx;
+				.cate_title {
+					width: 100%;
+					padding-left: 15rpx;
+					font-size: 32rpx;
+					font-weight: 500;
+					margin-bottom: 15rpx;
+				}
+
+				//! 子分类下的盒子
+				.content_box {
+					width: 100%;
+					// display: flex;
+					.content_item {
+						@include flex-col;
+						box-sizing: border-box;
+						float: left;
+						width: 33.3%;
+						padding: 10rpx 15rpx;
+						margin-bottom: 5rpx;
+					
+						.goods_name {
+							margin-top: 10rpx;
+							font-size: 20rpx;
+							color: #656366;
+							letter-spacing: 1rpx;
+							@include clamp2;
+						}
+					
+						.info {
+							@include flex-jcsb;
+							margin-top: 10rpx;
+							width: 100%;
+					
+							// 价格
+							.price {
+								color: red;
+								font-weight: 600;
+								font-size: 25rpx;
+							}
+					
+							.sale {
+								@include flex-center;
+								font-size: 15rpx;
+								color: $gray_color;
+							}
+						}
+					}
 				}
 			}
 		}
