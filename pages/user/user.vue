@@ -131,8 +131,8 @@
 					return;
 				}else {
 					uni.navigateTo({
-						url: "/pages/user/user_tenter"
-					});
+						url:"/pages/user/user_tenter"
+					})
 				} 
 				
 			},

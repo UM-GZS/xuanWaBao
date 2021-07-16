@@ -72,6 +72,12 @@
 					}
 				},
 				{
+					"path":"user/userCenter/repairRecord",
+					"style":{
+						"navigationBarTitleText":"维修记录"
+					}
+				},
+				{
 					"path": "order/order",
 					"style": {
 						"navigationBarTitleText": "提交订单"

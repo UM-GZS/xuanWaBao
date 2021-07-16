@@ -27,7 +27,7 @@
 					<u-input clearable type="textarea" :border="true" height="140" :auto-height="true"
 						v-model="form.info" placeholder="请详细说明故障信息和说明,方便维修技师进行沟通" />
 				</u-form-item>
-				<u-form-item label-position="top" label-width="150" label="附件:请选择正前方,侧方,后方照片上传">
+				<u-form-item label-position="top" label-width="150" label="附件:请选择正前方、侧方、后方照片上传">
 					<u-upload multiple :file-list="fileList" :show-progress="false" ref="uUpload" :action="action"
 						:auto-upload="true" @on-remove="onRemove" @on-success="onSuccess"></u-upload>
 				</u-form-item>

@@ -9,16 +9,33 @@
 const {global_request} = getApp().globalData;
 
 export default {
-	//! 用户登录
+	/**
+	 * 用户登录接口
+	 * @param {Object} data
+	 */
 	login(data) {
 		return global_request('/api/wxuser/login',data,'POST',true);
 	},
+	/**
+	 * 修改用户信息
+	 * @param {Object} data
+	 */
 	editUserInfo(data) {
 		return global_request('/api/user/update',data,'POST',true);
 	},
+	/**
+	 * 获取用户的详情信息
+	 * @param {Object} data
+	 */
 	detail(data) {
 		return global_request('/api/user/get',data,'GET');
+	},
+	/**
+	 * 查询用户的设备维修订单列表
+	 * @param {Object} data 
+	 */
+	repairList(data) {
+		return global_request('/api/er/list',data,'GET')
 	}
-	
 	
 }
