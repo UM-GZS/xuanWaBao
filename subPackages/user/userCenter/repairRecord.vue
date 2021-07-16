@@ -4,7 +4,8 @@
 		<!-- 切换按钮 -->
 		<view class="swiper_tab">
 			<view class="tab_item" @click="changeTab(item.id,index)" v-for="(item,index) in tabList" :key="index">
-				<text style="margin-left: 10rpx;" :style="current === index ? 'color:black':'color:$gray_color'">{{ item.title }}</text>
+				<text style="margin-left: 10rpx;"
+					:style="current === index ? 'color:black':'color:$gray_color'">{{ item.title }}</text>
 			</view>
 		</view>
 
@@ -17,7 +18,7 @@
 						<!-- 图片以及文字内容 -->
 						<view class="info_content">
 							<view class="left_pic">
-								<image style="width: 100%;height: 100%;" :src="formatPic(item.urls)">
+								<image style="width: 100%;height: 100%;" :src="imgUrl[index]">
 								</image>
 							</view>
 							<view class="right_msg">
@@ -42,23 +43,33 @@
 	export default {
 		data() {
 			return {
-				url:getApp().globalData.requesturl,
+				url: getApp().globalData.requesturl,
 				//! 数据切换标题数据
-				tabList:[
-					{id:1,title:'全部'},
-					{id:2,title:'待维修'},
-					{id:3,title:'已维修'}
+				tabList: [{
+						id: 1,
+						title: '全部'
+					},
+					{
+						id: 2,
+						title: '待维修'
+					},
+					{
+						id: 3,
+						title: '已维修'
+					}
 				],
 				//! 请求参数
-				queryInfo:{
-					page_num:1,
-					page_size:20
+				queryInfo: {
+					page_num: 1,
+					page_size: 20
 				},
 				//! 总共的页数
-				total:null,
+				total: null,
 				//! 默认选中的swiper下标
-				current: 0, 
-				list: []
+				current: 0,
+				list: [],
+				//! 图片列表
+				imgUrl:[]
 			}
 		},
 		onLoad() {
@@ -71,27 +82,27 @@
 			async getRepairList() {
 				//拼接请求参数
 				let params = {
-					user_id:getApp().globalData.wxuser.id,
+					user_id: getApp().globalData.wxuser.id,
 					...this.queryInfo
 				}
 				const res = await userApi.repairList(params);
+				
+				//! 遍历图片追加数组
+				this.formatPic(res.data.list);
 				//! 记录总共的数据
 				this.total = res.data.total;
 				this.list = res.data.list;
 			},
 			/**
-				 转换图片数组
+			 * 转换图片追加到数组中
 			 */
-			formatPic(data) {
-				// 转成对象
-				let arr = JSON.parse(data);
-				// 拼接地址
-				let picUrl = this.url + arr[0].img;
-				
-				return picUrl
+			formatPic(list) {
+				for(let i = 0;i < list.length;i++) {
+				 this.imgUrl.push(this.url + JSON.parse(list[i].urls)[0].img)
+				}
 			},
 			//! 按钮点击的切换
-			changeTab(id,index) {
+			changeTab(id, index) {
 				console.log(id);
 				this.current = index;
 			},
@@ -103,8 +114,8 @@
 			lower() {
 				console.log("到达底部");
 			}
-		},	
-		
+		},
+
 	}
 </script>
 
@@ -112,12 +123,14 @@
 	.repair_wrap {
 		width: 100%;
 		height: 100%;
+
 		.swiper_tab {
 			margin-top: 10rpx;
 			width: 100%;
 			height: 90rpx;
 			background-color: #ffffff;
 			display: flex;
+
 			.tab_item {
 				flex: 1;
 				display: flex;
@@ -137,7 +150,7 @@
 			overflow-y: scroll;
 			padding: 0 20rpx;
 			box-sizing: border-box;
-			
+
 			.info_item {
 				width: 100%;
 				display: flex;
@@ -153,7 +166,7 @@
 					margin: 20rpx 0;
 					display: flex;
 					align-items: flex-start;
-					
+
 					.left_pic {
 						width: 200rpx;
 						height: 200rpx;
@@ -166,6 +179,7 @@
 						display: flex;
 						flex-direction: column;
 						justify-content: space-between;
+
 						.title {
 							width: 100%;
 							display: -webkit-box;
@@ -175,6 +189,7 @@
 							font-weight: 600;
 							overflow: hidden;
 						}
+
 						.status {
 							margin-top: 20rpx;
 							margin-bottom: 20rpx;

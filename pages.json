@@ -118,6 +118,12 @@
 					"style":{
 						"navigationBarTitleText":"求职招聘"
 					}
+				},
+				{
+					"path":"recruitment/addJob",
+					"style":{
+						"navigationBarTitleText":"求职信息"
+					}
 				}
 			]
 		}

@@ -90,6 +90,11 @@
 			//! 用户登录
 			async login() {
 				let that = this
+				let wxuser = uni.getStorageSync('wxuser')
+				if (wxuser.phone) {
+					return
+				}
+
 				let code = ''
 				uni.login({
 					success(resCode) {
