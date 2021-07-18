@@ -9,7 +9,7 @@
 const {global_request} = getApp().globalData;
 
 export default {
-	//! 用户登录
+	//! 获取用户地址
 	getAddressList(data) {
 		return global_request('/api/address/list',data,'GET',true);
 	},

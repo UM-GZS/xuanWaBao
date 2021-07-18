@@ -1,5 +1,5 @@
 <template>
-	<view class="detail_wrap">
+	<view class="detail_wrap" v-if="modelList.length > 0">
 		<!-- 头部轮播图 -->
 		<view class="header">
 			<u-swiper mode="number" height="500" indicator-pos="bottomRight" :list="list" duration="2500"
@@ -7,13 +7,13 @@
 		</view>
 		<!-- 商品详情 -->
 		<view class="goods_info">
-			<view class="price">￥20000</view>
-			<view class="desc">
+			<view class="price">￥{{ detailData.price }}</view>
+			<!-- <view class="desc">
 				<view class="desc_item">直营汽车</view>
 				<view class="desc_item">分期</view>
-			</view>
+			</view> -->
 			<view class="title">
-				商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称
+				{{ detailData.name }}
 			</view>
 		</view>
 		<!-- 运费 -->
@@ -24,7 +24,7 @@
 			</view>
 			<view class="sale">
 				<view>已售</view>
-				<view class="count">2335</view>
+				<view class="count">{{ detailData.sales }}</view>
 			</view>
 		</view>
 		<!-- 服务 -->
@@ -53,7 +53,13 @@
 			<view class="title">商品详情</view>
 			<!-- 详情内容 -->
 			<view class="detail_content">
-				<image style="width: 100%;" src="../../static/index/sw1.jpg"></image>
+				<!-- 商品的参数图 -->
+				<image style="width: 100%; margin-bottom: 20rpx;" :src="url + detailData.parameter_url">
+				</image>
+				<!-- 详情长图 -->
+				<image style="width: 100%;" :src="url + detailData.img_urls">
+
+				</image>
 			</view>
 		</view>
 		<!-- 底部按钮 -->
@@ -66,7 +72,7 @@
 				<image src="../../static/user/server.png" style="width: 50rpx; height: 50rpx;"></image>
 				<text>客服</text>
 			</button>
-			<view class="buy" @click="showSelect = true">立刻购买</view>
+			<view class="buy" @click="buyNow">立刻购买</view>
 		</view>
 		<!-- 弹出层给用户选择 -->
 		<u-mask :show="showSelect" @click="showSelect = false">
@@ -74,13 +80,14 @@
 				<view class="rect" @tap.stop>
 					<view class="info">
 						<view class="left">
-							<image src="../../static/uview/common/logo.png" style="width: 100%;height: 100%;" mode=""></image>
+							<image :src="url + detailData.small_img_urls" style="width: 100%;height: 100%;"></image>
 						</view>
 						<view class="right">
-							<view class="price">￥25000</view>
+							<view class="price">￥{{ detailData.price }}</view>
 							<view class="select_type">
 								<text>已选择</text>
-								<text style="margin-left: 15rpx;">型号1</text>
+								<text
+									style="margin-left: 15rpx;">{{ currentModel!= null ? modelList[currentModel].name : '' }}</text>
 							</view>
 						</view>
 					</view>
@@ -88,20 +95,17 @@
 					<view class="model">
 						<view class="title">型号</view>
 						<view class="model_list">
-							<view class="model_item">型号1</view>
-							<view class="model_item">型号1</view>
-							<view class="model_item">型号1</view>
-							<view class="model_item">型号1</view>
-							<view class="model_item">型号1</view>
-							<view class="model_item">型号1</view>
-							<view class="model_item">型号1</view>
-							<view class="model_item">型号1</view>
+							<view class="model_item" :class="index === currentModel ? 'activeModel' : ''"
+								v-for="(item,index) in modelList" :key="item.id" @click="chooseModel(item,index)">
+								{{ item.name }}
+							</view>
 						</view>
 					</view>
 					<!-- 购买数量 -->
 					<view class="buy_count">
 						<view>购买数量</view>
-						<u-number-box v-model="value" @change="valChange"></u-number-box>
+						<u-number-box :disabled="modelData.goods_model ? false : true" v-model="value"
+							@change="valChange"></u-number-box>
 					</view>
 					<!-- next step-->
 					<view class="next_step" @click="nextStep">
@@ -114,39 +118,123 @@
 </template>
 
 <script>
+	import categoryApi from '../../network/category/category.js';
 	export default {
 		data() {
 			return {
+				//! 地址前缀
+				url: getApp().globalData.requesturl,
 				//! 数量
-				value:0,
+				value: 0,
 				//!显示订单弹窗
 				showSelect: false,
+				//! 详情对象
+				detailData: null,
 				//! 轮播图
-				list: [{
-						image: 'https://cdn.uviewui.com/uview/swiper/1.jpg',
-						title: '昨夜星辰昨夜风，画楼西畔桂堂东'
-					},
-					{
-						image: 'https://cdn.uviewui.com/uview/swiper/2.jpg',
-						title: '身无彩凤双飞翼，心有灵犀一点通'
-					},
-					{
-						image: 'https://cdn.uviewui.com/uview/swiper/3.jpg',
-						title: '谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳'
-					}
-				],
+				list: [],
+				// 记录选中的型号下标
+				currentModel: null,
+				//! 当前商品的型号列表
+				modelList: [],
+				//! 记录用户选择的型号id和数量
+				modelData: {
+					goods_model: null, // 型号id
+					quantity: null // 数量
+				}
+			}
+		},
+		onLoad(options) {
+			//! 拿到id去请求对应的详情数据
+			let {
+				id
+			} = options;
+			if (id) {
+				this.getDetail(id);
+				this.getGoodsModel(id);
 			}
 		},
 		methods: {
+			/**
+			 * 获取商品的详情
+			 * @param {number} id
+			 */
+			async getDetail(id) {
+				const res = await categoryApi.goodsDetail({
+					id
+				});
+				let list = JSON.parse(res.data.urls);
+				for (let i = 0; i < list.length; i++) {
+					this.list.push({
+						image: this.url + list[i].img
+					});
+				}
+				this.detailData = res.data;
+			},
+			//! 获取商品的型号
+			async getGoodsModel(id) {
+				let queryInfo = {
+					goods_id: id, //!商品id
+					page_num: 1,
+					page_size: 99, //! 请求数设置到最大数
+					sort: 'id desc'
+				}
+				const res = await categoryApi.goodsModel(queryInfo);
+				this.modelList = res.data.list;
+			},
+			//! 立即购买判断用户有没有登录
+			buyNow() {
+				if (!getApp().globalData.wxuser) {
+					getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+					setTimeout(() => {
+						uni.redirectTo({
+							url: "../../pages/index/index"
+						})
+					}, 2500)
+					return;
+				}
+				this.showSelect = true
+			},
+			//! 选择型号
+			chooseModel(item, index) {
+				this.currentModel = index;
+				// 记录选中商品
+				this.modelData.goods_model = item.id;
+			},
 			//! 步进器的改变
 			valChange(e) {
-				console.log(e);
+				this.modelData.quantity = e.value;
 			},
 			//!跳转订单界面
 			nextStep() {
+				//! 判断用户是否已经选择内容
+				if (!this.modelData.goods_model) {
+					return getApp().globalData.global_Toast(true, "请选择商品的型号", function(res) {})
+				}
+				if (!this.modelData.quantity) {
+					return getApp().globalData.global_Toast(true, "请选择型号数量", function(res) {})
+				}
+				/**
+				 * 计算价格
+				 */
+				// 价格*数量
+				let totalPrice = this.detailData.price * this.modelData.quantity;
+				//! 提取出要发起订单的数据
+				let orderData = {
+					user_id: getApp().globalData.wxuser.id, // 用户id
+					goods_id: this.detailData.id, // 商品id
+					goods_name: this.detailData.name, // 商品名称
+					goods_model: this.modelData.goods_model, // 型号id
+					url: this.detailData.small_img_urls, // 图片
+					price: this.detailData.price, // 商品的单价
+					act_pay: totalPrice, //! 商品的总价格
+					quantity: this.modelData.quantity, // 数量
+					status: 1 //! 表示当前订单是待付款的状态
+				}
+				//! 用户点击下一步时写入将购物车数据写入vuex中
+				this.$store.commit("nextOrder", orderData);
 				this.showSelect = false;
 				uni.navigateTo({
-					url:"../order/order"
+					url: "../order/order"
 				})
 			}
 		},
@@ -258,6 +346,9 @@
 
 			.detail_content {
 				width: 100%;
+				display: flex;
+				flex-direction: column;
+				padding-bottom: 90rpx;
 			}
 		}
 
@@ -326,24 +417,29 @@
 				border-top-right-radius: 30rpx;
 				background-color: #ffffff;
 				padding-bottom: 20rpx;
+
 				.info {
 					width: 100%;
 					display: flex;
+
 					.left {
 						width: 160rpx;
 						height: 160rpx;
 						border: 1rpx solid $gray_color;
 					}
+
 					.right {
 						margin-left: 30rpx;
 						display: flex;
 						flex-direction: column;
 						justify-content: flex-end;
+
 						.price {
 							color: #ff0000;
 							font-weight: 800;
 							font-size: 35rpx;
 						}
+
 						.select_type {
 							display: flex;
 							font-size: 25rpx;
@@ -353,17 +449,20 @@
 						}
 					}
 				}
+
 				//!型号
 				.model {
 					width: 100%;
 					margin-top: 20rpx;
 					margin-bottom: 10rpx;
+
 					.model_list {
 						width: 100%;
 						margin-top: 20rpx;
 						margin-bottom: 20rpx;
 						display: flex;
 						flex-wrap: wrap;
+
 						.model_item {
 							padding: 10rpx 25rpx;
 							border-radius: 15rpx;
@@ -371,21 +470,27 @@
 							margin-bottom: 15rpx;
 							background-color: #f2f2f2;
 						}
+
+						.activeModel {
+							background-color: #cdcbce;
+						}
 					}
 				}
+
 				//!购买数量
 				.buy_count {
 					width: 100%;
-					@include  flex-jcsb;
+					@include flex-jcsb;
 					margin-top: 10rpx;
-					margin-bottom:30rpx;
+					margin-bottom: 30rpx;
 				}
+
 				.next_step {
 					margin: 30rpx auto;
 					width: 80%;
 					height: 60rpx;
 					background-color: $page_color;
-					border-radius:50rpx;
+					border-radius: 50rpx;
 					@include flex-center;
 				}
 			}
