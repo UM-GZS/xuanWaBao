@@ -19,7 +19,7 @@
 					<image src="/static/user/send.png" mode=""></image>
 					<text>我的发布</text>
 				</view>
-				<view>
+				<view @click="goMyCollection">
 					<image src="/static/user/collaction.png" mode=""></image>
 					<text>我的收藏</text>
 				</view>
@@ -188,6 +188,11 @@
 			goMyVehicle(){
 				uni.navigateTo({
 					url: "../../subPackages/vehicleBuy/MyVehicle"
+				})
+			},
+			goMyCollection(){
+				uni.navigateTo({
+					url: "../../subPackages/collection/collectionIndex"
 				})
 			}
 
