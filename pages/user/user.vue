@@ -32,7 +32,7 @@
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/usercenter.png"
 						slot="icon"></u-image>
 				</u-cell-item>
-				<u-cell-item title="我的车辆" :arrow="false">
+				<u-cell-item title="我的车辆" :arrow="false" @click="goMyVehicle">
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/cheliang.png"
 						slot="icon"></u-image>
 				</u-cell-item>
@@ -162,6 +162,11 @@
 			goMySend(){
 				uni.navigateTo({
 					url: "../../subPackages/mySend/mySend"
+				})
+			},
+			goMyVehicle(){
+				uni.navigateTo({
+					url: "../../subPackages/vehicleBuy/MyVehicle"
 				})
 			}
 

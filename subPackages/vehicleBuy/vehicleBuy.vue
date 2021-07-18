@@ -15,73 +15,81 @@
 				<!-- 二手交易 -->
 				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;padding-bottom:10rpx;" scroll-y
 					enable-flex v-if="swiperIndex==1">
-					<view class="info_item" v-for="(item,index) in list" :key="index" @click="goDetail(item.id)">
-						<!-- 图片以及文字内容 -->
-						<view class="info_content">
-							<view class="left_pic">
-								<image style="width: 100%;height: 100%;" :src="baseUrl+item.small_img_urls">
-								</image>
-							</view>
-							<view class="right_msg">
-								<view class="desc">
-									{{item.name}}
+					<view v-if="list.length>0">
+						<view class="info_item" v-for="(item,index) in list" :key="index" @click="goDetail(item.id)">
+							<!-- 图片以及文字内容 -->
+							<view class="info_content">
+								<view class="left_pic">
+									<image style="width: 100%;height: 100%;" :src="baseUrl+item.small_img_urls">
+									</image>
 								</view>
-								<!-- 用户信息 -->
-								<view class="user_info">
-									<view class="base_info">
-										{{item.info}}
+								<view class="right_msg">
+									<view class="desc">
+										{{item.name}}
 									</view>
-								</view>
-								<!-- 收藏以及分享 -->
-								<view class="edit">
-									<!-- 收藏 -->
-									<view class="collect common userBg">
-										<text style="margin-left: 10rpx;">{{item.person_type_name}}</text>
+									<!-- 用户信息 -->
+									<view class="user_info">
+										<view class="base_info">
+											{{item.info}}
+										</view>
 									</view>
-									<!-- 分享 -->
-									<view class="share common">
-										<text style="color:#000;">￥{{item.price}}</text>
+									<!-- 收藏以及分享 -->
+									<view class="edit">
+										<!-- 收藏 -->
+										<view class="collect common userBg">
+											<text style="margin-left: 10rpx;">{{item.person_type_name}}</text>
+										</view>
+										<!-- 分享 -->
+										<view class="share common">
+											<text style="color:#000;">￥{{item.price}}</text>
+										</view>
 									</view>
 								</view>
 							</view>
 						</view>
 					</view>
+					<nonedata v-else :text="`列表为空`"></nonedata>
 				</scroll-view>
 
 				<!-- 二手交易之外的tans—panel -->
 				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;padding-bottom:10rpx;" scroll-y
 					enable-flex v-else>
-					<view class="info_item" v-for="(item,index) in list" :key="index">
-						<!-- 图片以及文字内容 -->
-						<view class="info_content">
-							<view class="left_pic">
-								<image style="width: 100%;height: 100%;" :src="baseUrl+item.small_img_urls">
-								</image>
-							</view>
-							<view class="right_msg">
-								<view class="desc">
-									{{item.name}}
+
+					<view v-if="list.length>0">
+						<view class="info_item" v-for="(item,index) in list" :key="index">
+							<!-- 图片以及文字内容 -->
+							<view class="info_content">
+								<view class="left_pic">
+									<image style="width: 100%;height: 100%;" :src="baseUrl+item.small_img_urls">
+									</image>
 								</view>
-								<!-- 用户信息 -->
-								<view class="user_info">
-									<view class="base_info">
-										{{item.info}}
+								<view class="right_msg">
+									<view class="desc">
+										{{item.name}}
 									</view>
-								</view>
-								<!-- 收藏以及分享 -->
-								<view class="edit">
-									<!-- 收藏 -->
-									<view class="collect common userBg">
-										<text style="margin-left: 10rpx;">{{item.person_type_name}}</text>
+									<!-- 用户信息 -->
+									<view class="user_info">
+										<view class="base_info">
+											{{item.info}}
+										</view>
 									</view>
-									<!-- 分享 -->
-									<view class="share common">
-										<text style="color:#000;">￥{{item.price}}</text>
+									<!-- 收藏以及分享 -->
+									<view class="edit">
+										<!-- 收藏 -->
+										<view class="collect common userBg">
+											<text style="margin-left: 10rpx;">{{item.person_type_name}}</text>
+										</view>
+										<!-- 分享 -->
+										<view class="share common">
+											<text style="color:#000;">￥{{item.price}}</text>
+										</view>
 									</view>
 								</view>
 							</view>
 						</view>
 					</view>
+					<nonedata v-else :text="`列表为空`"></nonedata>
+
 				</scroll-view>
 
 			</swiper-item>
@@ -99,8 +107,11 @@
 
 <script>
 	import API from "../../network/secondHand/secondHand"
+	import nonedata from "../../components/none-data/none-data"
 	export default {
-		components: {},
+		components: {
+			nonedata
+		},
 		data() {
 			return {
 				//! 数据切换标题数据
@@ -117,7 +128,7 @@
 						activeImg: '../../static/vehicle/ershou2.png'
 					},
 					{
-						id: 2,
+						id: 3,
 						title: '车辆租赁',
 						img: '../../static/information/industry.png',
 						activeImg: '../../static/vehicle/chuzu2.png'

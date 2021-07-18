@@ -24,6 +24,21 @@
         <image :src="baseUrl+item.img"  v-for="(item,index) in detail.img_urls" :key="index" />
     </view>
 
+    <!-- 底部按钮 -->
+    <view class="footer">
+        <view class="collect common" @click="handelCollection">
+            <image src="../../static/uview/common/collect.png" style="width: 55rpx; height: 55rpx;"></image>
+            <text>收藏</text>
+        </view>
+        <button open-type="share" class="contact common" style="margin-left: 30rpx;">
+            <image src="../../static/information/share.png" style="width: 50rpx; height: 45rpx;"></image>
+            <text>分享</text>
+        </button>
+        <view class="buy" @click="contactSeller">联系卖家</view>
+    </view>
+
+
+
 </view>
 </template>
 
@@ -64,7 +79,14 @@ export default {
 
             })
 
-        }
+        },
+        contactSeller(){
+            console.log('联系卖家');
+        },
+        handelCollection(){
+            console.log('收藏');
+        },
+        
 
     }
 };
@@ -133,12 +155,65 @@ export default {
             @include flex-center;
             width: 100%;
             flex-wrap: wrap;
+            padding-bottom: 100rpx;
             image{
                 width: 100%;
                 border-radius: 10rpx;
                 margin-bottom: 15rpx;
             }
         }
+        //! 底部按钮
+		.footer {
+			width: 100%;
+			height: 100rpx;
+			position: fixed;
+			display: flex;
+			align-items: center;
+			padding: 10rpx 30rpx;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 1000;
+			background-color: #ffffff;
+			font-size: 25rpx;
+			color: $gray_color;
+
+			.common {
+				padding: 30rpx 0;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+                align-items: center;
+                text{
+                    margin-top: 5rpx;
+                }
+			}
+
+			.contact {
+				line-height: 1.1;
+				margin: 0;
+				padding: 0;
+				font-size: 25rpx;
+				color: $gray_color;
+				background-color: transparent;
+
+				&::after {
+					border: none;
+				}
+			}
+
+			.buy {
+				height: 100%;
+				margin-left: 30rpx;
+				flex: 1;
+				background-color: $page_color;
+				@include flex-center;
+				color: black;
+				font-size: 35rpx;
+                border-radius: 50rpx;
+                font-weight: 600;
+			}
+		}
 
 
     }

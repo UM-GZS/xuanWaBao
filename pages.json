@@ -124,6 +124,24 @@
 					"style":{
 						"navigationBarTitleText":"求职信息"
 					}
+				},
+				{
+					"path":"collection/collectionIndex",
+					"style":{
+						"navigationBarTitleText":"我的收藏"
+					}
+				},
+				{
+					"path":"vehicleBuy/MyVehicle",
+					"style":{
+						"navigationBarTitleText":"我的车辆"
+					}
+				},
+				{
+					"path":"user/prove",
+					"style":{
+						"navigationBarTitleText":"认证信息"
+					}
 				}
 			]
 		}

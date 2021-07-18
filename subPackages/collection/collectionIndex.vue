@@ -1,0 +1,489 @@
+<template>
+	<view class="info_wrap">
+		<!-- 切换按钮 -->
+		<view class="swiper_tab">
+			<view class="tab_item" @click="changeTab(item.id,index)" v-for="(item,index) in tabList" :key="index">
+				<text style="margin-left: 10rpx;"
+					:style="current === index ? 'color:black':'color:$gray_color'">{{ item.title }}</text>
+			</view>
+		</view>
+
+		<!-- 内容区域 -->
+		<swiper @change="change" :current="current" class="swiper_content"
+			:style="{'padding-bottom':current==1?'115rpx':'0rpx'}" enable-flex>
+			<swiper-item v-for="(swiperItem,swiperIndex) in tabList" :key="swiperIndex" class="swiper_wrap">
+				<!-- 文章 -->
+				<scroll-view @scrolltolower="lower"  scroll-y v-if="swiperIndex==0"
+					enable-flex style="width: 100%;height: 100%;padding-bottom:10rpx;">
+					<view v-if="textList.length>0">
+						<view class="info_item" v-for="(item,index) in textList" :key="index" @click="goDetail(item.id)">
+                            
+							<view class="info_content">
+								<view class="title">
+                                    <view>文章标题</view>
+                                </view>
+                                <view class="subTitle">
+                                    <view>文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容文章内容</view>
+                                </view>
+                                <view class="bottom">
+                                    <view class="icon">
+                                        <u-image width="40rpx" height="40rpx" class="img" src="/static/user/usercenter.png"></u-image>
+                                        <text>用户名称</text>
+                                    </view>
+                                    <view>
+                                        2021年4月5日
+                                    </view>
+                                </view>
+
+							</view>
+
+						</view>
+					</view>
+					<nonedata v-else :text="`列表为空`"></nonedata>
+				</scroll-view>
+
+				<!-- 商品 -->
+				<scroll-view @scrolltolower="lower"  scroll-y v-if="swiperIndex==1"
+					enable-flex style="width: 100%;height: 100%;padding-bottom:10rpx;">
+
+					<view  v-if="goodsList.length>0">
+						<view class="goods_list" >
+							<view class="item" v-for="item in goodsList" :key="item.id">
+								<view class="left_cover">
+									<image :src="item.cover"></image>
+								</view>
+								<view class="right_info">
+									<view class="name">商品名称称称称称称称称称称称称称称称称称称称称称称称称称称称称称称称称称称称称称</view>
+									<view class="subtitle">基础信息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息息</view>
+									<view class="price">
+										<view>直营车辆</view>
+										<view>分期</view>
+									</view>
+									<view class="info">￥200.00</view>
+								</view>
+							</view>
+						</view>
+					</view>
+
+					<nonedata v-else :text="`列表为空`"></nonedata>
+
+				</scroll-view>
+
+				<!-- 招聘 -->
+				<scroll-view @scrolltolower="lower"  scroll-y v-if="swiperIndex==2"
+					enable-flex style="width: 100%;height: 100%;padding-bottom:10rpx;">
+					<view class="zhaopin_list" v-if="recruitmentList.length>0">
+							<view class="item" v-for="item in recruitmentList" :key="item.id">
+								<view class="left_cover">
+									<image :src="item.cover"></image>
+								</view>
+								<view class="right_info">
+									<view class="name">{{item.name}}</view>
+									<view class="subtitle">{{item.company}}公司 {{item.num}} 人</view>
+									<view class="price">{{item.price}}</view>
+									<view class="info">{{item.address}} | {{item.year}} | {{item.limit}}</view>
+								</view>
+							</view>
+					</view>
+					<nonedata v-else :text="`列表为空2`"></nonedata>
+				</scroll-view>
+			</swiper-item>
+
+		</swiper>
+
+
+	</view>
+</template>
+
+<script>
+	import API from "../../network/secondHand/secondHand"
+	import nonedata from "../../components/none-data/none-data"
+	export default {
+		components: {
+			nonedata
+		},
+		data() {
+			return {
+				//! 数据切换标题数据
+				tabList: [{
+						id: 1,
+						title: '文章',
+					},
+					{
+						id: 2,
+						title: '商品',
+					},
+					{
+						id: 3,
+						title: '招聘',
+					}
+				],
+				current: 0, //! 默认选中的swiper下标
+				baseUrl: "",
+				textList: [],
+				goodsList:[],
+				recruitmentList:[],
+			}
+		},
+		watch:{
+			current(){
+				this.getList()
+			}
+		},
+		onLoad() {
+			this.getList()
+			this.baseUrl = getApp().globalData.requesturl
+		},
+		methods: {
+			getList() {
+				let index = this.current
+				switch (index) {
+					case 0:
+						this.getTextList()
+						break;
+					case 1:
+						this.getGoodsList()
+						break;
+					case 2:
+						this.getRecruitmentList()
+						break;
+				
+					default:
+						this.getTextList()
+						break;
+				}
+			},
+
+			getTextList(){
+				let list = [{},{},{}]
+				this.textList = list
+			},
+			getGoodsList(){
+				let list = [{
+						id: 1,
+						cover: "../../static/index/sw1.jpg",
+						name: '挖机司机',
+						company: "jshfk",
+						num: 99,
+						price: "15-20k",
+						address: "北京",
+						year: "1年",
+						limit: "学历不限"
+					},
+					{
+						id: 2,
+						cover: "../../static/index/sw1.jpg",
+						name: '挖机司机',
+						company: "jshfk",
+						num: 99,
+						price: "15-20k",
+						address: "北京",
+						year: "1年",
+						limit: "学历不限"
+					},
+					{
+						id: 3,
+						cover: "../../static/index/sw1.jpg",
+						name: '挖机司机',
+						company: "jshfk",
+						num: 99,
+						price: "15-20k",
+						address: "北京",
+						year: "1年",
+						limit: "学历不限"
+					},
+				]
+				this.goodsList = list
+			},
+			getRecruitmentList(){
+				let list = [{
+						id: 1,
+						cover: "../../static/index/sw1.jpg",
+						name: '挖机司机',
+						company: "jshfk",
+						num: 99,
+						price: "15-20k",
+						address: "北京",
+						year: "1年",
+						limit: "学历不限"
+					},
+					{
+						id: 2,
+						cover: "../../static/index/sw1.jpg",
+						name: '挖机司机',
+						company: "jshfk",
+						num: 99,
+						price: "15-20k",
+						address: "北京",
+						year: "1年",
+						limit: "学历不限"
+					},
+					{
+						id: 3,
+						cover: "../../static/index/sw1.jpg",
+						name: '挖机司机',
+						company: "jshfk",
+						num: 99,
+						price: "15-20k",
+						address: "北京",
+						year: "1年",
+						limit: "学历不限"
+					},
+				]
+				this.recruitmentList = list
+			},
+			//! 按钮点击的切换
+			changeTab(id, index) {
+				console.log(id);
+				this.current = index;
+			},
+			//! 滑动页面的切换
+			change(e) {
+				this.current = e.target.current;
+			},
+			//! 数据滚动到底部的监听
+			lower() {
+				console.log("到达底部");
+			},
+			goSecondHand() {
+				//! 判断用户是否已经完成登录
+				if (!getApp().globalData.wxuser) {
+					getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+					setTimeout(() => {
+						uni.redirectTo({
+							url: "../../pages/index/index"
+						})
+					},2500)
+					return;
+				} else {
+					uni.navigateTo({
+						url: "../vehicleBuy/secondHand"
+					})
+				}
+
+			},
+			goDetail(id) {
+				console.log(id);
+				console.log('跳转到详情');
+				uni.navigateTo({
+					url: "./secondHandDetail?id=" + id
+				})
+			}
+		},
+
+	}
+</script>
+
+<style lang="scss">
+	.info_wrap {
+		width: 100%;
+		height: 100%;
+		padding-bottom: 100rpx;
+		overflow-y: hidden;
+
+		.swiper_tab {
+			margin-top: 10rpx;
+			width: 100%;
+			height: 90rpx;
+			background-color: #ffffff;
+			display: flex;
+
+			.tab_item {
+				flex: 1;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-weight: 600;
+				font-size: 30rpx;
+				color: $gray_color;
+			}
+		}
+
+		//! 内容区域
+		.swiper_content {
+			width: 100%;
+			margin-top: 30rpx;
+			height: 100%;
+			overflow-y: scroll;
+			padding: 0 20rpx 0 20rpx;
+			box-sizing: border-box;
+
+			.info_item {
+				width: 100%;
+				display: flex;
+				background-color: #ffffff;
+				border-radius: 15rpx;
+				padding: 0 30rpx;
+				margin-bottom: 10rpx;
+
+				.info_content {
+					width: 100%;
+					margin: 20rpx 0;
+					display: flex;
+                    flex-direction: column;
+                    .header{
+                        font-size: 34rpx;
+                        font-weight: 600;
+                        color: #000;
+                        width: 100%;
+                        display: -webkit-box;
+                        overflow: hidden;
+                        -webkit-box-orient: vertical;
+                        -webkit-line-clamp: 2;
+                    }
+                    .subTitle{
+                        font-size: 28rpx;
+                        color: #808080;
+                        display: -webkit-box;
+                        overflow: hidden;
+                        -webkit-box-orient: vertical;
+                        -webkit-line-clamp: 3;
+						margin-top: 20rpx;
+                    }
+                    .bottom{
+						margin: 30rpx 0 10rpx 0;
+                        @include flex-jcsb;
+						color: #B3B3B3;
+                        .icon{
+                           @include flex-center;
+						   .img{
+							border-radius: 50%;
+							overflow: hidden;
+							margin-right: 20rpx;
+						   }
+                        }
+                    }
+
+					
+				}
+				
+
+			}
+			.goods_list {
+					padding: 22rpx;
+					background-color: #fff;
+
+					.item {
+						display: flex;
+						padding-bottom: 20rpx;
+						.left_cover {
+							width: 240rpx;
+							@include flex-center;
+							padding: 10rpx 0;
+
+							image {
+								width: 230rpx;
+								height: 230rpx;
+							}
+						}
+
+						.right_info {
+							flex: 1;
+							padding: 0 10rpx 0 15rpx;
+							position: relative;
+
+							.name {
+								font-size: 30rpx;
+								font-weight: 560;
+								color: #38393b;
+								display: -webkit-box;
+								overflow: hidden;
+								-webkit-box-orient: vertical;
+								-webkit-line-clamp: 2;
+							}
+
+							.subtitle {
+								margin-top: 8rpx;
+								font-size: 26rpx;
+								font-weight: 560;
+								color: #888888;
+								display: -webkit-box;
+								overflow: hidden;
+								-webkit-box-orient: vertical;
+								-webkit-line-clamp: 2;
+							}
+
+							.price {
+								margin-top: 10rpx;
+								color: #fff;
+								background-color: #fff !important;
+								padding-right: 10rpx;
+								display: flex;
+								font-size: 26rpx;
+								view{
+									background-color: #ff9f2d;
+									border-radius: 8rpx;
+									margin-right: 15rpx;
+									padding: 4rpx 10rpx;
+								}
+							}
+
+							.info {
+								position: absolute;
+								bottom: 0;
+								left: 15rpx;
+								color: red;
+								font-weight: 560;
+							}
+						}
+				}
+			}
+
+			.zhaopin_list {
+				padding: 22rpx;
+				background-color: #fff;
+
+				.item {
+					display: flex;
+					padding-bottom: 20rpx;
+					.left_cover {
+						width: 210rpx;
+						@include flex-center;
+						padding: 10rpx 0;
+
+						image {
+							width: 200rpx;
+							height: 200rpx;
+						}
+					}
+
+					.right_info {
+						flex: 1;
+						padding: 0 10rpx 0 15rpx;
+						position: relative;
+
+						.name {
+							font-size: 34rpx;
+							font-weight: 560;
+							color: #38393b;
+						}
+
+						.subtitle {
+							margin-top: 15rpx;
+							font-size: 30rpx;
+							font-weight: 560;
+							color: #888888;
+						}
+
+						.price {
+							width: 100%;
+							font-weight: 560;
+							text-align: right;
+							color: #ffdf2c;
+							padding-right: 10rpx;
+						}
+
+						.info {
+							position: absolute;
+							bottom: 0;
+							left: 15rpx;
+						}
+					}
+				}
+			}
+
+		}
+		
+
+	}
+</style>
