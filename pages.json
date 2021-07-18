@@ -72,6 +72,12 @@
 					}
 				},
 				{
+					"path":"information/informationDetail",
+					"style":{
+						"navigationBarTitleText":"资讯详情"
+					}
+				},
+				{
 					"path":"user/userCenter/repairRecord",
 					"style":{
 						"navigationBarTitleText":"维修记录"

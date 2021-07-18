@@ -29,5 +29,17 @@ export default {
 	 */
 	goodsList(data) {
 		return global_request('/api/shop/goods/list',data,'GET');
+	},
+	/**
+	 * 根据id获取商品的详情
+	 */
+	goodsDetail(data) {
+		return global_request('/api/shop/goods/get',data,'GET');
+	},
+	/**
+	 * 根据商品的id获取对应的型号
+	 */
+	goodsModel(data) {
+		return global_request('/api/goods/model/list',data,'GET');
 	}
 }

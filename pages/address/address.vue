@@ -17,14 +17,14 @@
 					<view class="address_area">{{item.region+item.detail}}</view>
 				</view>
 				<view class="btn_ctrl">
-					<view class="btn_default" @click="openSetDefault(item.id,item.def)">
+					<view class="btn_default" @click.stop="openSetDefault(item.id,item.def)">
 						<u-icon name="checkmark-circle-fill" color="#fddf2f" size="40" v-if="item.def"></u-icon>
 						<view class="circle" v-else></view>
 						<text :class="item.def?'active':''">设为默认</text>
 					</view>
 					<view class="del_edit">
-						<text  @click="openDelete(item.id)">删除</text>
-						<text @click="openEdit(item)">修改</text>
+						<text  @click.stop="openDelete(item.id)">删除</text>
+						<text @click.stop="openEdit(item)">修改</text>
 					</view>
 				</view>
 			</view>
@@ -101,6 +101,7 @@
 			}
 		},
 		onLoad(options) {
+			console.log("查看页面类型",options);
 			this.type = options.type
 			this.wxuser = uni.getStorageSync('wxuser')
 			this.getList()
@@ -248,16 +249,16 @@
 			},
 			// 点击地址项
 			clickAddressItem(item) {
-				uni.setStorage({
-					key: 'address',
-					data: item
-				})
+				// 将用户选择的地址存储到vuex中
+				this.$store.commit('chooseAddress',item);
+				console.log(this.$store.state.deliveryAddress);
+				//! 如果界面非订单界面跳转的收货地址不执行后面
 				if (this.type == '') {
 					return
 				}
-				// uni.redirectTo({
-				// 	url:""
-				// })
+				uni.navigateBack({
+				    delta: 1
+				});
 			},
 			openEdit(data){
 				this.edit_add = 'edit'

@@ -65,7 +65,8 @@
 </template>
 
 <script>
-	import userApi from "../../network/user/userApi.js"
+	import userApi from "../../network/user/userApi.js";
+	import validity from "../../utils/validate/validity.js";
 	export default {
 		data() {
 			return {
@@ -114,6 +115,7 @@
 							userProvince: res.userInfo.province
 						}
 						let resData = await userApi.login(query)
+						console.log("是否登录成功",resData);
 						//! 存储到全局
 						uni.setStorageSync('wxuser', resData.data)
 						getApp().globalData.wxuser = resData.data
@@ -143,14 +145,33 @@
 			},
 			// 修改用户信息
 			edituserInfo() {
+				/**
+				 * 判断用户输入手机号码
+				 */
+				if(!validity.validPhone(this.phone)) {
+					this.addPhoneShow = true;
+					return getApp().globalData.global_Toast(true,"请输入正确的手机号码",function(res){})
+				}
+				let that = this;
 				let query = {
 					phone: this.phone,
 					id: this.userInfo.id
 				}
 				userApi.editUserInfo(query).then(res => {
-					// console.log("查看修改结果",res)
-					uni.setStorageSync('wxuser', res.data)
-					this.userInfo = res.data
+					//! 修改用户信息
+					if(res.code === 200) {
+						this.addPhoneShow = false;
+						getApp().globalData.global_Toast(true,"成功添加手机号码",function(res){})
+					};
+					//! 重新获取用户的信息
+					let params = {
+						id:that.userInfo.id
+					}
+					userApi.detail(params).then(userInfo => {
+						uni.setStorageSync('wxuser', userInfo.data)
+						getApp().globalData.wxuser = userInfo.data
+						that.userInfo = userInfo.data
+					})
 				})
 			},
 			cancel() {

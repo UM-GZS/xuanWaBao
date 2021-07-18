@@ -56,7 +56,15 @@ const store = new Vuex.Store({
 				text: '模板',
 				pagePath: '/pages/example/template'
 			}
-		]
+		],
+		/**
+		 * 购物车的数据
+		 */
+		shopCarData:{},
+		/**
+		 * 用户收货地址数据
+		 */
+		deliveryAddress:{}
 	},
 	mutations: {
 		$uStore(state, payload) {
@@ -78,6 +86,18 @@ const store = new Vuex.Store({
 			}
 			// 保存变量到本地，见顶部函数定义
 			saveLifeData(saveKey, state[saveKey])
+		},
+		/**
+		 * 当订单点击下一步调用这个方法写入vuex订单数据
+		 */
+		nextOrder(state,payload) {
+			state.shopCarData = payload;
+		},
+		/**
+		 * 用户选择收货地址时调用
+		 */
+		chooseAddress(state,payload) {
+			state.deliveryAddress = payload;
 		}
 	}
 })

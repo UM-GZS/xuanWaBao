@@ -3,7 +3,7 @@
 		<view class="hot_info">
 			<head-title title="热点推送" img="../../static/index/hot.png"></head-title>
 			<view class="hot_list">
-				<view class="hot_item">
+				<view class="hot_item" @click="detail">
 					<!-- 左边产品图片 -->
 					<view class="left_img">
 						<image style="width: 100%;height: 100%;" src="../../../static/uview/common/logo.png"></image>
@@ -41,6 +41,18 @@
 		},
 		data() {
 			return {
+			}
+		},
+		methods: {
+			//! 跳转详情
+			detail() {
+				console.log("点击")
+				uni.navigateTo({
+					url:"/subPackages/information/informationDetail",
+					fail(err) {
+						console.log(err)
+					}
+				})
 			}
 		},
 	}

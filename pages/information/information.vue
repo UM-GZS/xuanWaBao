@@ -15,7 +15,7 @@
 			<swiper-item v-for="(swiperItem,swiperIndex) in tabList" :key="swiperIndex">
 				<!-- 每一项内容区域 -->
 				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;" scroll-y enable-flex>
-					<view class="info_item" v-for="(item,index) in list" :key="index">
+					<view class="info_item" @click="infoDetail(item)" v-for="(item,index) in list" :key="index">
 						<view class="info_title">
 							文章标题文章标题文章标题文章标题文章标题文章标题 文章标题文章标题
 						</view>
@@ -43,13 +43,13 @@
 								<!-- 收藏以及分享 -->
 								<view class="edit">
 									<!-- 收藏 -->
-									<view class="collect common" @click="collect">
+									<view class="collect common" @click.stop="collect">
 										<image src="../../static/information/collect.png" style="width: 30rpx;height: 30rpx;">
 										</image>
 										<text style="margin-left: 10rpx;">收藏</text>
 									</view>
 									<!-- 分享 -->
-									<button open-type="share" class="share common" style="margin-left: 30rpx;" @click="share">
+									<button open-type="share" class="share common" style="margin-left: 30rpx;" @click.stop="share">
 										<image src="../../static/information/share.png" style="width: 30rpx;height: 30rpx;">
 										</image>
 										<text style="margin-left: 10rpx;">分享</text>
@@ -91,6 +91,12 @@
 			//! 用于当前组件的网络请求函数
 			ontrueGetList() {
 				console.log("被调用");
+			},
+			// 跳转详情页面
+			infoDetail(item) {
+				uni.navigateTo({
+					url:"../../subPackages/information/informationDetail"
+				})
 			},
 			//! 点击收藏按钮
 			collect() {

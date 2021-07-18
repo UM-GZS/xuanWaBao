@@ -42,16 +42,19 @@
 			<view class="intention_form">
 				<u-form ref="uForm">
 					<u-form-item label="意向岗位" label-width="150">
-						<u-input type="select" />
+						<u-input type="select" @click="showPurpose = true" />
 					</u-form-item>
 					<u-form-item label="意向地点" label-width="150">
-						<u-input type="select" />
+						<u-input type="select" @click="showAddress = true" />
+						<u-picker mode="region" v-model="showAddress" :area-code='["11", "1101", "110101"]'
+							@confirm="confirmAddress">
+						</u-picker>
 					</u-form-item>
 					<u-form-item label="期望薪资" label-width="150">
 						<u-input type="select" @click="showSalary = true" />
 					</u-form-item>
 					<u-form-item label="求职状态" label-width="150">
-						<u-input type="select" />
+						<u-input type="select" @click="showStatus = true" />
 					</u-form-item>
 				</u-form>
 			</view>
@@ -81,6 +84,24 @@
 			</view>
 		</view>
 		<!-- 以下为弹窗提示用户输入 -->
+		<!--意向岗位 -->
+		<u-mask :show="showPurpose" @click="showPurpose = false">
+			<view class="warp">
+				<view class="rect" @tap.stop>
+					<view class="title">
+						意向岗位
+					</view>
+					<view class="salary">
+						<text>意向岗位</text>
+						<u-input placeholder="请输入意向岗位" trim height="60" type="text" :border="true" />
+					</view>
+					<view class="save">
+						确认
+					</view>
+				</view>
+			</view>
+		</u-mask>
+		<!-- 薪资弹窗 -->
 		<u-mask :show="showSalary" @click="showSalary = false">
 			<view class="warp">
 				<view class="rect" @tap.stop>
@@ -97,6 +118,27 @@
 				</view>
 			</view>
 		</u-mask>
+		<!-- 求职状态弹窗 -->
+		<u-mask :show="showStatus" @click="showStatus = false">
+			<view class="warp">
+				<view class="rect" @tap.stop>
+					<view class="title">
+						求职状态
+					</view>
+					<view class="radio_list">
+						<u-radio-group active-color="#40df9c" width="50%" v-model="value" @change="radioGroupChange">
+							<u-radio @change="radioChange" v-for="(item, index) in list" :key="index" :name="item.name"
+								:disabled="item.disabled">
+								{{item.name}}
+							</u-radio>
+						</u-radio-group>
+					</view>
+					<view class="save">
+						确认
+					</view>
+				</view>
+			</view>
+		</u-mask>
 	</view>
 </template>
 
@@ -106,9 +148,31 @@
 			return {
 				//！ 弹窗显示组件
 				showSalary: false,
-
+				showPurpose: false,
+				showAddress: false,
+				showStatus: false,
 				//! 自动上传图片的地址
 				action: '',
+				//! 选择的列表
+				list: [{
+						name: '在职-随时到岗',
+						disabled: false
+					},
+					{
+						name: '在职-月内到岗',
+						disabled: false
+					},
+					{
+						name: '离职-随时到岗',
+						disabled: false
+					},
+					{
+						name: '离职-月内到岗',
+						disabled: false
+					}
+				],
+				//! 在职状态的value
+				value:'',
 				//默认显示的图片列表
 				fileList: [],
 			}
@@ -118,6 +182,17 @@
 			this.action = getApp().globalData.requesturl + '/api/upload/pic';
 		},
 		methods: {
+			// 选中某个单选框时，由radio时触发
+			radioChange(e) {
+				// console.log(e);
+			},
+			// 选中任一radio时，由radio-group触发
+			radioGroupChange(e) {
+				// console.log(e);
+			},
+			confirmAddress(e) {
+				console.log("地址选择", e);
+			},
 			//! 监听图片的上传
 			onSuccess(data, index, lists, name) {
 
@@ -236,7 +311,7 @@
 				width: 100%;
 				padding: 30rpx;
 				background-color: #fff;
-				
+
 				.title {
 					width: 100%;
 					text-align: center;
@@ -244,6 +319,7 @@
 					font-weight: 800;
 					margin-bottom: 20rpx;
 				}
+
 				.save {
 					margin: 30rpx auto;
 					width: 70%;

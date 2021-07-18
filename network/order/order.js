@@ -1,18 +1,17 @@
 /**
- * 关于首页所需的接口封装
+ * 关于用户订单所有的接口封装
  * 调用封装在App.vue 里面的global_request
  * 参数详解:global_request(url, data, method, flag)
  * url:表示拼接的地址,data:数据对象,method:请求方式,flag:可以不传值
  */
-
 //! 解构获取global_request函数
 const {global_request} = getApp().globalData;
 
 export default {
 	/**
-	 * 获取首页轮播图数据
+	 * 新增购物车订单
 	 */
-	bannerList(data) {
-		return global_request('/api/topbanner/list',data,'GET');
+	addOrder(data) {
+		return global_request('/api/purchase/order/add',data,'POST',true)
 	}
 }

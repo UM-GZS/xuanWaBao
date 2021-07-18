@@ -23,7 +23,7 @@
 					<u-select label-name="name" value-name="id" v-model="showDeviceType" @confirm="confirmModel"
 						:list="modelList"></u-select>
 				</u-form-item>
-				<u-form-item label-position="top" label-width="150" label="故障说明:">
+				<u-form-item label-position="top" label-width="150" label="故障说明:" prop="info">
 					<u-input clearable type="textarea" :border="true" height="140" :auto-height="true"
 						v-model="form.info" placeholder="请详细说明故障信息和说明,方便维修技师进行沟通" />
 				</u-form-item>
@@ -85,6 +85,12 @@
 						// 可以单个或者同时写两个触发验证方式 
 						trigger: ['change', 'blur'],
 					}],
+					info: [{
+						required: true,
+						message: '请填写故障说明',
+						// 可以单个或者同时写两个触发验证方式 
+						trigger: ['change', 'blur'],
+					}],
 					phone: [{
 							required: true,
 							message: '请输入手机号',
@@ -138,6 +144,17 @@
 		methods: {
 			//! 提交按钮
 			beforeSubmit() {
+				//! 提交前的判断
+				if (!this.form.types_id || !this.form.brand_id || !this.form.model_id) {
+					getApp().globalData.global_Toast(true, "请完成设备选择", function(res) {});
+					return;
+				}
+				//! 判断用户是否上传图片
+				if(this.form.urls.length < 3) {
+					console.log(this.form.urls.length,"长度")
+					getApp().globalData.global_Toast(true, "请上传设备正前方、侧方、后方照片", function(res) {});
+					return;
+				}
 				this.$refs.uForm.validate(async valid => {
 					if (valid) {
 						// 显示弹窗

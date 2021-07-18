@@ -177,10 +177,10 @@
 			},
 			//! 跳转详情界面
 			detail(id) {
-				console.log("传递的id",id)
-				// uni.navigateTo({
-				// 	url: "../../subPackages/category/category_detail"
-				// })
+				console.log("点击了")
+				uni.navigateTo({
+					url: `../../subPackages/category/category_detail?id=${id}`
+				})
 			}
 		},
 	}
@@ -226,7 +226,7 @@
 					width: 100%;
 					padding-left: 15rpx;
 					font-size: 32rpx;
-					font-weight: 500;
+					font-weight: 600;
 					margin-bottom: 15rpx;
 				}
 

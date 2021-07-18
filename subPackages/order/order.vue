@@ -1,51 +1,40 @@
 <template>
-	<view class="order_wrap">
+	<view class="order_wrap" v-if="modelList.length > 0">
 		<!-- 头部信息 -->
 		<view class="goods_info">
 			<!-- 上边内容 -->
 			<view class="goods_content">
 				<!-- 左边图片 -->
 				<view class="left_pic">
-					<image style="width: 100%;height: 100%;" src="../../static/uview/common/logo.png"></image>
+					<image style="width: 100%;height: 100%;" :src="url + carData.url"></image>
 				</view>
 				<!--右边详情 -->
 				<view class="right_msg">
 					<view class="name">
-						商品名称商品名称商品名称商品名称商品名称
-						商品名称商品名称商品名称商品名称商品名称
-						商品名称商品名称商品名称商品名称商品名称
-						商品名称商品名称商品名称商品名称商品名称
+						{{ carData.goods_name }}
 					</view>
 					<!-- 车辆拥有的服务 -->
-					<view class="desc">
+					<!-- <view class="desc">
 						<view class="desc_item">直营汽车</view>
 						<view class="desc_item">分期</view>
-					</view>
+					</view> -->
 					<!-- 已选型号 -->
 					<view class="select_type">
 						<view class="type_title" style="margin-bottom: 10rpx;">
 							已选择：
 						</view>
-						<view class="select_item">
-							<view class="model">
-								型号1
+						<view class="select_item" v-for="(item,index) in modelList" :key="index">
+							<view class="model" v-if="item.id === carData.goods_model">
+								{{ item.name }}
 							</view>
-							<view class="model_count">
-								x1
-							</view>
-						</view>
-						<view class="select_item">
-							<view class="model">
-								型号1
-							</view>
-							<view class="model_count">
-								x1
+							<view class="model_count" v-if="item.id === carData.goods_model">
+								x{{ carData.quantity }}
 							</view>
 						</view>
 					</view>
 					<!-- 当前商品的价格 -->
 					<view class="price">
-						￥20000
+						￥{{ carData.price }}
 					</view>
 				</view>
 			</view>
@@ -53,31 +42,39 @@
 			<view class="select_goods">
 				<!-- 商品数量 -->
 				<view class="total_count">
-					<text>共1件</text>
+					<text>共{{ carData.quantity }}件</text>
 				</view>
 				<view class="total_price">
 					<text>商品小计:</text>
-					<text>￥20000</text>
+					<text>￥{{ carData.act_pay }}</text>
 				</view>
 			</view>
 		</view>
 		<!-- 优惠券 -->
-		<view class="coupon">
+		<!-- <view class="coupon">
 			<view>优惠券</view>
 			<view class="use_coupon">
 				<text style="margin-right: 15rpx;">暂无可用</text>
 				<image src="../../static/index/more.png" style="width: 20rpx;height: 30rpx;"></image>
 			</view>
+		</view> -->
+		<!-- 地址为空前往选择收货地址 -->
+		<view class="select_address" @click="chooseAddress" v-if="!userAddress">
+			<text>收货地址</text>
+			<view class="right_msg">
+				<text style="color: #b5b5b5;margin-right: 15rpx;">前往选择收货地址</text>
+				<image src="../../static/index/more.png" style="width: 20rpx;height: 30rpx;"></image>
+			</view>
 		</view>
-		<!--收货地址 -->
-		<view class="address">
+		<!--收货地址用于选择收货地址或者有默认地址的情况下显示 -->
+		<view class="address" v-else @click="chooseAddress">
 			<view class="address_info">
 				<view class="address_item">
 					<view class="title">
 						收货人
 					</view>
 					<view class="detail">
-						阿豪
+						{{ userAddress.name }}
 					</view>
 				</view>
 				<view class="address_item">
@@ -85,7 +82,7 @@
 						联系电话
 					</view>
 					<view class="detail">
-						123456789
+						{{ userAddress.phone }}
 					</view>
 				</view>
 				<view class="address_item">
@@ -93,17 +90,17 @@
 						收货地址
 					</view>
 					<view class="detail">
-						广东省惠州市.....
+						{{ userAddress.region }}{{ userAddress.detail }}
 					</view>
 				</view>
-				<view class="address_item">
+				<!-- <view class="address_item">
 					<view class="title">
 						订单编号
 					</view>
 					<view class="detail">
 						56451556156
 					</view>
-				</view>
+				</view> -->
 			</view>
 			<view class="right_icon">
 				<image src="../../static/index/more.png" style="width: 20rpx;height: 30rpx;"></image>
@@ -112,7 +109,7 @@
 		<!-- 买家留言 -->
 		<view class="message">
 			<text>买家留言</text>
-			<u-input input-align="right" height="60" type="text" placeholder="留言建议提前协商" trim />
+			<u-input v-model="remark" input-align="right" height="60" type="text" placeholder="留言建议提前协商" trim />
 		</view>
 		<!-- 订单提交 -->
 		<view class="order_submit">
@@ -120,7 +117,7 @@
 				<text>应付:</text>
 				<text style="color: #ff0101;
 						font-weight: 600;
-						font-size: 30rpx;">￥20000</text>
+						font-size: 30rpx;">￥{{ carData.act_pay }}</text>
 			</view>
 			<view class="submit" @click="submit">
 				提交订单
@@ -155,23 +152,103 @@
 </template>
 
 <script>
+	import categoryApi from "../../network/category/category.js";
+	import userApi from "../../network/user/addressApi.js";
+	import orderApi from "../../network/order/order.js";
 	export default {
 		data() {
 			return {
+				//!地址
+				url: getApp().globalData.requesturl,
 				//!显示遮罩层
-				showOrder: false
+				showOrder: false,
+				//! 买家留言
+				remark:'',
+				//! 购物车的订单列表
+				carData: null,
+				//! 型号列表
+				modelList: [],
+				//!用户收货地址
+				userAddress: null
+			}
+		},
+		onLoad() {
+			// 获取vuex中的购物车订单
+			this.carData = this.$store.state.shopCarData;
+			this.getModel(this.carData.goods_id)
+			this.getAddress(this.carData.user_id);
+		},
+		onShow() {
+			//! 获取vuex中收货地址的数据
+			const address = this.$store.state.deliveryAddress;
+			console.log("查看收货地址vuex",address)
+			if(Object.keys(address).length > 0) {
+				this.userAddress = address;
 			}
 		},
 		methods: {
-			//! 提交订单
-			submit() {
-				this.showOrder = true;
-				//! 提示用户可复制客服电话号码
-				this.$refs.uTips.show({
-					title:'长按客服号码,可复制联系方式',
-					type:'success',
-					duration:'5000'
+			//! 获取商品的型号
+			async getModel(id) {
+				let queryInfo = {
+					goods_id: id,
+					page_num: 1,
+					page_size: 99,
+					sort: 'id desc'
+				}
+				const res = await categoryApi.goodsModel(queryInfo);
+				this.modelList = res.data.list;
+			},
+			//! 获取用户的收货地址
+			async getAddress(user_id) {
+				let queryInfo = {
+					user_id,
+					page_num: 1,
+					page_size: 20,
+					def: true //! 获取默认地址
+				}
+				const res = await userApi.getAddressList(queryInfo);
+				console.log("是否再次获取",res);
+				if (res.data.list) {
+					this.userAddress = res.data.list[0];
+				}
+
+			},
+			//! 跳转收货地址界面
+			chooseAddress() {
+				uni.navigateTo({
+					url: "../../pages/address/address?type=order"
 				})
+			},
+			//! 提交订单
+			async submit() {
+				// 判断用户是否填写收货地址
+				if(!this.userAddress) {
+					return getApp().globalData.global_Toast(true,"请选择收货地址",function(res){})
+				}
+				//! 过滤地址数据
+				let address = {
+					deliv_name:this.userAddress.name,
+					deliv_phone:this.userAddress.phone,
+					deliv_address:this.userAddress.region +  this.userAddress.detail
+				}
+				//! 订单的对象数据
+				let queryInfo = {
+					...this.carData,
+					remark:this.remark,
+					...address
+				}
+				
+				const orderRes = await orderApi.addOrder(queryInfo);
+				//! 表示成功添加
+				if(orderRes.data.id) {
+					this.showOrder = true;
+					//! 提示用户可复制客服电话号码
+					this.$refs.uTips.show({
+						title: '长按客服号码,可复制联系方式',
+						type: 'success',
+						duration: '5000'
+					})
+				}
 			},
 			//! 点击完成后回退页面
 			accept() {
@@ -186,10 +263,9 @@
 				uni.setClipboardData({
 					data: value,
 					success: function() {
-						getApp().globalData.global_Toast(true, "复制成功", function(res) {
-						})
+						getApp().globalData.global_Toast(true, "复制成功", function(res) {})
 					},
-					fail:function(err){
+					fail: function(err) {
 						console.log(err)
 					}
 				})
@@ -258,6 +334,7 @@
 					.select_type {
 						width: 100%;
 						display: flex;
+						margin-top: 30rpx;
 						flex-direction: column;
 						color: $gray_color;
 						align-items: flex-start;
@@ -265,13 +342,13 @@
 
 						.select_item {
 							width: 100%;
-							margin-bottom: 10rpx;
 							@include flex-jcsb;
 						}
 					}
 
 					//! 当前商品价格
 					.price {
+						margin-top: 20rpx;
 						color: #ff0101;
 						font-weight: 600;
 						font-size: 30rpx;
@@ -302,6 +379,19 @@
 			@include flex-jcsb;
 
 			.use_coupon {
+				@include flex-center;
+			}
+		}
+
+		//! 没有收货地址的样式
+		.select_address {
+			width: 100%;
+			padding: 30rpx;
+			margin-top: 20rpx;
+			background-color: #ffffff;
+			@include flex-jcsb;
+
+			.right_msg {
 				@include flex-center;
 			}
 		}
