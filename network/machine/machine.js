@@ -7,7 +7,7 @@ export default {
 	 */
 	 machineDetail(data) {
 		return global_request('/api/machines/get',data,'GET');
-	}
+	},
 	/**
 	 * 获取新机购置列表
 	 */

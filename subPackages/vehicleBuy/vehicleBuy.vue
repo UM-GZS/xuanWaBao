@@ -13,10 +13,10 @@
 			:style="{'padding-bottom':current==1?'115rpx':'0rpx'}" enable-flex>
 			<swiper-item v-for="(swiperItem,swiperIndex) in tabList" :key="swiperIndex" class="swiper_wrap">
 				<!-- 二手交易 -->
-				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;padding-bottom:10rpx;" scroll-y
-					enable-flex v-if="swiperIndex==1">
-					<view v-if="list.length>0">
-						<view class="info_item" v-for="(item,index) in list" :key="index" @click="goDetail(item.id)">
+				<scroll-view @scrolltolower="lower" scroll-y v-if="swiperIndex==1"
+					enable-flex  style="width: 100%;height: 100%;padding-bottom:10rpx;">
+					<view v-if="secondHandList.length>0">
+						<view class="info_item secondHand" v-for="(item,index) in secondHandList" :key="index" @click.stop="goDetail(item.id)">
 							<!-- 图片以及文字内容 -->
 							<view class="info_content">
 								<view class="left_pic">
@@ -51,12 +51,69 @@
 					<nonedata v-else :text="`列表为空`"></nonedata>
 				</scroll-view>
 
-				<!-- 二手交易之外的tans—panel -->
-				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;padding-bottom:10rpx;" scroll-y
-					enable-flex v-else>
+				<!-- 新机置换 -->
+				<scroll-view @scrolltolower="lower" scroll-y  v-if="swiperIndex==0"
+					enable-flex    style="width: 100%;height: 100%;padding-bottom:10rpx;">
 
-					<view v-if="list.length>0">
-						<view class="info_item" v-for="(item,index) in list" :key="index">
+					<view v-if="machinesList.length>0">
+						<view class="info_item" v-for="(item,index) in machinesList" :key="index" @click.stop="goMachinesList(item.id)">
+							<!-- 图片以及文字内容 -->
+							<view class="info_content">
+								<view class="left_pic">
+									<image style="width: 100%;height: 100%;" :src="baseUrl+item.small_img_urls">
+									</image>
+								</view>
+								<view class="right_msg">
+									<view class="desc">
+										{{item.name}}
+									</view>
+									<!-- 出厂 -->
+									<view class="user_info">
+										<view class="base_info">
+											出厂:{{item.create_time | filterDate3}}
+										</view>
+									</view>
+									<!-- 车辆 -->
+									<view class="user_info">
+										<view class="base_info">
+											车辆:{{item.vehicle}}
+										</view>
+									</view>
+									<!-- 类型 -->
+									<view class="user_info">
+										<view class="base_info">
+											类型:{{item.types}}
+										</view>
+									</view>
+									<!-- 品牌 -->
+									<view class="user_info">
+										<view class="base_info">
+											品牌:{{item.brand}}
+										</view>
+									</view>
+
+									<!-- 最底下的时间 -->
+									<view class="user_info date">
+										<view class="base_info">
+											{{item.create_time | filterDate2}}
+										</view>
+									</view>
+
+								</view>
+							</view>
+						</view>
+					</view>
+					<nonedata v-else :text="`列表为空`"></nonedata>
+
+				</scroll-view>
+
+
+				<!-- 车辆租赁 -->
+				<scroll-view @scrolltolower="lower" scroll-y v-if="swiperIndex==2"
+					enable-flex  style="width: 100%;height: 100%;padding-bottom:10rpx;">
+
+					<view v-if="vehicelList.length>0">
+						<view class="info_item" v-for="(item,index) in vehicelList" :key="index">
 							<!-- 图片以及文字内容 -->
 							<view class="info_content">
 								<view class="left_pic">
@@ -91,14 +148,19 @@
 					<nonedata v-else :text="`列表为空`"></nonedata>
 
 				</scroll-view>
-
+				
 			</swiper-item>
 
 		</swiper>
 
-		<view class="send_secondHand" v-if="current==1" @click="goSecondHand">
+		<view class="send_secondHand" v-if="current==1 || current==0" @click="goSecondHand">
 			<view class="text">
 				发布交易信息
+			</view>
+		</view>
+		<view class="confirm_order" v-if="current==0" @click="confirmOrder">
+			<view class="text">
+				确认订单
 			</view>
 		</view>
 
@@ -106,7 +168,8 @@
 </template>
 
 <script>
-	import API from "../../network/secondHand/secondHand"
+	import vehicleApi from "../../network/vehicleBuy/vehicleApi"
+	import secondHandApi from "../../network/secondHand/secondHand"
 	import nonedata from "../../components/none-data/none-data"
 	export default {
 		components: {
@@ -135,25 +198,77 @@
 					}
 				],
 				current: 0, //! 默认选中的swiper下标
-				list: [],
-				baseUrl: ""
+				secondHandList: [],// 二手列表
+				baseUrl: "",
+				machinesList:[],// 新机列表
+				vehicelList:[],//车辆租赁列表
+				page:1,
+				machinesHasMore:true,// 新机page
 			}
 		},
 		onLoad() {
-			this.getList()
 			this.baseUrl = getApp().globalData.requesturl
 		},
+		onShow(){
+			this.init()
+		},
+		destroyed(){
+			this.$store.state.vehicleType = 0
+		},
+		filters: {
+			filterDate2: function(value) {
+				return getApp().globalData.formatDate2(value);
+			},
+			filterDate3: function(value) {
+				return getApp().globalData.formatDate3(value);
+			},
+		},
 		methods: {
-			getList() {
+			init(){
+				let type = this.$store.state.vehicleType
+				if(type==2){
+					// 车辆租赁
+					this.current=2
+					this.getVehicelList()
+				}else if(type==1){
+					// 二手交易
+					this.current=1
+					this.getSecondHandList()
+				}else{
+					// 新机置换
+					this.current=0
+					this.getMachinesList()
+				}
+			},
+			// 获取新机列表
+			getMachinesList() {
+				let query = {
+					page_num: this.page,
+					page_size: 15,
+				}
+				vehicleApi.geiNewMachinesList(query).then(res => {
+					if(res.data.list.length<15){
+						this.machinesHasMore = false
+					}
+					let data = this.machinesList.concat(res.data.list)
+					this.machinesList = data
+				})
+			},
+			// 获取二手列表
+			getSecondHandList() {
 				let query = {
 					page_num: 1,
 					page_size: 99,
 				}
-
-				API.getList(query).then(res => {
-					this.list = res.data.list
+				secondHandApi.getList(query).then(res => {
+					this.secondHandList = res.data.list
 				})
 			},
+			// 获取车辆租赁列表
+			getVehicelList(){
+				this.vehicelList = []
+			},
+
 			//! 按钮点击的切换
 			changeTab(id, index) {
 				console.log(id);
@@ -162,10 +277,23 @@
 			//! 滑动页面的切换
 			change(e) {
 				this.current = e.target.current;
+				if(this.current==0){
+				}else if(this.current==1){
+					this.getSecondHandList()
+				}else{
+					// this.vehicelList = []
+					// this.getVehicelList()
+				}
 			},
 			//! 数据滚动到底部的监听
 			lower() {
 				console.log("到达底部");
+				if(this.current==0&&this.machinesHasMore){
+					this.page++
+					this.init()
+				}
+
+
 			},
 			goSecondHand() {
 				//! 判断用户是否已经完成登录
@@ -184,13 +312,23 @@
 				}
 
 			},
+			// 二手交易里de跳转详情
 			goDetail(id) {
-				console.log(id);
-				console.log('跳转到详情');
+				this.$store.state.vehicleType = 1
 				uni.navigateTo({
 					url: "./secondHandDetail?id=" + id
 				})
+			},
+			// 新机置换de跳转详情
+			goMachinesList(id){
+				console.log("新机置换de跳转详情,id==",id);
+				this.$store.state.vehicleType = 0
+				// uni.navigateTo({
+					// url: "./secondHandDetail?id=" + id
+				// })
 			}
+
+
 		},
 
 	}
@@ -247,8 +385,8 @@
 					align-items: center;
 
 					.left_pic {
-						width: 210rpx;
-						height: 230rpx;
+						width: 240rpx;
+						height: 250rpx;
 						border: 1rpx solid #bbbbbb;
 						@include flex-center;
 					}
@@ -290,9 +428,16 @@
 						}
 
 						.user_info {
-							margin: 10rpx 0;
+							margin: 8rpx 0;
 							display: flex;
 							justify-content: space-between;
+							align-items: center;
+							color: $gray_color;
+						}
+						.user_info.date{
+							margin: 4rpx 0;
+							display: flex;
+							justify-content: flex-end;
 							align-items: center;
 							color: $gray_color;
 						}
@@ -318,12 +463,119 @@
 
 				}
 
-				// 发布二手信息
+			}
+			.info_item:nth-last-child(1){
+				margin-bottom: 130rpx;
+			}
 
+			// 二手交易的样式
+			.info_item.secondHand {
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				background-color: #ffffff;
+				border-radius: 15rpx;
+				padding: 0 30rpx;
+				margin-bottom: 10rpx;
+
+				//! 图片以及文字内容
+				.info_content {
+					width: 100%;
+					margin: 20rpx 0;
+					display: flex;
+					align-items: center;
+
+					.left_pic {
+						width: 240rpx;
+						height: 250rpx;
+						border: 1rpx solid #bbbbbb;
+						@include flex-center;
+					}
+
+					.right_msg {
+						flex: 1;
+						margin-left: 10rpx;
+						display: flex;
+						height: 100%;
+						flex-direction: column;
+						justify-content: flex-start;
+
+						.desc {
+							width: 100%;
+							min-height: 50rpx;
+							display: -webkit-box;
+							-webkit-box-orient: vertical;
+							-webkit-line-clamp: 2;
+							font-size: 30rpx;
+							font-weight: 600;
+							overflow: hidden;
+						}
+
+						.share {
+							margin: 0;
+							padding: 0;
+							background: transparent;
+							// font-size: 25rpx;
+							color: $gray_color;
+
+							&::after {
+								border: none;
+							}
+						}
+
+						//! 公共样式
+						.common {
+							display: flex;
+							font-size: 28rpx;
+							align-items: center;
+						}
+
+						.user_info {
+							margin: 5rpx 0;
+							display: flex;
+							justify-content: space-between;
+							align-items: center;
+							color: $gray_color;
+
+						}
+						.user_info.date{
+							margin: 4rpx 0;
+							display: flex;
+							justify-content: flex-end;
+							align-items: center;
+							color: $gray_color;
+						}
+
+						//! 操作
+						.edit {
+							width: 100%;
+							display: flex;
+							color: $gray_color;
+							flex-direction: column;
+							align-items: flex-start;
+
+							.userBg {
+								background-color: #ffa02e;
+								color: #ffffff;
+								min-width: 80rpx;
+								padding-right: 10rpx;
+								@include flex-center;
+							}
+						}
+
+					}
+
+				}
 
 			}
+			.info_item.secondHand:nth-last-child(1){
+				margin-bottom: 130rpx;
+			}
+			
 		}
+		
 
+		// 发布二手信息
 		.send_secondHand {
 			position: fixed;
 			bottom: 0;
@@ -342,6 +594,26 @@
 				font-weight: 600;
 				color: #38393B;
 				border-radius: 50rpx;
+			}
+		}
+		// 确认订单
+		.confirm_order {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			height: 110rpx;
+			width: 100%;
+			@include flex-center;
+			background-color: #fff;
+
+			.text {
+				width: 80%;
+				background-color: $page_color;
+				@include flex-center;
+				height: 70%;
+				font-size: 38rpx;
+				color: #38393B;
+				border-radius: 20rpx;
 			}
 		}
 

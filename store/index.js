@@ -64,7 +64,11 @@ const store = new Vuex.Store({
 		/**
 		 * 用户收货地址数据
 		 */
-		deliveryAddress:{}
+		deliveryAddress:{},
+		/**
+		 * 车辆买卖的tabs选择
+		 */
+		vehicleType:0
 	},
 	mutations: {
 		$uStore(state, payload) {
