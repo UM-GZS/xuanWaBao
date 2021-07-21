@@ -1,5 +1,5 @@
 <template>
-	<view class="detail_wrap" v-if="modelList.length > 0">
+	<view class="detail_wrap" v-if="goodsDetailPic.length > 0">
 		<!-- 头部轮播图 -->
 		<view class="header">
 			<u-swiper mode="number" height="500" indicator-pos="bottomRight" :list="list" duration="2500"
@@ -56,10 +56,11 @@
 				<!-- 商品的参数图 -->
 				<image style="width: 100%; margin-bottom: 20rpx;" :src="url + detailData.parameter_url">
 				</image>
-				<!-- 详情长图 -->
-				<image style="width: 100%;" :src="url + detailData.img_urls">
-
-				</image>
+				<!-- 详情图 -->
+				<view class="detail_pic" style="width: 100%;display: flex;flex-direction: column;" v-if="goodsDetailPic.length > 0">
+						<image style="width: 100%;" v-for="(item,index) in goodsDetailPic" :key="index" :src="item.image">
+						</image>
+				</view>
 			</view>
 		</view>
 		<!-- 底部按钮 -->
@@ -122,6 +123,8 @@
 	export default {
 		data() {
 			return {
+				//! 判断是哪个页面进入当前
+				order_types:'',
 				//! 地址前缀
 				url: getApp().globalData.requesturl,
 				//! 数量
@@ -140,14 +143,18 @@
 				modelData: {
 					goods_model: null, // 型号id
 					quantity: null // 数量
-				}
+				},
+				//! 产品的详情图
+				goodsDetailPic:[]
 			}
 		},
 		onLoad(options) {
+			console.log(options);
 			//! 拿到id去请求对应的详情数据
 			let {
-				id
+				id,order_types
 			} = options;
+			this.order_types = order_types;
 			if (id) {
 				this.getDetail(id);
 				this.getGoodsModel(id);
@@ -158,15 +165,27 @@
 			 * 获取商品的详情
 			 * @param {number} id
 			 */
-			async getDetail(id) {
+			async getDetail(id,order_types) {
+				/**
+				 * 判断对应的order_types
+				 * 0新机置换 1为租赁订单 2为商品订单
+				 * 对应请求详情的接口
+				 */ 
 				const res = await categoryApi.goodsDetail({
 					id
 				});
 				let list = JSON.parse(res.data.urls);
+				let img_urls = JSON.parse(res.data.img_urls);
+				//! 遍历数据追加到数组
 				for (let i = 0; i < list.length; i++) {
 					this.list.push({
 						image: this.url + list[i].img
 					});
+				}
+				for(let i = 0; i < img_urls.length;i++) {
+					this.goodsDetailPic.push({
+						image:this.url + img_urls[i].img
+					})
 				}
 				this.detailData = res.data;
 			},

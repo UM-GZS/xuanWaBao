@@ -178,8 +178,13 @@
 			//! 跳转详情界面
 			detail(id) {
 				console.log("点击了")
+				/**
+				 * 跳转传递order_types来判断是从哪个界面进入
+				 * 0表示新机置换 1表示租赁订单 2商品分类订单
+				 */ 
+				
 				uni.navigateTo({
-					url: `../../subPackages/category/category_detail?id=${id}`
+					url: `../../subPackages/category/category_detail?order_types=2&id=${id}`
 				})
 			}
 		},

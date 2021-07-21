@@ -12,12 +12,12 @@
 
 		<!-- 内容区域 -->
 		<swiper @change="change" :current="current" class="swiper_content" enable-flex>
-			<swiper-item v-for="(swiperItem,swiperIndex) in tabList" :key="swiperIndex">
+			<swiper-item>
 				<!-- 每一项内容区域 -->
 				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;" scroll-y enable-flex>
 					<view class="info_item" @click="infoDetail(item)" v-for="(item,index) in list" :key="index">
 						<view class="info_title">
-							文章标题文章标题文章标题文章标题文章标题文章标题 文章标题文章标题
+							{{ item.name }}
 						</view>
 						<!-- 图片以及文字内容 -->
 						<view class="info_content">
@@ -27,29 +27,29 @@
 							</view>
 							<view class="right_msg">
 								<view class="desc">
-									这是文章内容这是文章内容这是文章内容这是这是文章内容这是文章内容这是文章内容这是这是文章内容这是文章内容这是文章内容这是这是文章内容这是文章内容这是文章内容这是
+									{{ item.info1 }}{{ item.info2 }}{{ item.info3 }}
 								</view>
 								<!-- 用户信息 -->
 								<view class="user_info">
 									<view class="name common">
-										<image style="width: 30rpx;height: 30rpx;" src="../../static/user/usercenter.png">
+										<image style="width: 30rpx;height: 30rpx;" :src="url + item.user_url">
 										</image>
-										<text style="margin-left: 10rpx;">用户名称</text>
+										<text style="margin-left: 10rpx;">{{ item.user_name }}</text>
 									</view>
 									<view class="time">
-										2021年4月5日
+										{{ item.create_time | filterDate }}
 									</view>
 								</view>
 								<!-- 收藏以及分享 -->
 								<view class="edit">
 									<!-- 收藏 -->
-									<view class="collect common" @click.stop="collect">
+									<view class="collect common" @click.stop="collect(item)">
 										<image src="../../static/information/collect.png" style="width: 30rpx;height: 30rpx;">
 										</image>
 										<text style="margin-left: 10rpx;">收藏</text>
 									</view>
 									<!-- 分享 -->
-									<button open-type="share" class="share common" style="margin-left: 30rpx;" @click.stop="share">
+									<button open-type="share" class="share common" style="margin-left: 30rpx;" @click.stop="share(item)">
 										<image src="../../static/information/share.png" style="width: 30rpx;height: 30rpx;">
 										</image>
 										<text style="margin-left: 10rpx;">分享</text>
@@ -65,6 +65,8 @@
 </template>
 
 <script>
+	import articleApi from "../../network/article/article.js";
+	import collectApi from "../../network/user/collect.js";
 	import headSearch from "@/components/head-search/head-search.vue";
 	export default {
 		components: {
@@ -78,29 +80,73 @@
 		},
 		data() {
 			return {
+				url:getApp().globalData.requesturl,
+				flag:false,
+				queryInfo:{
+					page_num:1,
+					page_size:20,
+					sort:'id desc'
+				},
+				//! 用户收藏的列表数据
+				userCollect:[],
 				//! 数据切换标题数据
 				tabList:[
 					{id:1,title:'热点推送',img:'../../static/information/hotInfo.png',activeImg:'../../static/information/hotInfo_active.png'},
 					{id:2,title:'行业动态',img:'../../static/information/industry.png',activeImg:'../../static/information/industry_active.png'}
 				],
 				current: 0, //! 默认选中的swiper下标
-				list: [{}, {}, {}, {}, {}]
+				//! 显示的列表
+				list: []
+			}
+		},
+		filters: {
+			filterDate: function(value) {
+				return getApp().globalData.formatDate(value);
 			}
 		},
 		methods: {
 			//! 用于当前组件的网络请求函数
 			ontrueGetList() {
-				console.log("被调用");
+				if(!this.flag) {
+					this.getArticle();
+					this.getUserCollect();
+					this.flag = true;
+				}
+			},
+			//! 获取文章列表
+			async getArticle() {
+				const res = await articleApi.articleList(this.queryInfo);
+				this.list = res.data.list;
+				console.log(this.list);
+			},
+			//! 获取用户的所有收藏列表
+			async getUserCollect() {
+				if(getApp().globalData.wxuser) {
+					let params = {
+						user_id:getApp().globalData.wxuser.id,
+						collection_status:0,
+						page_num:1,
+						page_size:999
+					}
+					const res = await collectApi.getCollect(params);
+					this.userCollect = res.data.list;
+					console.log("用户收藏",this.userCollect);
+				}
 			},
 			// 跳转详情页面
 			infoDetail(item) {
+				//! 判断用户是否已经登录
+				if(!getApp().globalData.wxuser) {
+					return getApp().globalData.global_Toast(true,"请先完成登录",function(res){});
+				}
+				console.log(item)
 				uni.navigateTo({
-					url:"../../subPackages/information/informationDetail"
+					url:`../../subPackages/information/informationDetail?id=${item.id}`
 				})
 			},
 			//! 点击收藏按钮
-			collect() {
-				console.log("收藏按钮");
+			collect(item) {
+				console.log("收藏按钮",item);
 			},
 			//! 点击分享按钮
 			share() {
