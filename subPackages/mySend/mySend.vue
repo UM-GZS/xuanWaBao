@@ -9,8 +9,7 @@
 			</view>
 		</view>
 		<!-- 内容区域 -->
-		<swiper @change="change" :current="current" class="swiper_content"
-			:style="{'padding-bottom':current==1?'115rpx':'0rpx'}" enable-flex>
+		<swiper @change="change" :current="current" class="swiper_content" enable-flex>
 			<swiper-item v-for="(swiperItem,swiperIndex) in tabList" :key="swiperIndex" class="swiper_wrap">
 				<!-- 求职招聘 -->
 				<scroll-view @scrolltolower="lower"  scroll-y v-if="swiperIndex==0"
@@ -35,20 +34,20 @@
 					enable-flex style="width: 100%;height: 100%;padding-bottom:10rpx;">
 
 					<view class="second_hand">
-						<view class="item" v-for="item in sendList" :key="item.id">
+						<view class="item" v-for="item in secondTrading" :key="item.id">
 							<view class="left_cover">
-								<image src="../../static/index/sw1.jpg"></image>
+								<image :src="baseUrl + item.small_img_urls"></image>
 							</view>
 							<view class="right_info">
-								<view class="name"><text>商品名称称称称称称称称称</text> </view>
+								<view class="name"><text>{{ item.name }}</text> </view>
 								<view class="price">
 									<view>
 										<image src="/static/publicImg/phone.png"  />
 										10203040506
 									</view>
-									<view @click="clickPhone" >待交易</view>
+									<!-- <view @click="clickPhone" >待交易</view> -->
 								</view>
-								<view class="info">￥2000</view>
+								<view class="info">￥{{ item.price }}</view>
 							</view>
 						</view>
 					</view>
@@ -63,6 +62,7 @@
 </template>
 
 <script>
+	import secondHandApi from "../../network/secondHand/secondHand.js";
 	export default {
 		components: {},
 		data() {
@@ -79,6 +79,15 @@
 				],
 				current: 0, //! 默认选中的swiper下标
 				baseUrl: "",
+				//! 请求参数
+				tradingQueryInfo:{
+					user_id:getApp().globalData.wxuser.id,
+					page_num:1,
+					page_size:20,
+					sort:'id desc'
+				},
+				//! 二手交易列表
+				secondTrading:[],
 				sendList: [{
 						id: 1,
 						cover: "../../static/index/sw1.jpg",
@@ -119,15 +128,38 @@
 			this.getList()
 			this.baseUrl = getApp().globalData.requesturl
 		},
+		watch: {
+			current() {
+				//! 每次切换清除默认数据从新加载
+				this.clearData();
+				this.getList();
+			}
+		},
 		methods: {
 			getList() {
-				let query = {
-					page_num: 1,
-					page_size: 99,
+				let index = this.current
+				console.log(typeof index,index)
+				switch (index) {
+					case 0:
+						// this.getScondTrading()
+						break;
+					case 1:
+						this.getScondTrading()
+						break;
+					default:
+						// this.getScondTrading()
+						break;
 				}
+			},
+			//! 获取二手列表
+			async getScondTrading() {
+				const res = await secondHandApi.getList(this.tradingQueryInfo);
+				this.secondTrading = [...this.secondTrading,...res.data.list];
+				
 			},
 			//! 按钮点击的切换
 			changeTab(id, index) {
+				console.log(index)
 				this.current = index;
 			},
 			//! 滑动页面的切换
@@ -145,6 +177,18 @@
 				uni.navigateTo({
 					url: "./secondHandDetail?id=" + id
 				})
+			},
+			//! 清除默认数据
+			clearData() {
+				//! 请求参数
+				this.tradingQueryInfo = {
+					user_id:getApp().globalData.wxuser.id,
+					page_num:1,
+					page_size:20,
+					sort:'id desc'
+				}
+				//! 二手交易列表
+				this.secondTrading = []
 			}
 		},
 
@@ -155,7 +199,6 @@
 	.info_wrap {
 		width: 100%;
 		height: 100%;
-		padding-bottom: 100rpx;
 		overflow-y: hidden;
 		.swiper_tab {
 			margin-top: 10rpx;
@@ -179,7 +222,7 @@
 		.swiper_content {
 			width: 100%;
 			margin-top: 30rpx;
-			height: 100%;
+			height: calc(100vh - 130rpx);
 			overflow-y: scroll;
 			padding: 0 10rpx 0 10rpx;
 			box-sizing: border-box;

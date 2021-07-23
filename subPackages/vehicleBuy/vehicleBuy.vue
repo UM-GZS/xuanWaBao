@@ -9,8 +9,7 @@
 			</view>
 		</view>
 		<!-- 内容区域 -->
-		<swiper @change="change" :current="current" class="swiper_content"
-			:style="{'padding-bottom':current==1?'115rpx':'0rpx'}" enable-flex>
+		<swiper @change="change" :current="current" class="swiper_content" enable-flex :style="current === 1 ? 'padding-bottom:130rpx':'0'">
 			<swiper-item v-for="(swiperItem,swiperIndex) in tabList" :key="swiperIndex" class="swiper_wrap">
 				<!-- 二手交易 -->
 				<scroll-view @scrolltolower="lower" scroll-y v-if="swiperIndex==1"
@@ -153,16 +152,21 @@
 
 		</swiper>
 
-		<view class="send_secondHand" v-if="current==1 || current==0" @click="goSecondHand">
+		<!-- <view class="send_secondHand" v-if="current==1 || current==0" @click="goSecondHand">
+			<view class="text">
+				发布交易信息
+			</view>
+		</view> -->
+		<view class="send_secondHand" v-if="current==1" @click="goSecondHand">
 			<view class="text">
 				发布交易信息
 			</view>
 		</view>
-		<view class="confirm_order" v-if="current==0" @click="confirmOrder">
+		<!-- <view class="confirm_order" v-if="current==0" @click="confirmOrder">
 			<view class="text">
 				确认订单
 			</view>
-		</view>
+		</view> -->
 
 	</view>
 </template>
@@ -200,21 +204,34 @@
 				current: 0, //! 默认选中的swiper下标
 				secondHandList: [],// 二手列表
 				baseUrl: "",
+				// 二手交易请求参数
+				secondHandInfo: {
+					page_num:1,
+					page_size:10,
+					sort:'id desc'
+				},
 				machinesList:[],// 新机列表
 				vehicelList:[],//车辆租赁列表
 				page:1,
 				machinesHasMore:true,// 新机page
+				// 是否还有二手交易
+				secondHandHasMore:true
 			}
 		},
 		onLoad() {
+			this.init();
 			this.baseUrl = getApp().globalData.requesturl
 		},
 		onShow(){
-			this.init()
+			//!判断当前的current是否为1  重新获取数据
+			if(this.current === 1) {
+				this.clearData()
+				this.init()
+			}
 		},
-		destroyed(){
-			this.$store.state.vehicleType = 0
-		},
+		// destroyed(){
+		// 	this.$store.state.vehicleType = 0
+		// },
 		filters: {
 			filterDate2: function(value) {
 				return getApp().globalData.formatDate2(value);
@@ -225,18 +242,19 @@
 		},
 		methods: {
 			init(){
-				let type = this.$store.state.vehicleType
-				if(type==2){
+				// let type = this.$store.state.vehicleType
+				
+				if(this.current == 2){
 					// 车辆租赁
-					this.current=2
+					// this.current=2
 					this.getVehicelList()
-				}else if(type==1){
+				}else if(this.current  === 1){
 					// 二手交易
-					this.current=1
+					// this.current=1
 					this.getSecondHandList()
 				}else{
 					// 新机置换
-					this.current=0
+					// this.current=0
 					this.getMachinesList()
 				}
 			},
@@ -254,24 +272,24 @@
 					this.machinesList = data
 				})
 			},
-			// 获取二手列表
+			// 获取二手交易列表
 			getSecondHandList() {
-				let query = {
-					page_num: 1,
-					page_size: 99,
-				}
-				secondHandApi.getList(query).then(res => {
-					this.secondHandList = res.data.list
+				secondHandApi.getList(this.secondHandInfo).then(res => {
+					console.log(res.data.list.length)
+					if(res.data.list.length < 10) {
+						this.secondHandHasMore = false;
+					}
+					let data = this.secondHandList.concat(res.data.list);
+					this.secondHandList = data;
 				})
 			},
 			// 获取车辆租赁列表
 			getVehicelList(){
 				this.vehicelList = []
 			},
-
 			//! 按钮点击的切换
 			changeTab(id, index) {
-				console.log(id);
+				console.log("切换index",index);
 				this.current = index;
 			},
 			//! 滑动页面的切换
@@ -279,6 +297,7 @@
 				this.current = e.target.current;
 				if(this.current==0){
 				}else if(this.current==1){
+					this.clearData()
 					this.getSecondHandList()
 				}else{
 					// this.vehicelList = []
@@ -288,11 +307,13 @@
 			//! 数据滚动到底部的监听
 			lower() {
 				console.log("到达底部");
-				if(this.current==0&&this.machinesHasMore){
+				if(this.current === 0 && this.machinesHasMore){
 					this.page++
 					this.init()
+				}else if(this.current === 1 && this.secondHandHasMore) {
+					this.secondHandInfo.page_num ++; //添加页数
+					this.getSecondHandList();
 				}
-
 
 			},
 			goSecondHand() {
@@ -322,13 +343,25 @@
 			// 新机置换de跳转详情
 			goMachinesList(id){
 				console.log("新机置换de跳转详情,id==",id);
-				this.$store.state.vehicleType = 0
-				// uni.navigateTo({
-					// url: "./secondHandDetail?id=" + id
-				// })
+				/**
+				 * 跳转传递order_types来判断是从哪个界面进入
+				 * 0表示新机置换 1表示租赁订单 2商品分类订单
+				 */ 
+				// this.$store.state.vehicleType = 0
+				uni.navigateTo({
+					url: `../category/category_detail?order_types=0&id=${id}`
+				})
+			},
+			//!清除默认数据
+			clearData() {
+				this.secondHandInfo = {
+					page_num:1,
+					page_size:10,
+					sort:'id desc'
+				},
+				this.secondHandList = [];
+				this.secondHandHasMore = true;
 			}
-
-
 		},
 
 	}
@@ -465,8 +498,11 @@
 
 			}
 			.info_item:nth-last-child(1){
-				margin-bottom: 130rpx;
+				margin-bottom: 20rpx;
 			}
+			// .info_item:nth-last-child(1){
+			// 	margin-bottom: 130rpx;
+			// }
 
 			// 二手交易的样式
 			.info_item.secondHand {
@@ -568,9 +604,12 @@
 				}
 
 			}
-			.info_item.secondHand:nth-last-child(1){
-				margin-bottom: 130rpx;
+			._item.secondHand:nth-last-child(1){
+				margin-bottom: 20rpx;
 			}
+			// .info_item.secondHand:nth-last-child(1){
+			// 	margin-bottom: 130rpx;
+			// }
 			
 		}
 		

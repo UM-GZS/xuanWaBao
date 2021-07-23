@@ -1,5 +1,5 @@
 <template>
-	<view class="order_wrap" v-if="modelList.length > 0">
+	<view class="order_wrap">
 		<!-- 头部信息 -->
 		<view class="goods_info">
 			<!-- 上边内容 -->
@@ -23,11 +23,11 @@
 						<view class="type_title" style="margin-bottom: 10rpx;">
 							已选择：
 						</view>
-						<view class="select_item" v-for="(item,index) in modelList" :key="index">
-							<view class="model" v-if="item.id === carData.goods_model">
-								{{ item.name }}
+						<view class="select_item" >
+							<view class="model">
+								{{ carData.goods_model }}
 							</view>
-							<view class="model_count" v-if="item.id === carData.goods_model">
+							<view class="model_count" >
 								x{{ carData.quantity }}
 							</view>
 						</view>
@@ -175,7 +175,6 @@
 		onLoad() {
 			// 获取vuex中的购物车订单
 			this.carData = this.$store.state.shopCarData;
-			this.getModel(this.carData.goods_id)
 			this.getAddress(this.carData.user_id);
 		},
 		onShow() {
@@ -187,17 +186,6 @@
 			}
 		},
 		methods: {
-			//! 获取商品的型号
-			async getModel(id) {
-				let queryInfo = {
-					goods_id: id,
-					page_num: 1,
-					page_size: 99,
-					sort: 'id desc'
-				}
-				const res = await categoryApi.goodsModel(queryInfo);
-				this.modelList = res.data.list;
-			},
 			//! 获取用户的收货地址
 			async getAddress(user_id) {
 				let queryInfo = {

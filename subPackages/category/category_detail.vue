@@ -38,7 +38,7 @@
 					<image src="../../static/index/more.png" style="width: 20rpx;height: 30rpx;"></image>
 				</view>
 			</view>
-			<view class="delivery">
+			<view class="delivery"  @click="buyNow">
 				<view>
 					<text style="color: #b5b5b5;">选择</text>
 					<text style="margin-left: 15rpx;">型号</text>
@@ -57,16 +57,17 @@
 				<image style="width: 100%; margin-bottom: 20rpx;" :src="url + detailData.parameter_url">
 				</image>
 				<!-- 详情图 -->
-				<view class="detail_pic" style="width: 100%;display: flex;flex-direction: column;" v-if="goodsDetailPic.length > 0">
-						<image style="width: 100%;" v-for="(item,index) in goodsDetailPic" :key="index" :src="item.image">
+				<view class="detail_pic"  style="width: 100%;display: flex;flex-direction: column;" v-if="goodsDetailPic.length > 0">
+						<image style="width: 100%;" v-for="(item,index) in goodsDetailPic" :key="index" :src="item.image" @click="previewImg(item)">
 						</image>
 				</view>
 			</view>
 		</view>
 		<!-- 底部按钮 -->
 		<view class="footer">
-			<view class="collect common">
-				<image src="../../static/uview/common/collect.png" style="width: 55rpx; height: 55rpx;"></image>
+			<view class="collect common" v-if="order_types != 0" @click.stop="collect">
+				<image src="../../static/user/collaction.png" style="width: 50rpx; height: 50rpx;" v-if="isCollect"></image>
+				<image src="../../static/uview/common/collect.png" style="width: 50rpx; height: 53rpx;" v-else></image>
 				<text>收藏</text>
 			</view>
 			<button open-type="contact" class="contact common" style="margin-left: 30rpx;">
@@ -119,7 +120,10 @@
 </template>
 
 <script>
+	//! 分类接口
 	import categoryApi from '../../network/category/category.js';
+	import machineApi from '../../network/machine/machine.js';
+	import collectApi from '../../network/user/collect.js';
 	export default {
 		data() {
 			return {
@@ -135,6 +139,8 @@
 				detailData: null,
 				//! 轮播图
 				list: [],
+				//! 通过isCollect来判断用户是否时候收藏当前文章
+				isCollect:null,
 				// 记录选中的型号下标
 				currentModel: null,
 				//! 当前商品的型号列表
@@ -156,24 +162,44 @@
 			} = options;
 			this.order_types = order_types;
 			if (id) {
-				this.getDetail(id);
-				this.getGoodsModel(id);
+				this.getDetail(id,order_types);
 			}
+			
 		},
 		methods: {
 			/**
 			 * 获取商品的详情
 			 * @param {number} id
 			 */
-			async getDetail(id,order_types) {
+			 getDetail(id,order_types) {
 				/**
 				 * 判断对应的order_types
 				 * 0新机置换 1为租赁订单 2为商品订单
 				 * 对应请求详情的接口
 				 */ 
-				const res = await categoryApi.goodsDetail({
-					id
-				});
+				if(order_types == 0) {
+					//! 请求新机置换的详情
+					machineApi.machineDetail({id}).then(machineRes => {
+						this.filterPic(machineRes);
+						//! 往数组中添加商品型号
+						this.modelList.push({id:1,name:machineRes.data.types})
+						this.detailData = machineRes.data;
+					})
+				}else if(order_types == 1) {
+					//! 请求租聘的接口
+				}else if(order_types == 2) {
+					//! 获取商品型号接口
+					this.getGoodsModel(id);
+					//! 请求商品详情的接口
+				 categoryApi.goodsDetail({id}).then(goodRes => {
+					 this.filterPic(goodRes);
+					 this.detailData = goodRes.data;
+					 this.getUserCollect(); //! 获取用户当前的收藏
+				 })
+				}
+			},
+			//! 转换图片的方法
+			filterPic(res) {
 				let list = JSON.parse(res.data.urls);
 				let img_urls = JSON.parse(res.data.img_urls);
 				//! 遍历数据追加到数组
@@ -187,7 +213,6 @@
 						image:this.url + img_urls[i].img
 					})
 				}
-				this.detailData = res.data;
 			},
 			//! 获取商品的型号
 			async getGoodsModel(id) {
@@ -213,11 +238,76 @@
 				}
 				this.showSelect = true
 			},
+			//! 收藏按钮
+			collect()  {
+				//! 判断用户是否登录
+				if(!getApp().globalData.wxuser) {
+					 getApp().globalData.global_Toast(true,"请先完成登录",function(res){});
+					 return setTimeout(() => {
+						 uni.redirectTo({
+						 	url:'../../pages/index/index'
+						 })
+					 },2500)
+				}
+				//! 
+				//! 判断当前用户是否已经收藏对应调用其相应接口
+				if(this.isCollect) {
+					//! 取消收藏
+					collectApi.deleteCollect({id:this.isCollect.id}).then(delRes => {
+						//! 重新获取数据
+						this.getUserCollect();
+					})
+				}else {
+					let data = {
+						user_id:getApp().globalData.wxuser.id,
+						collection_id:this.detailData.id,
+						collection_status:1
+					}
+					//! 添加收藏
+					collectApi.addCollect(data).then(addRes => {
+						this.getUserCollect();
+					})
+				}
+			},
+			//! 获取当前用户的收藏数据
+			async getUserCollect() {
+				//! 判断当前用户是否登录
+				if(!getApp().globalData.wxuser) {
+					return;
+				}
+				let params = {
+					user_id:getApp().globalData.wxuser.id,
+					collection_id:this.detailData.id,
+					collection_status:1, //!查询的类型
+					sort:'id desc'
+				}
+				const res = await collectApi.getCollect(params);
+				if(res.data.list.length) {
+					this.isCollect = res.data.list[0];
+				}else {
+					this.isCollect = null;
+				}
+			},
+			//! 图片预览函数
+			previewImg(item) {
+				let urls = [];
+				for(let i = 0; i < this.goodsDetailPic.length; i++) {
+					urls.push(this.goodsDetailPic[i].image);
+				}
+				uni.previewImage({
+					current:item.image,
+					urls,
+					fail(err) {
+						console.warn(err)
+					}
+				})
+			},
 			//! 选择型号
 			chooseModel(item, index) {
+				console.log("选择",item);
 				this.currentModel = index;
 				// 记录选中商品
-				this.modelData.goods_model = item.id;
+				this.modelData.goods_model = item.name; //!使用商品名称
 			},
 			//! 步进器的改变
 			valChange(e) {
@@ -240,15 +330,17 @@
 				//! 提取出要发起订单的数据
 				let orderData = {
 					user_id: getApp().globalData.wxuser.id, // 用户id
+					order_types:this.order_types, //! 订单类型(0:新机置换订单,1:租凭订单,2:商品订单)
 					goods_id: this.detailData.id, // 商品id
 					goods_name: this.detailData.name, // 商品名称
-					goods_model: this.modelData.goods_model, // 型号id
+					goods_model: this.modelData.goods_model, // 型号名称
 					url: this.detailData.small_img_urls, // 图片
 					price: this.detailData.price, // 商品的单价
 					act_pay: totalPrice, //! 商品的总价格
 					quantity: this.modelData.quantity, // 数量
 					status: 1 //! 表示当前订单是待付款的状态
 				}
+				console.log("订单类型",orderData)
 				//! 用户点击下一步时写入将购物车数据写入vuex中
 				this.$store.commit("nextOrder", orderData);
 				this.showSelect = false;
