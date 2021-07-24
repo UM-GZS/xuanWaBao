@@ -26,7 +26,7 @@
 					<view class="name" style="width: 200rpx;">
 						电子邮箱:
 					</view>
-					<u-input trim height="60" type="text" :border="true"  v-model="formData.emain"  :clearable="false"/>
+					<u-input trim height="60" type="text" :border="true"  v-model="formData.email"  :clearable="false"/>
 				</view>
 				<view class="info_item">
 					<view class="name" style="width: 200rpx;text-align: center;">
@@ -65,7 +65,7 @@
 				工作经验
 			</view>
 			<view class="area">
-				<u-input maxlength="500" height="300" placeholder="请输入工作经验" type="textarea" :border="true"
+				<u-input maxlength="500" height="300" placeholder="请输入工作经验" trim type="textarea" :border="true"
 					:autoHeight="true" trim   v-model="formData.description" />
 			</view>
 		</view>
@@ -126,8 +126,8 @@
 						求职状态
 					</view>
 					<view class="radio_list">
-						<u-radio-group active-color="#40df9c" width="50%" v-model="formData.status" @change="radioGroupChange">
-							<u-radio @change="radioChange" v-for="(item, index) in list" :key="index" :name="item.name"
+						<u-radio-group active-color="#40df9c" width="50%" v-model="formData.status">
+							<u-radio @change="radioChange(item)" v-for="(item, index) in list" :key="index" :name="item.name"
 								:disabled="item.disabled">
 								{{item.name}}
 							</u-radio>
@@ -143,7 +143,8 @@
 </template>
 
 <script>
-import jobApi from "../../network/job/jobApi"
+import jobApi from "../../network/job/jobApi";
+import validApi from "../../utils/validate/validity.js";
 	export default {
 		data() {
 			return {
@@ -157,36 +158,41 @@ import jobApi from "../../network/job/jobApi"
 				//! 选择的列表
 				list: [{
 						name: '在职-随时到岗',
-						disabled: false
+						disabled: false,
+						value:-1
 					},
 					{
 						name: '在职-月内到岗',
-						disabled: false
+						disabled: false,
+						value:1
 					},
 					{
 						name: '离职-随时到岗',
-						disabled: false
+						disabled: false,
+						value:2
 					},
 					{
 						name: '离职-月内到岗',
-						disabled: false
+						disabled: false,
+						value:3
 					}
 				],
 				//! 在职状态的value
-				value:'',
+				value:0,
 				//默认显示的图片列表
 				fileList: [],
 				formData:{
 					name:"",
 					phone:"",
 					gender:"",
-					emain:"",
+					email:"",
 					age:"",
 					post:"",
 					address:"",
 					salary:"",
 					status:"",
 					description:"",
+					urls:[]
 				}
 			}
 		},
@@ -197,11 +203,13 @@ import jobApi from "../../network/job/jobApi"
 		methods: {
 			// 选中某个单选框时，由radio时触发
 			radioChange(e) {
-				// console.log(e);
+				this.value = e.value;
+				console.log("这里打印",e);
+				this.formData.status = e.name;
 			},
 			// 选中任一radio时，由radio-group触发
 			radioGroupChange(e) {
-				// console.log(e);
+				this.value = e;
 			},
 			confirmAddress(e) {
 				console.log("地址选择", e);
@@ -213,19 +221,60 @@ import jobApi from "../../network/job/jobApi"
 			},
 			//! 监听图片的上传
 			onSuccess(data, index, lists, name) {
+				this.formData.urls.push({
+					img: data.data.url
+				})
 				this.fileList = lists;
 			},
 			//! 监听图片的删除函数
 			onRemove(index, lists, name) {
+				this.formData.urls.splice(index, 1)
 				this.fileList = lists;
 			},
 			// 表单提交
 			submitForm(){
-				console.log(this.formData);
-				console.log(this.fileList);
+				/**
+				 * 提交前的表单验证
+				 */
+				if(!this.formData.name) {
+					return getApp().globalData.global_Toast(true,"请输入求职姓名",function(res){})
+				}
+				if(!this.formData.phone || !validApi.validPhone(this.formData.phone)) {
+					return getApp().globalData.global_Toast(true,"请输入正确的手机号码",function(res){})
+				}
+				if(!this.formData.gender) {
+					return getApp().globalData.global_Toast(true,"请填写性别",function(res){})
+				}
+				if(!this.formData.email || !validApi.validEmail(this.formData.email)) {
+					return getApp().globalData.global_Toast(true,"请填写正确的邮箱地址",function(res){})
+				}
+				if(!this.formData.age) {
+					return getApp().globalData.global_Toast(true,"请填写年龄",function(res){})
+				}
+				if(!this.formData.post) {
+					return getApp().globalData.global_Toast(true,"请填写意向岗位",function(res){})
+				}
+				if(!this.formData.address) {
+					return getApp().globalData.global_Toast(true,"请填写意向地址",function(res){})
+				}
+				if(!this.formData.salary) {
+					return getApp().globalData.global_Toast(true,"请填写意向薪资",function(res){})
+				}
+				if(!this.formData.status) {
+					return getApp().globalData.global_Toast(true,"请填写求职状态",function(res){})
+				}
+				if(!this.formData.description) {
+						return getApp().globalData.global_Toast(true,"请填写工作经验",function(res){})
+				}
+				if(!this.formData.urls.length) {
+						return getApp().globalData.global_Toast(true,"请上传至少一张图片",function(res){})
+				}
 				let wxuser = uni.getStorageSync('wxuser')
-				// ! 图片
-				let urls = this.fileList 
+				//!请求参数
+				//! 过滤获取status
+				let valueIndex = this.list.findIndex(v => {
+					return v.value === this.value;
+				})
 				let query = {
 					user_id:wxuser.id,
 					name:this.formData.name,
@@ -235,12 +284,22 @@ import jobApi from "../../network/job/jobApi"
 					post:this.formData.post,
 					address:this.formData.address,
 					salary:this.formData.salary,
-					status:this.formData.status,
+					status:this.list[valueIndex].value, //! 获取对应list下面的id值
 					description:this.formData.description,
-					urls
+					urls:JSON.stringify(this.formData.urls)
 				}
 
-				// jobApi.addJob(query)
+				jobApi.addJob(query).then(res => {
+					if(res.data.id) {
+						getApp().globalData.global_Toast(true,"求职信息添加成功",function(res){})
+						this.clearData();
+						setTimeout(() => {
+							uni.navigateBack({
+								delta:1
+							})
+						},2500)
+					}
+				})
 
 			},
 			// 岗位确定按钮
@@ -250,13 +309,30 @@ import jobApi from "../../network/job/jobApi"
 			},
 			// 状态确定按钮
 			statusSave(){
-				console.log(this.formData.status);
 				this.showStatus = false
 			},
 			// 意向工资确定按钮
 			salarySave(){
 				console.log(this.formData.salary);
 				this.showSalary = false
+			},
+			//! 清除默认数据
+			clearData() {
+				this.fileList = []
+				this.formData = {
+					name:"",
+					phone:"",
+					gender:"",
+					email:"",
+					age:"",
+					post:"",
+					address:"",
+					salary:"",
+					status:"",
+					description:"",
+					urls:[]
+				}
+				this.$refs.uUpload.clear();
 			}
 				
 		},

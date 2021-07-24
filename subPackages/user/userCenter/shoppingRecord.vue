@@ -1,13 +1,13 @@
 <template>
-	<view class="repair_wrap">
+	<view class="shopping_wrap">
 		<!-- 头部搜索框 -->
 		<!-- 切换按钮 -->
-		<!-- <view class="swiper_tab">
+		<view class="swiper_tab">
 			<view class="tab_item" @click="changeTab(item.id,index)" v-for="(item,index) in tabList" :key="index">
 				<text style="margin-left: 10rpx;"
 					:style="current === index ? 'color:black':'color:$gray_color'">{{ item.title }}</text>
 			</view>
-		</view> -->
+		</view>
 
 		<!-- 内容区域 -->
 		<swiper @change="change" :current="current" class="swiper_content" enable-flex>
@@ -47,15 +47,23 @@
 				//! 数据切换标题数据
 				tabList: [{
 						id: 1,
-						title: '全部'
+						title: '全部',
+						status:0
 					},
 					{
 						id: 2,
-						title: '待维修'
+						title: '待付款',
+						status:1
 					},
 					{
 						id: 3,
-						title: '已维修'
+						title: '待发货',
+						status:2
+					},
+					{
+						id: 4,
+						title: '待收货',
+						status:3
 					}
 				],
 				//! 请求参数
@@ -73,26 +81,8 @@
 			}
 		},
 		onLoad() {
-			this.getRepairList();
 		},
 		methods: {
-			/**
-			 * 获取维修记录列表
-			 */
-			async getRepairList() {
-				//拼接请求参数
-				let params = {
-					user_id: getApp().globalData.wxuser.id,
-					...this.queryInfo
-				}
-				const res = await userApi.repairList(params);
-				
-				//! 遍历图片追加数组
-				this.formatPic(res.data.list);
-				//! 记录总共的数据
-				this.total = res.data.total;
-				this.list = res.data.list;
-			},
 			/**
 			 * 转换图片追加到数组中
 			 */
@@ -120,7 +110,7 @@
 </script>
 
 <style lang="scss">
-	.repair_wrap {
+	.shopping_wrap {
 		width: 100%;
 		height: 100%;
 

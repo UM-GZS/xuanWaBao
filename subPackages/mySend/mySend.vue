@@ -12,8 +12,8 @@
 		<swiper @change="change" :current="current" class="swiper_content" enable-flex>
 			<swiper-item v-for="(swiperItem,swiperIndex) in tabList" :key="swiperIndex" class="swiper_wrap">
 				<!-- 求职招聘 -->
-				<scroll-view @scrolltolower="lower"  scroll-y v-if="swiperIndex==0"
-					enable-flex style="width: 100%;height: 100%;padding-bottom:10rpx;">
+				<scroll-view @scrolltolower="lower" scroll-y v-if="swiperIndex==0" enable-flex
+					style="width: 100%;height: 100%;padding-bottom:10rpx;">
 					<view class="list">
 						<view class="item" v-for="item in sendList" :key="item.id">
 							<view class="left_cover">
@@ -30,8 +30,8 @@
 				</scroll-view>
 
 				<!-- 二手交易 -->
-				<scroll-view @scrolltolower="lower"  scroll-y v-else
-					enable-flex style="width: 100%;height: 100%;padding-bottom:10rpx;">
+				<scroll-view @scrolltolower="lower" scroll-y v-else enable-flex
+					style="width: 100%;height: 100%;padding-bottom:10rpx;">
 
 					<view class="second_hand">
 						<view class="item" v-for="item in secondTrading" :key="item.id">
@@ -42,8 +42,8 @@
 								<view class="name"><text>{{ item.name }}</text> </view>
 								<view class="price">
 									<view>
-										<image src="/static/publicImg/phone.png"  />
-										10203040506
+										<image src="/static/publicImg/phone.png" />
+										{{ item.phone }}
 									</view>
 									<!-- <view @click="clickPhone" >待交易</view> -->
 								</view>
@@ -51,13 +51,9 @@
 							</view>
 						</view>
 					</view>
-
 				</scroll-view>
-
 			</swiper-item>
-
 		</swiper>
-
 	</view>
 </template>
 
@@ -80,14 +76,14 @@
 				current: 0, //! 默认选中的swiper下标
 				baseUrl: "",
 				//! 请求参数
-				tradingQueryInfo:{
-					user_id:getApp().globalData.wxuser.id,
-					page_num:1,
-					page_size:20,
-					sort:'id desc'
+				tradingQueryInfo: {
+					user_id: getApp().globalData.wxuser.id,
+					page_num: 1,
+					page_size: 20,
+					sort: 'id desc'
 				},
 				//! 二手交易列表
-				secondTrading:[],
+				secondTrading: [],
 				sendList: [{
 						id: 1,
 						cover: "../../static/index/sw1.jpg",
@@ -153,8 +149,8 @@
 			//! 获取二手列表
 			async getScondTrading() {
 				const res = await secondHandApi.getList(this.tradingQueryInfo);
-				this.secondTrading = [...this.secondTrading,...res.data.list];
-				
+				this.secondTrading = [...this.secondTrading, ...res.data.list];
+
 			},
 			//! 按钮点击的切换
 			changeTab(id, index) {
@@ -165,9 +161,8 @@
 				this.current = e.target.current;
 			},
 			//! 数据滚动到底部的监听
-			lower() {
-			},
-			
+			lower() {},
+
 			goDetail(id) {
 				uni.navigateTo({
 					url: "./secondHandDetail?id=" + id
@@ -177,10 +172,10 @@
 			clearData() {
 				//! 请求参数
 				this.tradingQueryInfo = {
-					user_id:getApp().globalData.wxuser.id,
-					page_num:1,
-					page_size:20,
-					sort:'id desc'
+					user_id: getApp().globalData.wxuser.id,
+					page_num: 1,
+					page_size: 20,
+					sort: 'id desc'
 				}
 				//! 二手交易列表
 				this.secondTrading = []
@@ -195,6 +190,7 @@
 		width: 100%;
 		height: 100%;
 		overflow-y: hidden;
+
 		.swiper_tab {
 			margin-top: 10rpx;
 			width: 100%;
@@ -231,6 +227,7 @@
 			.item {
 				display: flex;
 				padding-bottom: 20rpx;
+
 				.left_cover {
 					width: 210rpx;
 					@include flex-center;
@@ -276,18 +273,22 @@
 				}
 			}
 		}
+
 		.second_hand {
 			padding: 22rpx;
 			background-color: #fff;
+
 			.item {
 				display: flex;
 				padding-bottom: 20rpx;
+
 				.left_cover {
 					width: 230rpx;
 					height: 230rpx;
 					@include flex-center;
 					padding: 10rpx 10rpx;
-					border: 2px  solid #e3e3e3;
+					border: 2px solid #e3e3e3;
+
 					image {
 						width: 200rpx;
 						height: 200rpx;
@@ -306,7 +307,7 @@
 						color: #38393B;
 						height: 80rpx;
 					}
-				
+
 
 					.price {
 						width: 100%;
@@ -315,21 +316,24 @@
 						display: flex;
 						align-items: center;
 						justify-content: space-between;
-						view:nth-child(1){
+
+						view:nth-child(1) {
 							color: red;
 							position: relative;
 							padding-left: 40rpx;
-							image{
-								width:30rpx;
-								height:30rpx;
+
+							image {
+								width: 30rpx;
+								height: 30rpx;
 								position: absolute;
-								left:0;
-								top:50%;
+								left: 0;
+								top: 50%;
 								transform: translateY(-50%);
 							}
-							
+
 						}
-						view:nth-child(2){
+
+						view:nth-child(2) {
 							color: #fff;
 							background-color: #ffde2a;
 							border-radius: 8rpx;

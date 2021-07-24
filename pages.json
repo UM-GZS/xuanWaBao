@@ -84,6 +84,12 @@
 					}
 				},
 				{
+					"path":"user/userCenter/shoppingRecord",
+					"style":{
+						"navigationBarTitleText":"购买记录"
+					}
+				},
+				{
 					"path": "order/order",
 					"style": {
 						"navigationBarTitleText": "提交订单"

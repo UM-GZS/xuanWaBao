@@ -9,7 +9,7 @@
 		</view>
 		<!-- 内容区域 -->
 		<swiper @change="change" :current="current" class="swiper_content"
-			:style="{'padding-bottom':current==1?'115rpx':'0rpx'}" enable-flex>
+			:style="{'padding-bottom':current==1?'135rpx':'0rpx'}" enable-flex>
 			<swiper-item v-for="(swiperItem,swiperIndex) in tabList" :key="swiperIndex" class="swiper_wrap">
 				<!-- 全部 -->
 				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;box-sizing: border-box;" scroll-y
@@ -35,13 +35,13 @@
 					<view class="list" v-for="item in myList" :key="item.id">
 						<view class="item">
 							<view class="left_cover">
-								<image :src="item.cover"></image>
+								<image :src="baseUrl + JSON.parse(item.urls)[0].img"></image>
 							</view>
 							<view class="right_info">
 								<view class="name">{{item.uname}}</view>
 								<view class="subtitle">{{item.status_name}}</view>
 								<view class="price">{{item.salary}}</view>
-								<view class="info">{{item.address}} | {{item.description}} | {{item.age}}</view>
+								<view class="info">{{item.address}} | {{item.gender_name}} | {{item.post}}</view>
 							</view>
 						</view>
 					</view>
@@ -76,7 +76,7 @@
 						title: '我的求职'
 					}
 				],
-				current: 1, //! 默认选中的swiper下标
+				current: 0, //! 默认选中的swiper下标
 				baseUrl: "",
 				list: [{
 						id: 1,
@@ -143,24 +143,34 @@
 						limit: "学历不限"
 					},
 				],
-				myList:[]
+				myList:[],
+				query:{
+					user_id:getApp().globalData.wxuser.id,
+					gender:getApp().globalData.wxuser.gender,
+					page_num: 1,
+					page_size: 20,
+					sort:'id desc'
+				},
 			}
 		},
 		onLoad() {
 			this.baseUrl = getApp().globalData.requesturl
-			this.getMyList()
+			// 判断当前用户是否登录
+			if(getApp().globalData.wxuser) {
+				this.getMyList()
+			}
 		},
 		onShow() {
-			console.log("onshow处理重新加载数据")
+			console.log("调用");
+			//! 我的求职重新请求数据
+			if(this.current === 1 && getApp().globalData.wxuser) {
+				this.clearData();
+				this.getMyList();
+			}
 		},
 		methods: {
-
 			getMyList() {
-				let query = {
-					page_num: 1,
-					page_size: 99,//!
-				}
-				jobApi.listJob(query).then(res=>{
+				jobApi.listJob(this.query).then(res=>{
 					this.myList = res.data.list
 				})
 			},
@@ -177,6 +187,15 @@
 			lower() {
 			},
 			goSecondHand() {
+				//!判断是否登录
+				if(!getApp().globalData.wxuser) {
+					getApp().globalData.global_Toast(true,"请先完成登录",function(res){});
+					return setTimeout(() => {
+						uni.redirectTo({
+							url:"/pages/index/index"
+						})
+					},2500)
+				}
 				uni.navigateTo({
 					url:"./addJob"
 				})
@@ -185,6 +204,17 @@
 				// uni.navigateTo({
 				// 	url:"./secondHandDetail?id="+id
 				// })
+			},
+			// 清除默认数据
+			clearData() {
+				this.query = {
+					user_id:getApp().globalData.wxuser.id,
+					gender:getApp().globalData.wxuser.gender,
+					page_num: 1,
+					page_size: 20,
+					sort:'id desc'
+				}
+				this.myList = [];
 			}
 		},
 
@@ -385,6 +415,7 @@
 					}
 
 					.info {
+						width: 100%;
 						position: absolute;
 						bottom: 0;
 						left: 15rpx;

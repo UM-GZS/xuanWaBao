@@ -12,27 +12,27 @@ export default {
 	 * 用户求职,查询列表
 	 */
 	listJob(data) {
-		return global_request('/api/jobsearch/list',data,'GET',false)
+		return global_request('/api/jobsearch/list',data,'GET')
 	},
 	/**
 	 *  用户求职,添加
 	 */
 	addJob(data) {
-		return global_request('/api/jobsearch/add',data,'POST',false)
+		return global_request('/api/jobsearch/add',data,'POST',true)
 	},
 	/**
 	 *  用户求职,删除
 	 * @param {object} data 
 	 */
 	deleteJob(data) {
-		return global_request('/api/jobsearch/delete',data,'POST',false)
+		return global_request('/api/jobsearch/delete',data,'POST',true)
 	},
 	/**
 	 *  用户求职,修改
 	 * @param {object} data 
 	 */
 	updateJob(data) {
-		return global_request('/api/jobsearch/update',data,'POST',false)
+		return global_request('/api/jobsearch/update',data,'POST',true)
 	},
 	
 }

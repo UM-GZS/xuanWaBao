@@ -223,6 +223,7 @@
 			this.baseUrl = getApp().globalData.requesturl
 		},
 		onShow(){
+			console.log(getCurrentPages())
 			//!判断当前的current是否为1  重新获取数据
 			if(this.current === 1) {
 				this.clearData()
@@ -494,7 +495,7 @@
 
 			}
 			.info_item:nth-last-child(1){
-				margin-bottom: 20rpx;
+				margin-bottom: 40rpx;
 			}
 			// .info_item:nth-last-child(1){
 			// 	margin-bottom: 130rpx;

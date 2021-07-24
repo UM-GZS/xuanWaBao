@@ -25,7 +25,7 @@
 			</view>
 
 			<u-cell-group>
-				<u-cell-item icon="none" title="购买记录" :border-top="false"></u-cell-item>
+				<u-cell-item icon="none" @click="shoppingRecord" title="购买记录" :border-top="false"></u-cell-item>
 				<u-cell-item icon="none" title="求职记录" :border-top="false"></u-cell-item>
 				<u-cell-item @click="repairRecord" icon="none" title="维修记录" :border-top="false"></u-cell-item>
 			</u-cell-group>
@@ -113,6 +113,11 @@
 			repairRecord() {
 				uni.navigateTo({
 					url:"../../subPackages/user/userCenter/repairRecord"
+				})
+			},
+			shoppingRecord() {
+				uni.navigateTo({
+					url:"../../subPackages/user/userCenter/shoppingRecord"
 				})
 			},
 			// 修改用户信息,手机号
