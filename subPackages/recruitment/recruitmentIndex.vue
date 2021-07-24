@@ -32,16 +32,16 @@
 				<!-- 我的 -->
 				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;padding-bottom:110rpx;" scroll-y
 					enable-flex v-else>
-					<view class="list" v-for="item in list" :key="item.id">
+					<view class="list" v-for="item in myList" :key="item.id">
 						<view class="item">
 							<view class="left_cover">
 								<image :src="item.cover"></image>
 							</view>
 							<view class="right_info">
-								<view class="name">{{item.name}}</view>
-								<view class="subtitle">{{item.company}}公司 {{item.num}} 人</view>
-								<view class="price">{{item.price}}</view>
-								<view class="info">{{item.address}} | {{item.year}} | {{item.limit}}</view>
+								<view class="name">{{item.uname}}</view>
+								<view class="subtitle">{{item.status_name}}</view>
+								<view class="price">{{item.salary}}</view>
+								<view class="info">{{item.address}} | {{item.description}} | {{item.age}}</view>
 							</view>
 						</view>
 					</view>
@@ -61,6 +61,7 @@
 </template>
 
 <script>
+	import jobApi from "../../network/job/jobApi"
 	export default {
 		components: {},
 		data() {
@@ -75,7 +76,7 @@
 						title: '我的求职'
 					}
 				],
-				current: 0, //! 默认选中的swiper下标
+				current: 1, //! 默认选中的swiper下标
 				baseUrl: "",
 				list: [{
 						id: 1,
@@ -141,23 +142,27 @@
 						year: "1年",
 						limit: "学历不限"
 					},
-				]
+				],
+				myList:[]
 			}
 		},
 		onLoad() {
 			this.baseUrl = getApp().globalData.requesturl
+			this.getMyList()
 		},
 		onShow() {
 			console.log("onshow处理重新加载数据")
 		},
 		methods: {
 
-			getList() {
+			getMyList() {
 				let query = {
 					page_num: 1,
-					page_size: 99,
+					page_size: 99,//!
 				}
-
+				jobApi.listJob(query).then(res=>{
+					this.myList = res.data.list
+				})
 			},
 			//! 按钮点击的切换
 			changeTab(id, index) {

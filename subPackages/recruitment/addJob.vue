@@ -8,31 +8,31 @@
 					<view class="name" style="width: 200rpx;text-align: center;">
 						姓名:
 					</view>
-					<u-input trim height="60" type="text" :border="true" />
+					<u-input trim height="60" type="text" :border="true" v-model="formData.name" :clearable="false"/>
 				</view>
 				<view class="info_item">
 					<view class="name" style="width: 200rpx;">
 						联系电话:
 					</view>
-					<u-input trim height="60" type="text" :border="true" />
+					<u-input trim height="60" type="text" :border="true"  v-model="formData.phone" :clearable="false"/>
 				</view>
 				<view class="info_item">
 					<view class="name" style="width: 200rpx;text-align: center;">
 						性别:
 					</view>
-					<u-input trim height="60" type="text" :border="true" />
+					<u-input trim height="60" type="text" :border="true"  v-model="formData.gender" :clearable="false"/>
 				</view>
 				<view class="info_item">
 					<view class="name" style="width: 200rpx;">
 						电子邮箱:
 					</view>
-					<u-input trim height="60" type="text" :border="true" />
+					<u-input trim height="60" type="text" :border="true"  v-model="formData.emain"  :clearable="false"/>
 				</view>
 				<view class="info_item">
 					<view class="name" style="width: 200rpx;text-align: center;">
 						年龄:
 					</view>
-					<u-input trim height="60" type="text" :border="true" />
+					<u-input trim height="60" type="text" :border="true"  v-model="formData.age"  :clearable="false"/>
 				</view>
 			</view>
 		</view>
@@ -42,19 +42,19 @@
 			<view class="intention_form">
 				<u-form ref="uForm">
 					<u-form-item label="意向岗位" label-width="150">
-						<u-input type="select" @click="showPurpose = true" />
+						<u-input type="select" @click="showPurpose = true"   v-model="formData.post" />
 					</u-form-item>
 					<u-form-item label="意向地点" label-width="150">
-						<u-input type="select" @click="showAddress = true" />
+						<u-input type="select" @click="showAddress = true"  v-model="formData.address"/>
 						<u-picker mode="region" v-model="showAddress" :area-code='["11", "1101", "110101"]'
 							@confirm="confirmAddress">
 						</u-picker>
 					</u-form-item>
 					<u-form-item label="期望薪资" label-width="150">
-						<u-input type="select" @click="showSalary = true" />
+						<u-input type="select" @click="showSalary = true"  v-model="formData.salary"  />
 					</u-form-item>
 					<u-form-item label="求职状态" label-width="150">
-						<u-input type="select" @click="showStatus = true" />
+						<u-input type="select" @click="showStatus = true" v-model="formData.status"  />
 					</u-form-item>
 				</u-form>
 			</view>
@@ -66,7 +66,7 @@
 			</view>
 			<view class="area">
 				<u-input maxlength="500" height="300" placeholder="请输入工作经验" type="textarea" :border="true"
-					:autoHeight="true" trim />
+					:autoHeight="true" trim   v-model="formData.description" />
 			</view>
 		</view>
 		<!--附件内容-->
@@ -79,7 +79,7 @@
 		</view>
 		<!-- 提交按钮 -->
 		<view class="footer">
-			<view class="beforeSubmit">
+			<view class="beforeSubmit" @click="submitForm">
 				确认提交
 			</view>
 		</view>
@@ -93,9 +93,9 @@
 					</view>
 					<view class="salary">
 						<text>意向岗位</text>
-						<u-input placeholder="请输入意向岗位" trim height="60" type="text" :border="true" />
+						<u-input placeholder="请输入意向岗位" trim height="60" type="text" :border="true"  v-model="formData.post"  />
 					</view>
-					<view class="save">
+					<view class="save" @click.stop="postSave">
 						确认
 					</view>
 				</view>
@@ -110,9 +110,9 @@
 					</view>
 					<view class="salary">
 						<text>期望薪资</text>
-						<u-input placeholder="如:5k-8k" trim height="60" type="text" :border="true" />
+						<u-input placeholder="如:5k-8k" trim height="60" type="text" :border="true" v-model="formData.salary" />
 					</view>
-					<view class="save">
+					<view class="save" @click.stop="salarySave" >
 						确认
 					</view>
 				</view>
@@ -126,14 +126,14 @@
 						求职状态
 					</view>
 					<view class="radio_list">
-						<u-radio-group active-color="#40df9c" width="50%" v-model="value" @change="radioGroupChange">
+						<u-radio-group active-color="#40df9c" width="50%" v-model="formData.status" @change="radioGroupChange">
 							<u-radio @change="radioChange" v-for="(item, index) in list" :key="index" :name="item.name"
 								:disabled="item.disabled">
 								{{item.name}}
 							</u-radio>
 						</u-radio-group>
 					</view>
-					<view class="save">
+					<view class="save" @click.stop="statusSave">
 						确认
 					</view>
 				</view>
@@ -143,6 +143,7 @@
 </template>
 
 <script>
+import jobApi from "../../network/job/jobApi"
 	export default {
 		data() {
 			return {
@@ -175,6 +176,18 @@
 				value:'',
 				//默认显示的图片列表
 				fileList: [],
+				formData:{
+					name:"",
+					phone:"",
+					gender:"",
+					emain:"",
+					age:"",
+					post:"",
+					address:"",
+					salary:"",
+					status:"",
+					description:"",
+				}
 			}
 		},
 		onLoad() {
@@ -192,16 +205,60 @@
 			},
 			confirmAddress(e) {
 				console.log("地址选择", e);
+				let province = e.province.label
+				let city = e.city.label
+				let area = e.area.label
+				this.formData.address = province+city+area
+				console.log(this.formData.address);
 			},
 			//! 监听图片的上传
 			onSuccess(data, index, lists, name) {
-
 				this.fileList = lists;
 			},
 			//! 监听图片的删除函数
 			onRemove(index, lists, name) {
 				this.fileList = lists;
+			},
+			// 表单提交
+			submitForm(){
+				console.log(this.formData);
+				console.log(this.fileList);
+				let wxuser = uni.getStorageSync('wxuser')
+				// ! 图片
+				let urls = this.fileList 
+				let query = {
+					user_id:wxuser.id,
+					name:this.formData.name,
+					phone:this.formData.phone,
+					gender:this.formData.gender,
+					age:this.formData.age,
+					post:this.formData.post,
+					address:this.formData.address,
+					salary:this.formData.salary,
+					status:this.formData.status,
+					description:this.formData.description,
+					urls
+				}
+
+				// jobApi.addJob(query)
+
+			},
+			// 岗位确定按钮
+			postSave(){
+				console.log(this.formData.post);
+				this.showPurpose = false
+			},
+			// 状态确定按钮
+			statusSave(){
+				console.log(this.formData.status);
+				this.showStatus = false
+			},
+			// 意向工资确定按钮
+			salarySave(){
+				console.log(this.formData.salary);
+				this.showSalary = false
 			}
+				
 		},
 	}
 </script>
