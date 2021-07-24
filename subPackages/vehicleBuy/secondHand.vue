@@ -120,7 +120,6 @@
 
 <script>
 	import API from "../../network/secondHand/secondHand"
-import { log } from 'util';
 	export default {
 		data() {
 			return {
