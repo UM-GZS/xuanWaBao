@@ -4,60 +4,18 @@
 			<head-title title="商品特惠" img="../../static/index/car.png"></head-title>
 			<!--商品打折内容 -->
 			<view class="discount_list">
-				<view class="discount_item">
+				<view class="discount_item" v-for="(item,index) in list" :key="index" @click="detail(item)">
 					<!--  头部照片 -->
 					<view class="pic">
-						<image style="width: 100%;height: 100%;" src="../../../static/uview/common/logo.png"></image>
+						<image style="width: 100%;height: 100%;" :src="baseUrl + item.small_img_urls"></image>
 					</view>
 					<!-- 产品描述 -->
 					<view class="info">
-						商品名称名称商品名称名称商品名称名称商品名称名称商品名称名称商品名称名称商品名称名称商品名称名称
+						{{ item.name }}
 					</view>
 					<!-- 产品价格 -->
 					<view class="price">
-						￥1624
-					</view>
-				</view>
-				<view class="discount_item">
-					<!--  头部照片 -->
-					<view class="pic">
-						<image style="width: 100%;height: 100%;" src="../../../static/uview/common/logo.png" ></image>
-					</view>
-					<!-- 产品描述 -->
-					<view class="info">
-						商品名称名称商品名称名称商品名称名称商品名称名称商品名称名称商品名称名称商品名称名称商品名称名称
-					</view>
-					<!-- 产品价格 -->
-					<view class="price">
-						￥1624
-					</view>
-				</view>
-				<view class="discount_item">
-					<!--  头部照片 -->
-					<view class="pic">
-						<image style="width: 100%;height: 100%;" src="../../../static/uview/common/logo.png" ></image>
-					</view>
-					<!-- 产品描述 -->
-					<view class="info">
-						商品名称名称商品名称名称商品名称名称商品名称名称商品名称名称商品名称名称商品名称名称商品名称名称
-					</view>
-					<!-- 产品价格 -->
-					<view class="price">
-						￥1624
-					</view>
-				</view>
-				<view class="discount_item">
-					<!--  头部照片 -->
-					<view class="pic">
-						<image style="width: 100%;height: 100%;" src="../../../static/uview/common/logo.png" ></image>
-					</view>
-					<!-- 产品描述 -->
-					<view class="info">
-						商品名称名称商品名称名称商品名称名称商品名称名称商品名称名称商品名称名称商品名称名称商品名称名称
-					</view>
-					<!-- 产品价格 -->
-					<view class="price">
-						￥1624
+						￥{{ item.price }}
 					</view>
 				</view>
 			</view>
@@ -67,12 +25,37 @@
 
 <script>
 	import headTitle from "@/components/head-title/head-title.vue"
+	import categoryApi from "../../../network/category/category.js";
 	export default {
 		components: {
 			headTitle
 		},
 		data() {
 			return {
+				baseUrl:getApp().globalData.requesturl,
+				list:[]
+			}
+		},
+		created() {
+			this.getGoodsList()
+		},
+		methods: {
+			 async getGoodsList() {
+				let  queryInfo = {
+					page_num:1,
+					page_size:6,
+					sort:'sales desc'
+				}
+				const res = await categoryApi.goodsList(queryInfo);
+				this.list = res.data.list;
+			},
+			//! 获取详情
+			detail(item) {
+				uni.navigateTo({
+					url:`/subPackages/category/category_detail?order_types=2&id=${item.id}`,
+					fail(err) {
+					}
+				})
 			}
 		},
 	}

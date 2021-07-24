@@ -83,7 +83,6 @@
 		watch: {
 			locName: {
 				handler(newValue, oldValue) {
-					console.log("home的监听", newValue, oldValue)
 				},
 				immediate: true,
 				deep: true

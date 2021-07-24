@@ -27,7 +27,6 @@
 			}
 		},
 		onLoad() {
-			console.log(this.city)
 		},
 		onPageScroll(e) {
 			this.scrollTop = e.scrollTop;

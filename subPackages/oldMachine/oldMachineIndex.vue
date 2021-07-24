@@ -45,7 +45,6 @@ export default {
     },
     methods: {
         search(){
-            console.log('搜索::');
             console.log(this.keyword);
 		},
 		clickPhone(){

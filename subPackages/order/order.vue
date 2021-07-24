@@ -180,7 +180,6 @@
 		onShow() {
 			//! 获取vuex中收货地址的数据
 			const address = this.$store.state.deliveryAddress;
-			console.log("查看收货地址vuex",address)
 			if(Object.keys(address).length > 0) {
 				this.userAddress = address;
 			}
@@ -195,7 +194,6 @@
 					def: true //! 获取默认地址
 				}
 				const res = await userApi.getAddressList(queryInfo);
-				console.log("是否再次获取",res);
 				if (res.data.list) {
 					this.userAddress = res.data.list[0];
 				}
@@ -247,7 +245,6 @@
 			},
 			//!长按复制
 			copy(value) {
-				console.log(value)
 				uni.setClipboardData({
 					data: value,
 					success: function() {

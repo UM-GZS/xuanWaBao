@@ -151,7 +151,6 @@
 				}
 				//! 判断用户是否上传图片
 				if(this.form.urls.length < 3) {
-					console.log(this.form.urls.length,"长度")
 					getApp().globalData.global_Toast(true, "请上传设备正前方、侧方、后方照片", function(res) {});
 					return;
 				}
@@ -160,7 +159,6 @@
 						// 显示弹窗
 						this.showConfirm = true;
 					} else {
-						console.log('验证失败');
 					}
 				});
 			},

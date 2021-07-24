@@ -155,7 +155,6 @@
 			}
 		},
 		onLoad(options) {
-			console.log(options);
 			//! 拿到id去请求对应的详情数据
 			let {
 				id,order_types
@@ -304,7 +303,6 @@
 			},
 			//! 选择型号
 			chooseModel(item, index) {
-				console.log("选择",item);
 				this.currentModel = index;
 				// 记录选中商品
 				this.modelData.goods_model = item.name; //!使用商品名称
@@ -340,7 +338,6 @@
 					quantity: this.modelData.quantity, // 数量
 					status: 1 //! 表示当前订单是待付款的状态
 				}
-				console.log("订单类型",orderData)
 				//! 用户点击下一步时写入将购物车数据写入vuex中
 				this.$store.commit("nextOrder", orderData);
 				this.showSelect = false;

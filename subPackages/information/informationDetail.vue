@@ -26,10 +26,10 @@
 					<image src="../../static/uview/common/collect.png" style="width: 25rpx;height: 25rpx;margin-right: 10rpx;" v-else></image>
 					<text>收藏</text>
 				</view>
-				<view class="share common" @click.stop="share">
+				<button open-type="share" class="share common">
 					<image src="../../static/information/share.png" style="width: 25rpx;height: 25rpx;margin-right: 10rpx;" ></image>
 					<text>分享</text>
-				</view>
+				</button>
 			</view>
 		</view>
 		<!-- 详情内容 -->
@@ -55,7 +55,9 @@
 				//! 记录当前文章的id
 				articleId:null,
 				//! 通过isCollect来判断用户是否时候收藏当前文章
-				isCollect:null
+				isCollect:null,
+				//! 获取要转发的消息
+				shareInfo:null
 			}
 		},
 		onLoad(options) {
@@ -120,9 +122,14 @@
 					})
 				}
 			},
-			//! 分享按钮点击
-			share() {
-				console.log("分享")
+			
+			onShareAppMessage(res) {
+				return {
+					title:this.detail.name,
+					imageUrl:this.url + this.detail.small_img_urls,
+					desc:'旋挖宝资讯',
+					path:`/subPackages/information/informationDetail?id=`+this.detail.id
+				}
 			}
 		},
 	}
@@ -161,6 +168,19 @@
 					margin-left: 20rpx;
 					display: flex;
 					align-items: center;
+				}
+				.share {
+					line-height: 1.2rpx;
+					background-color: transparent;
+					font-size: 20rpx;
+					display: flex;
+					align-items: center;
+					color: $gray_color;
+					margin-left: 10rpx;
+					padding: 0;
+					&::after {
+						border: none;
+					}
 				}
 			}
 		}

@@ -22,7 +22,7 @@
 						<!-- 图片以及文字内容 -->
 						<view class="info_content">
 							<view class="left_pic">
-								<image style="width: 100%;height: 100%;" src="../../static/uview/common/logo.png">
+								<image style="width: 100%;height: 100%;" :src="url + item.small_img_urls">
 								</image>
 							</view>
 							<view class="right_msg">
@@ -43,8 +43,10 @@
 								<!-- 收藏以及分享 -->
 								<view class="edit">
 									<!-- 收藏 -->
-									<view class="collect common" @click.stop="collect(item)">
-										<image src="../../static/information/collect.png" style="width: 30rpx;height: 30rpx;">
+									<view class="collect common" @click.stop="collect(item,index)">
+										<image src="../../static/information/collect.png" v-if="item.isCollect" style="width: 30rpx;height: 30rpx;">
+										</image>
+										<image src="../../static/uview/common/collect.png" v-else style="width: 30rpx;height: 30rpx;">
 										</image>
 										<text style="margin-left: 10rpx;">收藏</text>
 									</view>
@@ -87,6 +89,9 @@
 					page_size:20,
 					sort:'id desc'
 				},
+				total:0,
+				//! 判断是否还有更多数据
+				hasMore:true,
 				//! 用户收藏的列表数据
 				userCollect:[],
 				//! 数据切换标题数据
@@ -101,23 +106,31 @@
 		},
 		filters: {
 			filterDate: function(value) {
-				return getApp().globalData.formatDate(value);
+				return getApp().globalData.formatDate1(value);
 			}
+		},
+		activated() {
 		},
 		methods: {
 			//! 用于当前组件的网络请求函数
 			ontrueGetList() {
-				if(!this.flag) {
-					this.getArticle();
-					this.getUserCollect();
-					this.flag = true;
-				}
+				//!先清除数据重新请求
+				this.clearData();
+				this.getArticle();
 			},
 			//! 获取文章列表
 			async getArticle() {
 				const res = await articleApi.articleList(this.queryInfo);
-				this.list = res.data.list;
-				console.log(this.list);
+				this.total = res.data.total;
+				if(this.queryInfo.page_num * this.queryInfo.page_size >= this.total) {
+					this.hasMore = false;
+				}
+				for(let i = 0; i < res.data.list.length;i++) {
+					res.data.list[i].isCollect = false;
+				}
+				this.list = [...this.list,...res.data.list];
+				//! 获取用户收藏
+				this.getUserCollect();
 			},
 			//! 获取用户的所有收藏列表
 			async getUserCollect() {
@@ -130,7 +143,15 @@
 					}
 					const res = await collectApi.getCollect(params);
 					this.userCollect = res.data.list;
-					console.log("用户收藏",this.userCollect);
+					//! 遍历数据判断是否有对应的收藏数据
+					for(let i = 0;i < this.userCollect.length; i++) {
+						for(let j = 0;j < this.list.length;j++) {
+							if(this.userCollect[i].collection_id === this.list[j].id) {
+								this.list[j].isCollect = true;
+								continue
+							}
+						}
+					}
 				}
 			},
 			// 跳转详情页面
@@ -139,18 +160,45 @@
 				if(!getApp().globalData.wxuser) {
 					return getApp().globalData.global_Toast(true,"请先完成登录",function(res){});
 				}
-				console.log(item)
 				uni.navigateTo({
 					url:`../../subPackages/information/informationDetail?id=${item.id}`
 				})
 			},
-			//! 点击收藏按钮
-			collect(item) {
-				console.log("收藏按钮",item);
+ 			//! 点击收藏按钮
+			collect(item,index) {
+				//! 判断用户是否登录
+				if(!getApp().globalData.wxuser) {
+					return getApp().globalData.global_Toast(true,"请先完成登录",function(res) {});
+				}
+				
+				//! 判断当前数据是否收藏
+				if(item.isCollect) {
+					// 用当前商品id去匹配对应的用户收藏id
+					let idIndex = this.userCollect.findIndex(v => {
+						return v.collection_id === item.id
+					})
+					//! 发送取消收藏的网络请求
+					let params = {
+						id:this.userCollect[idIndex].id
+					}
+					collectApi.deleteCollect(params).then(res => {
+						///! 隐藏收藏显示
+						this.list[index].isCollect = false;
+					})
+				}else {
+					let params = {
+						user_id:getApp().globalData.wxuser.id, // 用户id
+						collection_id:item.id, // 收藏的文章id
+						collection_status:0
+					}
+					//! 发送收藏的网络请求
+					collectApi.addCollect(params).then(res => {
+						this.list[index].isCollect = true;
+					})
+				}
 			},
 			//! 点击分享按钮
 			share() {
-				console.log("share调用")
 				let data = {
 					msg:'旋挖宝资讯'
 				}
@@ -159,16 +207,13 @@
 				  withShareTicket: true,
 				  menus: ['shareAppMessage', 'shareTimeline'],
 					success(res) {
-						console.log(res)
 					},
 					fail(err) {
-						console.warn(err)
 					}
 				})
 			},
 			//! 按钮点击的切换
 			changeTab(id,index) {
-				console.log(id);
 				this.current = index;
 			},
 			//! 滑动页面的切换
@@ -177,7 +222,21 @@
 			},
 			//! 数据滚动到底部的监听
 			lower() {
-				console.log("到达底部");
+				if(this.hasMore) {
+					this.getArticle();
+				}else {
+					getApp().globalData.global_Toast(true,"没有更多数据了",function(res){})
+				}
+			},
+			//!清除默认数据重新请求
+			clearData() {
+				this.queryInfo = {
+					page_num:1,
+					page_size:20,
+					sort:'id desc'
+				}
+				this.userCollect = [];
+				this.list = [];
 			}
 		},	
 		

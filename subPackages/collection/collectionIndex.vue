@@ -9,8 +9,7 @@
 		</view>
 
 		<!-- 内容区域 -->
-		<swiper @change="change" :current="current" class="swiper_content"
-			:style="{'padding-bottom':current==1?'115rpx':'0rpx'}" enable-flex>
+		<swiper @change="change" :current="current" class="swiper_content" style="padding-bottom: 25rpx;" enable-flex>
 			<swiper-item v-for="(swiperItem,swiperIndex) in tabList" :key="swiperIndex" class="swiper_wrap">
 				<!-- 文章 -->
 				<scroll-view @scrolltolower="lower" scroll-y v-if="swiperIndex==0" enable-flex
@@ -159,7 +158,7 @@
 		},
 		filters: {
 			filterDate: function(value) {
-				return getApp().globalData.formatDate(value);
+				return getApp().globalData.formatDate1(value);
 			}
 		},
 		methods: {
@@ -184,7 +183,6 @@
 			// 请求文章列表
 			async getTextList() {
 				const res = await collectApi.getCollect(this.textQueryInfo);
-				console.log(res);
 				let list = res.data.list;
 				//根据拿到的数据遍历请求
 				for(let i = 0; i < list.length;i++) {
@@ -195,7 +193,6 @@
 			// 获取商品的函数
 			async getGoodsList() {
 				const res = await collectApi.getCollect(this.goodsInfo);
-				console.log("查看结果",res)
 				// this.goodsList = list
 				let list = res.data.list;
 				for(let i = 0;i < list.length;i++) {
@@ -246,7 +243,6 @@
 			},
 			//! 按钮点击的切换
 			changeTab(id, index) {
-				console.log(id);
 				this.current = index;
 			},
 			//! 滑动页面的切换
@@ -255,7 +251,6 @@
 			},
 			//! 数据滚动到底部的监听
 			lower() {
-				console.log("到达底部");
 			},
 			//! 清除默认数据
 			clearData() {
@@ -295,8 +290,6 @@
 
 			},
 			goDetail(id) {
-				console.log(id);
-				console.log('跳转到详情');
 				uni.navigateTo({
 					url: "./secondHandDetail?id=" + id
 				})

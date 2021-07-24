@@ -138,7 +138,6 @@
 		methods: {
 			getList() {
 				let index = this.current
-				console.log(typeof index,index)
 				switch (index) {
 					case 0:
 						// this.getScondTrading()
@@ -159,7 +158,6 @@
 			},
 			//! 按钮点击的切换
 			changeTab(id, index) {
-				console.log(index)
 				this.current = index;
 			},
 			//! 滑动页面的切换
@@ -168,12 +166,9 @@
 			},
 			//! 数据滚动到底部的监听
 			lower() {
-				console.log("到达底部");
 			},
 			
 			goDetail(id) {
-				console.log(id);
-				console.log('跳转到详情');
 				uni.navigateTo({
 					url: "./secondHandDetail?id=" + id
 				})

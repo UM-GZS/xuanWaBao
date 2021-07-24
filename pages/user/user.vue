@@ -115,7 +115,6 @@
 							userProvince: res.userInfo.province
 						}
 						let resData = await userApi.login(query)
-						console.log("是否登录成功",resData);
 						//! 存储到全局
 						uni.setStorageSync('wxuser', resData.data)
 						getApp().globalData.wxuser = resData.data

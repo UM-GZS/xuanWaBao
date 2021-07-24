@@ -121,7 +121,6 @@
 			}
 		},
 		onLoad(options) {
-			console.log("onload是否触发")
 			//！获取用户的地理位置
 			let _this = this
 			this.is_lhp = this.$is_bang
@@ -140,7 +139,6 @@
 				}, 100)
 			})
 
-			console.log("是否为刘海屏", this.is_lhp)
 		},
 		onShow() {
 			const page = getCurrentPages();
@@ -167,7 +165,6 @@
 								content: '需要获取您的地理位置，请确认授权',
 								success: function(res) {
 									if (res.cancel) {
-										console.log("拒绝了")
 										//取消授权
 										wx.showToast({
 											title: '拒绝授权',
@@ -206,7 +203,6 @@
 							//用户首次进入页面,调用wx.getLocation的API
 							_this.goAddress();
 						} else {
-							// console.log('授权成功')
 							//调用wx.getLocation的API
 							_this.goAddress();
 						}
@@ -269,8 +265,8 @@
 				setTimeout(function() {
 					uni.stopPullDownRefresh()
 				}, 2000)
-				console.log('下拉刷新四个组件公用的下拉刷新方法,根据在哪个页面下拉执行哪个页面的刷新方方法即可')
-				console.log('如果想要自定义刷新的话，插件市场就有一个   非常好用也非常容易入手')
+				// console.log('下拉刷新四个组件公用的下拉刷新方法,根据在哪个页面下拉执行哪个页面的刷新方方法即可')
+				// console.log('如果想要自定义刷新的话，插件市场就有一个   非常好用也非常容易入手')
 			},
 			closeModel() {
 				this.showModal = false
@@ -278,7 +274,6 @@
 			handelItem(id) {
 				this.showModal = false
 				//! 根据id对应跳转界面
-				console.log(id)
 				switch (id) {
 					case 1:
 						uni.navigateTo({
@@ -313,19 +308,11 @@
 		},
 		onShareAppMessage(options) {
 			if (options.from === "button") {
-				console.log(options)
 				//! 获取缓存中的数据，编辑转发的内容显示数据
 				let sharInfo = uni.getStorageSync("shareInfo");
 				return {
 					title: `${sharInfo.msg}`,
-					path: '/pages/index/index',
-					success: function(res) {
-						// 转发成功
-						console.log("成功转发")
-					},
-					fail: function(res) {
-						// 转发失败
-					}
+					path: '/pages/index/index'
 				}
 			}
 		}

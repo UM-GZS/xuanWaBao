@@ -101,7 +101,6 @@
 			}
 		},
 		onLoad(options) {
-			console.log("查看页面类型",options);
 			this.type = options.type
 			this.wxuser = uni.getStorageSync('wxuser')
 			this.getList()
@@ -122,8 +121,8 @@
 				this.edit_add = 'add'
 				this.showAdd = true
 			},
+			// 点击定位
 			clickPosition() {
-				console.log('点击定位')
 			},
 			// 添加时的选择地址打开
 			selectAddress() {
@@ -251,7 +250,6 @@
 			clickAddressItem(item) {
 				// 将用户选择的地址存储到vuex中
 				this.$store.commit('chooseAddress',item);
-				console.log(this.$store.state.deliveryAddress);
 				//! 如果界面非订单界面跳转的收货地址不执行后面
 				if (this.type == '') {
 					return

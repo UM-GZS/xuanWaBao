@@ -170,7 +170,6 @@
 			},
 			//! 数据滚动到底部的监听
 			lower() {
-				console.log("到达底部");
 			},
 			goSecondHand() {
 				uni.navigateTo({
@@ -178,7 +177,6 @@
 				})
 			},
 			goDetail(id) {
-				console.log('跳转到详情');
 				// uni.navigateTo({
 				// 	url:"./secondHandDetail?id="+id
 				// })

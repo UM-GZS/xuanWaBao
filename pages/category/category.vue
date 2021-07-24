@@ -59,7 +59,7 @@
 				//! 右边详情的请求参数
 				rightDeatilInfo: {
 					page_num: 1,
-					page_size: 20,
+					page_size: 10,
 					sort: 'id asc', //!排序方式
 					shelf: true //! 上架的标识
 				},
@@ -68,7 +68,7 @@
 				//! 子分类的请求数据
 				subCateInfo: {
 					page_num: 1,
-					page_size: 20,
+					page_size: 999,
 					sort: 'id asc'
 				},
 				//! 左边分类数据
@@ -133,13 +133,12 @@
 				}
 				const subList = await categoryApi.subCategory(params);
 				//! 解构数据
-				this.subCategory = [...this.subCategory,...subList.data.list];
+				this.subCategory = subList.data.list;
 			},
 			/**
 			 * 左边分类到达底部触发
 			 */
 			cate_bottom() {
-				console.log("到达底部")
 			},
 			/**
 			 * 右边详情页面到底函数
@@ -166,7 +165,7 @@
 				//! 初始化请求参数
 				this.rightDeatilInfo = {
 					page_num: 1,
-					page_size: 20,
+					page_size: 10,
 					sort: 'id asc', //!排序方式
 					shelf: true //! 上架的标识
 				}
@@ -177,7 +176,6 @@
 			},
 			//! 跳转详情界面
 			detail(id) {
-				console.log("点击了")
 				/**
 				 * 跳转传递order_types来判断是从哪个界面进入
 				 * 0表示新机置换 1表示租赁订单 2商品分类订单

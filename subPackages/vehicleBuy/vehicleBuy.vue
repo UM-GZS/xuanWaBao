@@ -275,7 +275,6 @@
 			// 获取二手交易列表
 			getSecondHandList() {
 				secondHandApi.getList(this.secondHandInfo).then(res => {
-					console.log(res.data.list.length)
 					if(res.data.list.length < 10) {
 						this.secondHandHasMore = false;
 					}
@@ -289,7 +288,6 @@
 			},
 			//! 按钮点击的切换
 			changeTab(id, index) {
-				console.log("切换index",index);
 				this.current = index;
 			},
 			//! 滑动页面的切换
@@ -306,7 +304,6 @@
 			},
 			//! 数据滚动到底部的监听
 			lower() {
-				console.log("到达底部");
 				if(this.current === 0 && this.machinesHasMore){
 					this.page++
 					this.init()
@@ -342,7 +339,6 @@
 			},
 			// 新机置换de跳转详情
 			goMachinesList(id){
-				console.log("新机置换de跳转详情,id==",id);
 				/**
 				 * 跳转传递order_types来判断是从哪个界面进入
 				 * 0表示新机置换 1表示租赁订单 2商品分类订单
@@ -358,7 +354,7 @@
 					page_num:1,
 					page_size:10,
 					sort:'id desc'
-				},
+				}
 				this.secondHandList = [];
 				this.secondHandHasMore = true;
 			}

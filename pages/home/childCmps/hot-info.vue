@@ -3,27 +3,27 @@
 		<view class="hot_info">
 			<head-title title="热点推送" img="../../static/index/hot.png"></head-title>
 			<view class="hot_list">
-				<view class="hot_item" @click="detail">
+				<view class="hot_item" @click="detail(item)" v-for="(item,index) in hotList" :key="index">
 					<!-- 左边产品图片 -->
 					<view class="left_img">
-						<image style="width: 100%;height: 100%;" src="../../../static/uview/common/logo.png"></image>
+						<image style="width: 100%;height: 100%;" :src="baseUrl + item.small_img_urls"></image>
 					</view>
 					<!-- 右边产品信息 -->
 					<view class="right_info">
 						<view class="head">
-							<view class="title">标题</view>
-							<view class="time">2021年4月25日</view>
+							<view class="title">{{ item.name }}</view>
+							<view class="time">{{ item.create_time | filterDate }}</view>
 						</view>
-						<view class="content">内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容</view>
+						<view class="content">{{ item.info1 }} {{ item.info2 }}{{ item.info3 }}</view>
 						<!-- 操作描述 -->
 						<view class="other" style="font-size: 24rpx;">
 							<view class="name" style="display: flex;align-items: center;margin-right: 30rpx;">
-								<image src="../../../static/user/usercenter.png" style="width: 25rpx;height: 25rpx;"></image>
-								<text style="margin-left: 10rpx;">用户名称</text>
+								<image :src="baseUrl + item.user_url" style="width: 25rpx;height: 25rpx;"></image>
+								<text style="margin-left: 10rpx;">{{ item.user_name }}</text>
 							</view>
 							<view class="through" style="display: flex;align-items: center;">
 								<image src="../../../static/index/see.png" style="width: 30rpx;height: 20rpx;"></image>
-								<text style="margin-left: 10rpx;">2300</text>
+								<text style="margin-left: 10rpx;">{{ item.comments }}</text>
 							</view>
 						</view>
 					</view>
@@ -35,22 +35,45 @@
 
 <script>
 	import headTitle from "@/components/head-title/head-title.vue"
+	import articleApi from "../../../network/article/article.js";
 	export default {
 		components: {
 			headTitle
 		},
 		data() {
 			return {
+				hotList:[],
+				baseUrl:getApp().globalData.requesturl
 			}
 		},
+		filters: {
+			filterDate: function(value) {
+				return getApp().globalData.formatDate1(value);
+			}
+		},
+		created() {
+			this.getArticle();
+		},
 		methods: {
+			//! 获取文章
+			async getArticle() {
+				let queryInfo = {
+					page_num:1,
+					page_size:3,
+					sort:'id desc'
+				}
+				const res = await articleApi.articleList(queryInfo);
+				this.hotList = res.data.list;
+			},
 			//! 跳转详情
-			detail() {
-				console.log("点击")
+			detail(item) {
+				//! 判断用户是否完成登录
+				if(!getApp().globalData.wxuser) {
+					return getApp().globalData.global_Toast(true,"请先完成登录",function(res) {})
+				}
 				uni.navigateTo({
-					url:"/subPackages/information/informationDetail",
+					url:`/subPackages/information/informationDetail?id=${item.id}`,
 					fail(err) {
-						console.log(err)
 					}
 				})
 			}

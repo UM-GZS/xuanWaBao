@@ -33,7 +33,6 @@
 		watch: {
 			location:{
 				handler(newValue,oldValue) {
-					console.log("search组件的监听",newValue,oldValue);
 					this.location = newValue;
 				},
 				deep:true
