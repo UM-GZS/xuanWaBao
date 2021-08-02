@@ -44,12 +44,12 @@
 				</scroll-view>
 
 				<!-- 商品 -->
-				<scroll-view @scrolltolower="lower" scroll-y v-if="swiperIndex==1" enable-flex
+				<scroll-view @scrolltolower="lower" scroll-y v-if="swiperIndex==1" enable-flex 
 					style="width: 100%;height: 100%;padding-bottom:10rpx;">
 
 					<view v-if="goodsList.length>0">
 						<view class="goods_list">
-							<view class="item" v-for="item in goodsList" :key="item.id">
+							<view class="item" v-for="item in goodsList" :key="item.id" @click="goGoodsDetail(item.id)">
 								<view class="left_cover">
 									<image :src="baseUrl + item.small_img_urls"></image>
 								</view>
@@ -123,20 +123,20 @@
 					}
 				],
 				// 文章的请求列表
-				textQueryInfo:{
-					user_id:getApp().globalData.wxuser.id,
-					collection_status:0, // 文章
-					page_num:1,
-					page_size:20,
-					sort:'id desc'
+				textQueryInfo: {
+					user_id: getApp().globalData.wxuser.id,
+					collection_status: 0, // 文章
+					page_num: 1,
+					page_size: 999, //! 坑 默认请求最大数据量
+					sort: 'id desc'
 				},
 				// 商品请求列表
-				goodsInfo:{
-					user_id:getApp().globalData.wxuser.id,
-					collection_status:1, // 商品
-					page_num:1,
-					page_size:20,
-					sort:'id desc'
+				goodsInfo: {
+					user_id: getApp().globalData.wxuser.id,
+					collection_status: 1, // 商品
+					page_num: 1,
+					page_size: 999,
+					sort: 'id desc'
 				},
 				current: 0, //! 默认选中的swiper下标
 				baseUrl: "",
@@ -185,8 +185,10 @@
 				const res = await collectApi.getCollect(this.textQueryInfo);
 				let list = res.data.list;
 				//根据拿到的数据遍历请求
-				for(let i = 0; i < list.length;i++) {
-					const articleRes = await articleApi.articleDetail({id:list[i].collection_id});
+				for (let i = 0; i < list.length; i++) {
+					const articleRes = await articleApi.articleDetail({
+						id: list[i].collection_id
+					});
 					this.textList.push(articleRes.data);
 				}
 			},
@@ -195,12 +197,14 @@
 				const res = await collectApi.getCollect(this.goodsInfo);
 				// this.goodsList = list
 				let list = res.data.list;
-				for(let i = 0;i < list.length;i++) {
+				for (let i = 0; i < list.length; i++) {
 					let params = {
-						id:list[i].collection_id
+						id: list[i].collection_id
 					}
 					const goodsRes = await categoryApi.goodsDetail(params);
-					this.goodsList.push(goodsRes.data)
+					if(goodsRes.data) {
+						this.goodsList.push(goodsRes.data)
+					}
 				}
 			},
 			//! 获取求职招聘
@@ -250,27 +254,26 @@
 				this.current = e.target.current;
 			},
 			//! 数据滚动到底部的监听
-			lower() {
-			},
+			lower() {},
 			//! 清除默认数据
 			clearData() {
 				this.textQueryInfo = {
-					user_id:getApp().globalData.wxuser.id,
-					collection_status:0, // 文章
-					page_num:1,
-					page_size:20,
-					sort:'id desc'
+					user_id: getApp().globalData.wxuser.id,
+					collection_status: 0, // 文章
+					page_num: 1,
+					page_size: 999,
+					sort: 'id desc'
 				}
 				this.goodsInfo = {
-					user_id:getApp().globalData.wxuser.id,
-					collection_status:1, // 商品
-					page_num:1,
-					page_size:20,
-					sort:'id desc'
+					user_id: getApp().globalData.wxuser.id,
+					collection_status: 1, // 商品
+					page_num: 1,
+					page_size: 999,
+					sort: 'id desc'
 				}
 				this.textList = [] // 文章列表数据
 				this.goodsList = [] // 商品列表数据
-				this.recruitmentList= [] // 招聘数据
+				this.recruitmentList = [] // 招聘数据
 			},
 			goSecondHand() {
 				//! 判断用户是否已经完成登录
@@ -287,13 +290,18 @@
 						url: "../vehicleBuy/secondHand"
 					})
 				}
-
 			},
 			goDetail(id) {
+				console.log(id);
 				uni.navigateTo({
-					url: "./secondHandDetail?id=" + id
+					url:`../information/informationDetail?id=${id}`
 				})
-			}
+			},
+			goGoodsDetail(id) {
+				uni.navigateTo({
+					url:`../category/category_detail?order_types=2&id=${id}`
+				})
+			} 
 		},
 
 	}

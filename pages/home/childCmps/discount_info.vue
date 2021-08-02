@@ -70,13 +70,13 @@
 			width: 100%;
 			.discount_list {
 				width: 100%;
-				padding: 30rpx 50rpx;
+				padding: 30rpx 0;
 				display: flex;
 				justify-content: space-between;
 				flex-wrap: wrap;
 				.discount_item {
 					flex: 0 0 30%;
-					padding: 20rpx 25rpx;
+					padding: 20rpx 20rpx;
 					margin-bottom: 25rpx;
 					display: flex;
 					flex-direction: column;
@@ -85,24 +85,24 @@
 					border-radius: 15rpx;
 					.pic {
 						width: 100%;
-						height: 150rpx;
+						height: 160rpx;
 						margin-bottom: 10rpx;
 					}
 					.info {
 						width: 100%;
-						margin-top: 15rpx;
-						margin-bottom: 15rpx;
+						margin-top: 10rpx;
+						margin-bottom: 10rpx;
 						font-size: 22rpx;
-						color: $gray_color;
+						color: #38393B;
 						display: -webkit-box;
 						-webkit-box-orient: vertical;
-						-webkit-line-clamp: 2;
+						-webkit-line-clamp: 1;
 						overflow: hidden;
 					}
 					.price{
-						align-self: flex-end;
-						font-size: 28rpx;
-						color: #eb2d0d;
+						align-self: flex-start;
+						font-size: 30rpx;
+						color: #ff2400;
 						font-weight: 700;
 					}
 				}

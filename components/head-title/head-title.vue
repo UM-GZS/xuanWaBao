@@ -3,7 +3,7 @@
 	<view class="comm_title">
 		<view class="comm_left">
 			<image style="width: 45rpx;height: 45rpx;" :src="img"></image>
-			<text style="margin-left: 10rpx;font-weight: 800;">{{ title }}</text>
+			<text style="font-size: 35rpx;margin-left: 10rpx;font-weight: 800;">{{ title }}</text>
 		</view>
 		<view class="show_more">
 			<view style="display: flex;align-items: center;">

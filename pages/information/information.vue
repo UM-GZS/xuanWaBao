@@ -1,7 +1,7 @@
 <template>
 	<view class="info_wrap">
 		<!-- 头部搜索框 -->
-		<head-search :location="locName"></head-search>
+		<!-- <head-search :location="locName"></head-search> -->
 		<!-- 切换按钮 -->
 		<view class="swiper_tab">
 			<view class="tab_item" @click="changeTab(item.id,index)" v-for="(item,index) in tabList" :key="index">
@@ -12,7 +12,7 @@
 
 		<!-- 内容区域 -->
 		<swiper @change="change" :current="current" class="swiper_content" enable-flex>
-			<swiper-item>
+			<swiper-item v-for="(item,index) in tabList" :key="index" class="swiperItem">
 				<!-- 每一项内容区域 -->
 				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;" scroll-y enable-flex>
 					<view class="info_item" @click="infoDetail(item)" v-for="(item,index) in list" :key="index">
@@ -36,7 +36,7 @@
 										</image>
 										<text style="margin-left: 10rpx;">{{ item.user_name }}</text>
 									</view>
-									<view class="time">
+									<view class="time" style="color: #B3B3B3;font-size: 23rpx;">
 										{{ item.create_time | filterDate }}
 									</view>
 								</view>
@@ -44,9 +44,9 @@
 								<view class="edit">
 									<!-- 收藏 -->
 									<view class="collect common" @click.stop="collect(item,index)">
-										<image src="../../static/information/collect.png" v-if="item.isCollect" style="width: 30rpx;height: 30rpx;">
+										<image src="../../static/information/collect.png" v-if="item.isCollect" style="width: 35rpx;height: 35rpx;">
 										</image>
-										<image src="../../static/uview/common/collect.png" v-else style="width: 30rpx;height: 30rpx;">
+										<image src="../../static/uview/common/collect.png" v-else style="width: 40rpx;height: 40rpx;">
 										</image>
 										<text style="margin-left: 10rpx;">收藏</text>
 									</view>
@@ -70,6 +70,7 @@
 	import articleApi from "../../network/article/article.js";
 	import collectApi from "../../network/user/collect.js";
 	import headSearch from "@/components/head-search/head-search.vue";
+	import userApi from '../../network/user/userApi.js';
 	export default {
 		components: {
 			headSearch
@@ -108,8 +109,6 @@
 			filterDate: function(value) {
 				return getApp().globalData.formatDate1(value);
 			}
-		},
-		activated() {
 		},
 		methods: {
 			//! 用于当前组件的网络请求函数
@@ -158,7 +157,8 @@
 			infoDetail(item) {
 				//! 判断用户是否已经登录
 				if(!getApp().globalData.wxuser) {
-					return getApp().globalData.global_Toast(true,"请先完成登录",function(res){});
+					this.login();
+					return ;
 				}
 				uni.navigateTo({
 					url:`../../subPackages/information/informationDetail?id=${item.id}`
@@ -168,7 +168,8 @@
 			collect(item,index) {
 				//! 判断用户是否登录
 				if(!getApp().globalData.wxuser) {
-					return getApp().globalData.global_Toast(true,"请先完成登录",function(res) {});
+					this.login();//! 调用登录接口
+					return ;
 				}
 				
 				//! 判断当前数据是否收藏
@@ -184,6 +185,7 @@
 					collectApi.deleteCollect(params).then(res => {
 						///! 隐藏收藏显示
 						this.list[index].isCollect = false;
+						getApp().globalData.global_Toast(true,"文章取消收藏",function(res) {})
 					})
 				}else {
 					let params = {
@@ -194,8 +196,48 @@
 					//! 发送收藏的网络请求
 					collectApi.addCollect(params).then(res => {
 						this.list[index].isCollect = true;
+						//! 重新获取对应的用户收藏
+						this.getUserCollect();
+						getApp().globalData.global_Toast(true,"文章已收藏",function(res) {})
 					})
 				}
+			},
+			//! 用户登录
+			async login() {
+				let that = this
+				// let wxuser = uni.getStorageSync('wxuser')
+				// if (wxuser.phone) {
+				// 	return
+				// }
+				let code = ''
+				uni.login({
+					success(resCode) {
+						code = resCode.code
+					}
+				})
+				uni.getUserProfile({
+					desc: '微信一键登录',
+					lang: 'zh_CN',
+					success: async res => {
+						console.log(res)
+						let query = {
+							code: code,
+							userHead: res.userInfo.avatarUrl,
+							userName: res.userInfo.nickName,
+							userGender: res.userInfo.gender, // 0:未知,1:男,2:女
+							userCity: res.userInfo.city,
+							userProvince: res.userInfo.province
+						}
+						let resData = await userApi.login(query)
+						console.log("登录结果",resData)
+						//! 存储到全局
+						uni.setStorageSync('wxuser', resData.data)
+						getApp().globalData.wxuser = resData.data
+					},
+					complete:() => {
+						console.log("完成获取")
+					}
+				}) //getUserProfile end
 			},
 			//! 点击分享按钮
 			share() {
@@ -218,6 +260,7 @@
 			},
 			//! 滑动页面的切换
 			change(e) {
+				console.log("滑动",e)
 				this.current = e.target.current;
 			},
 			//! 数据滚动到底部的监听
@@ -250,7 +293,7 @@
 		padding-bottom: 100rpx;
 
 		.swiper_tab {
-			margin-top: 10rpx;
+			// margin-top: 10rpx;
 			width: 100%;
 			height: 90rpx;
 			background-color: #ffffff;
@@ -270,10 +313,16 @@
 		.swiper_content {
 			width: 100%;
 			margin-top: 30rpx;
-			height: calc(100vh - 328rpx);
+			height: calc(100vh - 218rpx);
 			overflow-y: scroll;
-			padding: 0 20rpx;
 			box-sizing: border-box;
+			
+			// 设置swiperItem的间距
+			.swiperItem {
+				width: 100%;
+				box-sizing: border-box;
+				padding: 0 20rpx;
+			}
 			
 			.info_item {
 				width: 100%;
@@ -281,7 +330,7 @@
 				flex-direction: column;
 				background-color: #ffffff;
 				border-radius: 15rpx;
-				padding: 30rpx;
+				padding: 30rpx 30rpx 5rpx 30rpx;
 				margin-bottom: 10rpx;
 
 				.info_title {
@@ -289,7 +338,8 @@
 					display: -webkit-box;
 					-webkit-box-orient: vertical;
 					-webkit-line-clamp: 1;
-					font-size: 30rpx;
+					font-size: 32rpx;
+					color: #38393B;
 					font-weight: 600;
 					overflow: hidden;
 				}
@@ -318,8 +368,8 @@
 							display: -webkit-box;
 							-webkit-box-orient: vertical;
 							-webkit-line-clamp: 2;
-							font-size: 30rpx;
-							font-weight: 600;
+							font-size: 26rpx;
+							color: #808080;
 							overflow: hidden;
 						}
 						.share {
@@ -351,7 +401,8 @@
 						.edit {
 							width: 100%;
 							display: flex;
-							color: $gray_color;
+							color: #B3B3B3;
+							font-size: 35rpx;
 							justify-content: flex-end;
 							align-items: center;
 						}

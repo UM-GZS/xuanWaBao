@@ -147,6 +147,10 @@
 						})
 						break;
 					case 4:
+						if (!getApp().globalData.wxuser) {
+							getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+							return;
+						}
 						uni.navigateTo({
 							url: "../../subPackages/recruitment/recruitmentIndex"
 						})
@@ -200,8 +204,9 @@
 
 						.desc {
 							margin-top: 20rpx;
-							font-weight: 400;
+							font-weight: 700;
 							font-size: 28rpx;
+							color: #000000;
 						}
 
 						.s_icon {

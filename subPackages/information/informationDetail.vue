@@ -34,10 +34,16 @@
 		</view>
 		<!-- 详情内容 -->
 		<view class="content">
-			{{ detail.info1 }}
+			<view style="text-indent: 2em;">
+				{{ detail.info1 }}
+			</view>
 			<image v-for="(item,index) in imgList" :key="index" :src="item.img" style="width: 100%;border-radius: 30rpx;"></image>
-			{{ detail.info2 }}
-			{{ detail.info3 }}
+			<view style="text-indent: 2em;">
+				{{ detail.info2 }}
+			</view>
+			<view style="text-indent: 2em;">
+				{{ detail.info3 }}
+			</view>
 		</view>
 	</view>
 </template>
@@ -109,6 +115,7 @@
 					collectApi.deleteCollect({id:this.isCollect.id}).then(delRes => {
 						//! 重新获取数据
 						this.getUserCollect(this.articleId);
+						getApp().globalData.global_Toast(true,"文章取消收藏",function(res) {})
 					})
 				}else {
 					let data = {
@@ -119,6 +126,7 @@
 					//! 添加收藏
 					collectApi.addCollect(data).then(addRes => {
 						this.getUserCollect(this.articleId);
+						getApp().globalData.global_Toast(true,"文章已收藏",function(res) {})
 					})
 				}
 			},
@@ -185,7 +193,7 @@
 			}
 		}
 		.content {
-			font-size: 30rpx;
+			font-size: 35rpx;
 			font-weight: 300;
 		}
 	}

@@ -3,18 +3,18 @@
 		<view class="recruit_info">
 			<head-title title="招聘信息" img="../../static/index/recruit2.png"></head-title>
 			<view class="recruit_list">
-				<view class="recruit_item">
+				<view class="recruit_item" @click="detail(item)"  v-for="(item,index) in list" :key="index">
 					<!-- 左边产品图片 -->
 					<view class="left_img">
-						<image style="width: 100%;height: 100%;" src="../../../static/uview/common/logo.png"></image>
+						<image style="width: 100%;height: 100%;" src="https://www.yuanhao.work/dl/img/97d884dc427142983f711d64b4dcb28194c0174f.jpeg@639w_360h.jpeg"></image>
 					</view>
 					<!-- 右边产品信息 -->
 					<view class="right_info">
 						<view class="head">
-							<view class="title">标题</view>
-							<view class="money" style="color:#FDDF2F;">15K-20K</view>
+							<view class="title">旋挖机师傅</view>
+							<!-- <view class="money" style="color:#FDDF2F;">15K-20K</view> -->
 						</view>
-						<view class="content">xxx公司 200人</view>
+						<view class="content">泽豪公司 200人</view>
 						<!-- 操作描述 -->
 						<view class="other">
 							<view class="location common">北京</view>
@@ -23,7 +23,6 @@
 						</view>
 					</view>
 				</view>
-				
 			</view>
 		</view>
 	</view>
@@ -36,7 +35,16 @@
 			headTitle
 		},
 		data() {
-			return {}
+			return {
+				list:[{},{}]
+			}
+		},
+		methods: {
+			detail(items) {
+				uni.navigateTo({
+					url:"/subPackages/recruitment/recruitmentDetail"
+				})
+			}
 		},
 	}
 </script>
@@ -52,7 +60,7 @@
 
 			.recruit_list {
 				width: 100%;
-				padding: 30rpx 50rpx;
+				padding: 30rpx 0;
 
 				.recruit_item {
 					width: 100%;
@@ -72,7 +80,8 @@
 						flex: 1;
 						width: 100%;
 						height: 100%;
-						margin-left: 10rpx;
+						margin-left: 20rpx;
+						// padding-top:20rpx;
 
 						//! 头部标题
 						.head {
@@ -83,7 +92,7 @@
 
 							.title {
 								font-weight: 700;
-								font-size: 30rpx;
+								font-size: 32rpx;
 							}
 
 							.money {
@@ -97,7 +106,8 @@
 							width: 100%;
 							margin-top: 15rpx;
 							margin-bottom: 15rpx;
-							color: $gray_color;
+							color: #808080;
+							font-size: 26rpx;
 							display: -webkit-box;
 							-webkit-box-orient: vertical;
 							-webkit-line-clamp: 2;
@@ -106,7 +116,7 @@
 
 						.other {
 							width: 100%;
-							color: $gray_color;
+							color: #808080;
 							display: flex;
 							justify-content: flex-start;
 							align-items: center;
@@ -116,6 +126,12 @@
 						.common {
 							padding:0 20rpx;
 							border-right: 2rpx solid $gray_color;
+							&:nth-child(1) {
+								padding-left: 0;
+							}
+							&:nth-last-child(1) {
+								border-right: none;
+							}
 						}
 					}
 				}

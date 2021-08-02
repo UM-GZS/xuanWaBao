@@ -116,29 +116,23 @@
 							<!-- 图片以及文字内容 -->
 							<view class="info_content">
 								<view class="left_pic">
-									<image style="width: 100%;height: 100%;" :src="baseUrl+item.small_img_urls">
+									<image style="width: 100%;height: 100%;" src="../../static/index/sw1.jpg">
 									</image>
 								</view>
 								<view class="right_msg">
-									<view class="desc">
-										{{item.name}}
+									<view class="vehicel_title">
+										{{ item.title }}
 									</view>
-									<!-- 用户信息 -->
-									<view class="user_info">
-										<view class="base_info">
-											{{item.info}}
+									<view class="vehicel_desc">
+										{{ item.desc }}
+									</view>
+									<view class="vehicel_server">
+										<view class="item">
+											直营车辆
 										</view>
 									</view>
-									<!-- 收藏以及分享 -->
-									<view class="edit">
-										<!-- 收藏 -->
-										<view class="collect common userBg">
-											<text style="margin-left: 10rpx;">{{item.person_type_name}}</text>
-										</view>
-										<!-- 分享 -->
-										<view class="share common">
-											<text style="color:#000;">￥{{item.price}}</text>
-										</view>
+									<view class="vehicel_price">
+										<text>￥{{ item.price }}/天</text>
 									</view>
 								</view>
 							</view>
@@ -211,7 +205,26 @@
 					sort:'id desc'
 				},
 				machinesList:[],// 新机列表
-				vehicelList:[],//车辆租赁列表
+				vehicelList:[
+					{
+						id:1,
+						title:'旋挖机租赁质量保证行业的领先者',
+						desc:'二手旋挖机质量优选',
+						price:200
+					},
+					{
+						id:2,
+						title:'旋挖机租赁质量保证行业的领先者2',
+						desc:'二手旋挖机质量优选',
+						price:220
+					},
+					{
+						id:3,
+						title:'旋挖机租赁质量保证行业的领先者3',
+						desc:'二手旋挖机质量优选',
+						price:230
+					}
+				],//车辆租赁列表
 				page:1,
 				machinesHasMore:true,// 新机page
 				// 是否还有二手交易
@@ -319,8 +332,8 @@
 				if (!getApp().globalData.wxuser) {
 					getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
 					setTimeout(() => {
-						uni.redirectTo({
-							url: "../../pages/index/index"
+						uni.navigateBack({
+							delta:1
 						})
 					},2500)
 					return;
@@ -427,7 +440,7 @@
 						display: flex;
 						height: 100%;
 						flex-direction: column;
-
+						
 						.desc {
 							width: 100%;
 							display: -webkit-box;
@@ -488,7 +501,37 @@
 								@include flex-center;
 							}
 						}
-
+						//! 车辆租赁样式
+						.vehicel_title {
+							width: 100%;
+							font-size: 35rpx;
+							font-weight: 600;
+							@include clamp2;
+						}
+						.vehicel_desc {
+							font-size: 28rpx;
+							color: $gray_color;
+							margin-top: 20rpx;
+							@include clamp2;
+						}
+						.vehicel_server {
+							display: flex;
+							width: 100%;
+							flex-wrap: wrap;
+							.item {
+								font-size: 25rpx;
+								margin-top: 20rpx;
+								padding: 10rpx 20rpx;
+								color: #ffffff;
+								background-color: $page_color;
+								border-radius: 15rpx;
+							}
+						}
+						.vehicel_price {
+							font-size: 35rpx;
+							font-weight: 700;
+							margin-top: 20rpx;
+						}
 					}
 
 				}

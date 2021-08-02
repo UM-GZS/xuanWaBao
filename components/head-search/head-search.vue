@@ -4,7 +4,7 @@
 			<u-icon name="map" size="40"></u-icon>
 			<text class="location">{{ location }}</text>
 		</view>
-		<view class="center_input">
+		<view class="center_input" @click="goSearch">
 			<u-search :show-action="false" input-align="center" height="65" placeholder="输入内容搜索" disabled></u-search>
 		</view>
 		<view class="scan">
@@ -28,6 +28,12 @@
 		methods: {
 			chooseLoc() {
 				this.$emit("clickLoc")
+			},
+			// 跳转搜索界面
+			goSearch() {
+				uni.navigateTo({
+					url:"../../subPackages/search/search"
+				})
 			}
 		},
 		watch: {

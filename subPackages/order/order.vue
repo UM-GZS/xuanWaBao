@@ -15,7 +15,7 @@
 					</view>
 					<!-- 车辆拥有的服务 -->
 					<!-- <view class="desc">
-						<view class="desc_item">直营汽车</view>
+						<view class="desc_item">直营车辆</view>
 						<view class="desc_item">分期</view>
 					</view> -->
 					<!-- 已选型号 -->
@@ -136,9 +136,9 @@
 						<view class="tips_content">
 							订单已成功提交,24小时内客服会进行受理
 						</view>
-						<view class="contact" @longtap="copy('1545645654')">
-							<text>客服联系方式:</text>
-							<text>131131234564</text>
+						<view class="contact" @longtap="copy('xwbkf01')">
+							<text>客服微信联系方式:</text>
+							<text>xwbkf01</text>
 						</view>
 					</view>
 					<!-- 完成-->

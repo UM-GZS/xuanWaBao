@@ -2,8 +2,11 @@
 	<view class="repair_wrap">
 		<view class="form">
 			<view class="title">
-					<u-field v-model="formData.title" placeholder="编辑发布商品标题" type="textarea"
-							label-width="0" focus border-bottom 
+					<u-field v-model="formData.title" placeholder="编辑发布商品标题" 
+					type="textarea"
+							label-width="0" focus 
+							class="heade_area"
+							:border-bottom="false"
 							:field-style="inputCssObj"
 							placeholder-style="color:#000;font-weight:600;font-size:34rpx;"
 					></u-field>
@@ -25,9 +28,9 @@
 				<u-cell-item  title="我的身份"  :arrow="false">
 					<view class="flex cell" slot="right-icon">
 						<u-radio-group v-model="formData.radioValue" class="flex" v-for="(item,index) in redioList" :key="index">
-							<view class="radio_list" :class="item.name==formData.radioValue?'active':''">
+							<view class="radio_list" @click.stop="radio_select(item,index)" :class="item.name==formData.radioValue?'active':''">
 								<text>{{item.name}}</text>
-									<u-radio :name="item.name" shape="circle" active-color="#40e09c"
+									<u-radio :label-disabled="false" :name="item.name" shape="circle" active-color="#40e09c"
 										@change="radioChange" 
 										></u-radio>
 							</view>
@@ -224,6 +227,9 @@
 			radioChange(e){
 				// console.log(e)
 			},
+			radio_select(item,index) {
+				this.formData.radioValue = item.name;
+			},
 			//! 提交
 			submit(){
 				let data = this.formData
@@ -348,6 +354,7 @@
 </script>
 
 <style lang="scss" scoped>
+	
 	.repair_wrap {
 		width: 100%;
 		height: 100%;
@@ -355,6 +362,11 @@
 			width: 100%;
 			background-color: #ffffff;
 			padding: 18rpx 10rpx 90rpx 10rpx;
+			.title {
+				/deep/ .u-textarea-class{
+					border-bottom: none !important;
+				}
+			}
 			.detail{
 				padding: 18rpx 10rpx 0rpx 10rpx;
 				/deep/ .u-textarea-class{

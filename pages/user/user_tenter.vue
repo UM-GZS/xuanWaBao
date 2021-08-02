@@ -26,7 +26,7 @@
 
 			<u-cell-group>
 				<u-cell-item icon="none" @click="shoppingRecord" title="购买记录" :border-top="false"></u-cell-item>
-				<u-cell-item icon="none" title="求职记录" :border-top="false"></u-cell-item>
+				<u-cell-item @click="jodRecord" icon="none" title="求职记录" :border-top="false"></u-cell-item>
 				<u-cell-item @click="repairRecord" icon="none" title="维修记录" :border-top="false"></u-cell-item>
 			</u-cell-group>
 			<u-picker v-model="show_company" mode="selector" :range="company_options" @confirm="companyClick">
@@ -118,6 +118,11 @@
 			shoppingRecord() {
 				uni.navigateTo({
 					url:"../../subPackages/user/userCenter/shoppingRecord"
+				})
+			},
+			jodRecord() {
+				uni.navigateTo({
+					url:"../../subPackages/user/userCenter/jobRecord"
 				})
 			},
 			// 修改用户信息,手机号

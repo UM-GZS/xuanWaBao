@@ -53,7 +53,7 @@
 				//! 左边列表的请求参数
 				leftCateInfo: {
 					page_num: 1,
-					page_size: 20,
+					page_size: 15,
 					sort: 'id asc'
 				},
 				//! 右边详情的请求参数
@@ -73,6 +73,10 @@
 				},
 				//! 左边分类数据
 				cate_list: [],
+				//! 左边数据的总和
+				leftTotal:0,
+				//! 判断是否还有更多数据
+				hasMore:true,
 				//! 子分类的数据
 				subCategory: [],
 				// 右边详情数据
@@ -93,6 +97,7 @@
 			async categoryList(queryInfo) {
 				const res = await categoryApi.categoryList(queryInfo);
 				this.cate_list = res.data.list;
+				this.leftTotal = res.data.total;
 				//! 调用分类详情的商品数据
 				//!默认请求数组第一个分类的内容
 				this.changeCate(0);
@@ -139,6 +144,13 @@
 			 * 左边分类到达底部触发
 			 */
 			cate_bottom() {
+				// 取反判断是否还有更多数据
+				if(!(this.leftCateInfo.page_num * this.leftCateInfo.page_size >= this.leftTotal)) {
+					this.leftCateInfo.page_num ++;
+					categoryApi.categoryList(this.leftCateInfo).then(res => {
+						this.cate_list = [...this.cate_list,...res.data.list];
+					});
+				}
 			},
 			/**
 			 * 右边详情页面到底函数

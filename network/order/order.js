@@ -13,5 +13,17 @@ export default {
 	 */
 	addOrder(data) {
 		return global_request('/api/purchase/order/add',data,'POST',true)
+	},
+	/**
+	 * 查询购物车订单列表
+	 */
+	orderList(data) {
+		return global_request('/api/purchase/order/list',data,'GET') 
+	},
+	/**
+	 * 根据id获取对应的购物车订单
+	 */
+	getOrderById(data) {
+		return global_request('/api/purchase/order/get',data,'GET')
 	}
 }

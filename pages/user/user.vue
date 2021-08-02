@@ -36,17 +36,16 @@
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/cheliang.png"
 						slot="icon"></u-image>
 				</u-cell-item>
-				<u-cell-item title="认证信息" :arrow="false">
+				<u-cell-item title="认证信息" @click="goProve" :arrow="false">
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;"
 						src="/static/user/renzhengxinxi.png" slot="icon"></u-image>
 				</u-cell-item>
-				<u-cell-item title="收货地址" :arrow="false" @ @click="goAddress">
-					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;"
-						src="/static/user/address_position.png" slot="icon"></u-image>
+				<u-cell-item title="收货地址" :arrow="false" @click="goAddress">
+					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/address_position.png" slot="icon"></u-image>
 				</u-cell-item>
 				<button class="customer" open-type="contact">
 					<u-cell-item title="联系客服" :arrow="false">
-						<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/server.png"
+						<u-image width="45rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/server.png"
 							slot="icon"></u-image>
 					</u-cell-item>
 				</button>
@@ -126,6 +125,9 @@
 				}) //getUserProfile end
 			},
 			goAddress() {
+				if(!getApp().globalData.wxuser) {
+					return getApp().globalData.global_Toast(true,"请先完成登录",function(res){});
+				}
 				uni.navigateTo({
 					url: "/pages/address/address"
 				})
@@ -180,22 +182,41 @@
 				})
 			},
 			goMySend(){
+				if (!getApp().globalData.wxuser) {
+					getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+					return;
+				}
 				uni.navigateTo({
 					url: "../../subPackages/mySend/mySend"
 				})
 			},
 			goMyVehicle(){
+				if (!getApp().globalData.wxuser) {
+					getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+					return;
+				}
 				uni.navigateTo({
 					url: "../../subPackages/vehicleBuy/MyVehicle"
 				})
 			},
 			goMyCollection(){
+				if (!getApp().globalData.wxuser) {
+					getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+					return;
+				}
 				uni.navigateTo({
 					url: "../../subPackages/collection/collectionIndex"
 				})
+			},
+			goProve() {
+				if (!getApp().globalData.wxuser) {
+					getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+					return;
+				}
+				uni.navigateTo({
+					url:"../../subPackages/user/prove"
+				})
 			}
-
-
 
 		}
 

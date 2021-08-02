@@ -9,7 +9,7 @@
 		<view class="goods_info">
 			<view class="price">￥{{ detailData.price }}</view>
 			<!-- <view class="desc">
-				<view class="desc_item">直营汽车</view>
+				<view class="desc_item">直营车辆</view>
 				<view class="desc_item">分期</view>
 			</view> -->
 			<view class="title">
@@ -32,7 +32,7 @@
 			<view class="delivery">
 				<view>
 					<text style="color: #b5b5b5;">服务</text>
-					<text style="margin-left: 15rpx;">送货上门 48小时内容发货</text>
+					<text style="margin-left: 15rpx;">送货上门 48小时内发货</text>
 				</view>
 				<view>
 					<image src="../../static/index/more.png" style="width: 20rpx;height: 30rpx;"></image>
@@ -120,10 +120,13 @@
 </template>
 
 <script>
+	import userApi from "../../network/user/userApi.js";
 	//! 分类接口
 	import categoryApi from '../../network/category/category.js';
 	import machineApi from '../../network/machine/machine.js';
 	import collectApi from '../../network/user/collect.js';
+	//! 防抖函数
+	import tools from '../../utils/debounce/debounce.js';
 	export default {
 		data() {
 			return {
@@ -227,26 +230,56 @@
 			//! 立即购买判断用户有没有登录
 			buyNow() {
 				if (!getApp().globalData.wxuser) {
-					getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
-					setTimeout(() => {
-						uni.redirectTo({
-							url: "../../pages/index/index"
-						})
-					}, 2500)
+					
+					this.login(); //! 调用登录方法
 					return;
 				}
 				this.showSelect = true
+			},
+			//! 用户登录
+			async login() {
+				
+				let that = this
+				// let wxuser = uni.getStorageSync('wxuser')
+				// if (wxuser.phone) {
+				// 	return
+				// }
+				let code = ''
+				uni.login({
+					success(resCode) {
+						code = resCode.code
+					}
+				})
+				uni.getUserProfile({
+					desc: '微信一键登录',
+					lang: 'zh_CN',
+					success: async res => {
+						console.log(res)
+						let query = {
+							code: code,
+							userHead: res.userInfo.avatarUrl,
+							userName: res.userInfo.nickName,
+							userGender: res.userInfo.gender, // 0:未知,1:男,2:女
+							userCity: res.userInfo.city,
+							userProvince: res.userInfo.province
+						}
+						let resData = await userApi.login(query)
+						console.log("登录结果",resData)
+						//! 存储到全局
+						uni.setStorageSync('wxuser', resData.data)
+						getApp().globalData.wxuser = resData.data
+					},
+					complete:() => {
+						console.log("完成获取")
+					}
+				}) //getUserProfile end
 			},
 			//! 收藏按钮
 			collect()  {
 				//! 判断用户是否登录
 				if(!getApp().globalData.wxuser) {
-					 getApp().globalData.global_Toast(true,"请先完成登录",function(res){});
-					 return setTimeout(() => {
-						 uni.redirectTo({
-						 	url:'../../pages/index/index'
-						 })
-					 },2500)
+					 this.login(); //! 调用登录方法
+					 return ;
 				}
 				//! 
 				//! 判断当前用户是否已经收藏对应调用其相应接口

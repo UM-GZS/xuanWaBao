@@ -14,31 +14,39 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "旋挖宝"
+				// "navigationBarTitleText": "旋挖宝"
 			}
 		},
 		{
 			"path": "pages/home/home",
-			"style": {}
+			"style": {
+				"navigationBarBackgroundColor":"#FDDF2F"
+			}
 		},
 		{
 			"path": "pages/information/information",
-			"style": {}
+			"style": {
+				"navigationBarBackgroundColor":"#FDDF2F"
+			}
 		},
 		{
 			"path": "pages/category/category",
-			"style": {}
+			"style": {
+				"navigationBarBackgroundColor":"#FDDF2F"
+			}
 		},
 		{
 			"path": "pages/user/user",
 			"style": {
-				"navigationBarTitleText": "我的"
+				"navigationBarTitleText": "我的",
+				"navigationBarBackgroundColor":"#FDDF2F"
 			}
 		},
 		{
 			"path": "pages/user/user_tenter",
 			"style": {
-				"navigationBarTitleText": "个人中心"
+				"navigationBarTitleText": "个人中心",
+				"navigationBarBackgroundColor":"#FDDF2F"
 			}
 		},
 		{
@@ -56,103 +64,140 @@
 				{
 					"path": "home/repair",
 					"style": {
-						"navigationBarTitleText": "设备维修"
+						"navigationBarTitleText": "设备维修",
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				},
 				{
 					"path": "home/location",
 					"style": {
-						"navigationBarTitleText": "选择城市"
+						"navigationBarTitleText": "选择城市",
+						"navigationBarBackgroundColor":"#FDDF2F"
+					}
+				},
+				{
+					"path":"search/search",
+					"style":{
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				},
 				{
 					"path": "category/category_detail",
 					"style": {
-						"navigationBarTitleText": "商品详情"
+						"navigationBarTitleText": "商品详情",
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				},
 				{
 					"path":"information/informationDetail",
 					"style":{
-						"navigationBarTitleText":"资讯详情"
+						"navigationBarTitleText":"资讯详情",
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				},
 				{
 					"path":"user/userCenter/repairRecord",
 					"style":{
-						"navigationBarTitleText":"维修记录"
+						"navigationBarTitleText":"维修记录",
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				},
 				{
 					"path":"user/userCenter/shoppingRecord",
 					"style":{
-						"navigationBarTitleText":"购买记录"
+						"navigationBarTitleText":"购买记录",
+						"navigationBarBackgroundColor":"#FDDF2F"
+					}
+				},
+				{
+					"path":"user/userCenter/jobRecord",
+					"style":{
+						"navigationBarTitleText":"求职记录",
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				},
 				{
 					"path": "order/order",
 					"style": {
-						"navigationBarTitleText": "提交订单"
+						"navigationBarTitleText": "提交订单",
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				},
 				{
 					"path": "mySend/mySend",
 					"style": {
-						"navigationBarTitleText": "我的发布"
+						"navigationBarTitleText": "我的发布",
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				},
 				{
 					"path":"vehicleBuy/vehicleBuy",
 					"style":{
-						"navigationBarTitleText":"车辆买卖"
+						"navigationBarTitleText":"车辆买卖",
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				},
 				{
 					"path":"vehicleBuy/secondHand",
 					"style":{
-						"navigationBarTitleText":"二手发布"
+						"navigationBarTitleText":"二手发布",
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				},
 				{
 					"path":"vehicleBuy/secondHandDetail",
 					"style":{
-						"navigationBarTitleText":"二手详情"
+						"navigationBarTitleText":"二手详情",
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				},
 				{
 					"path":"oldMachine/oldMachineIndex",
 					"style":{
-						"navigationBarTitleText":"旧机置换"
+						"navigationBarTitleText":"旧机置换",
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				},
 				{
 					"path":"recruitment/recruitmentIndex",
 					"style":{
-						"navigationBarTitleText":"求职招聘"
+						"navigationBarTitleText":"求职招聘",
+						"navigationBarBackgroundColor":"#FDDF2F"
+					}
+				},
+				{
+					"path":"recruitment/recruitmentDetail",
+					"style": {
+						"navigationBarTitleText":"招聘详情",
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				},
 				{
 					"path":"recruitment/addJob",
 					"style":{
-						"navigationBarTitleText":"求职信息"
+						"navigationBarTitleText":"求职信息",
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				},
 				{
 					"path":"collection/collectionIndex",
 					"style":{
-						"navigationBarTitleText":"我的收藏"
+						"navigationBarTitleText":"我的收藏",
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				},
 				{
 					"path":"vehicleBuy/MyVehicle",
 					"style":{
-						"navigationBarTitleText":"我的车辆"
+						"navigationBarTitleText":"我的车辆",
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				},
 				{
 					"path":"user/prove",
 					"style":{
-						"navigationBarTitleText":"认证信息"
+						"navigationBarTitleText":"认证信息",
+						"navigationBarBackgroundColor":"#FDDF2F"
 					}
 				}
 			]
@@ -160,8 +205,8 @@
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "旋挖宝",
-		"navigationBarBackgroundColor": "#fddf2f",
-		"backgroundColor": "#fddf2f"
+		// "navigationBarTitleText": "旋挖宝",
+		"navigationBarBackgroundColor": "#ffffff"
+		// "backgroundColor": "#ffffff"
 	}
 }

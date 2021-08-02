@@ -3,35 +3,48 @@
 		<!-- 头部搜索框 -->
 		<!-- 切换按钮 -->
 		<view class="swiper_tab">
-			<view class="tab_item" @click="changeTab(item.id,index)" v-for="(item,index) in tabList" :key="index">
+			<view class="tab_item" @click="changeTab(item.status,index)" v-for="(item,index) in tabList" :key="index">
 				<text style="margin-left: 10rpx;"
 					:style="current === index ? 'color:black':'color:$gray_color'">{{ item.title }}</text>
 			</view>
 		</view>
 
 		<!-- 内容区域 -->
-		<swiper @change="change" :current="current" class="swiper_content" enable-flex>
+		<swiper @change.stop="change" :current="current" class="swiper_content" enable-flex>
 			<swiper-item v-for="(swiperItem,swiperIndex) in tabList" :key="swiperIndex">
 				<!-- 每一项内容区域 -->
-				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;" scroll-y enable-flex>
+				<scroll-view v-if="list.length > 0" @scrolltolower="lower" style="width: 100%;height: 100%;" scroll-y enable-flex>
 					<view class="info_item" v-for="(item,index) in list" :key="index">
 						<!-- 图片以及文字内容 -->
 						<view class="info_content">
 							<view class="left_pic">
-								<image style="width: 100%;height: 100%;" :src="imgUrl[index]">
+								<image style="width: 100%;height: 100%;" :src="url + item.url">
 								</image>
 							</view>
 							<view class="right_msg">
 								<view class="title">
-									{{ item.info }}
+									订单类型:{{ item.order_types_name }}
+								</view>
+								<view class="goods_name">
+									{{ item.goods_name }}
 								</view>
 								<view class="status">
-									<text>待收货</text>
+									<text v-if="item.status === 1">待付款</text>
+									<text v-if="item.status === 2">待发货</text>
+									<text v-if="item.status === 3">待收货</text>
+								</view>
+								<!-- 价格 -->
+								<view class="price">
+									总价:{{ item.act_pay }}
 								</view>
 							</view>
 						</view>
 					</view>
 				</scroll-view>
+				<!-- 显示为空 -->
+				<view class="empty">
+					<u-empty text="暂无数据" mode="list"></u-empty>
+				</view>
 			</swiper-item>
 		</swiper>
 	</view>
@@ -40,16 +53,18 @@
 <script>
 	//导入网络请求 
 	import userApi from "../../../network/user/userApi.js";
+	import orderApi from "../../../network/order/order.js";
 	export default {
 		data() {
 			return {
 				url: getApp().globalData.requesturl,
 				//! 数据切换标题数据
-				tabList: [{
-						id: 1,
-						title: '全部',
-						status:0
-					},
+				tabList: [
+					// {
+					// 	id: 1,
+					// 	title: '全部',
+					// 	status:0
+					// },
 					{
 						id: 2,
 						title: '待付款',
@@ -64,25 +79,45 @@
 						id: 4,
 						title: '待收货',
 						status:3
+					},
+					{
+						id: 5,
+						title: '已完成',
+						status:5
 					}
 				],
 				//! 请求参数
 				queryInfo: {
+					user_id:getApp().globalData.wxuser.id,
 					page_num: 1,
-					page_size: 20
+					page_size: 10,
+					status:1,
+					sort:'id desc'
 				},
+				// 判断是否还有更多数据
+				hasMore:true,
 				//! 总共的页数
 				total: null,
 				//! 默认选中的swiper下标
 				current: 0,
+				// 订单列表
 				list: [],
 				//! 图片列表
 				imgUrl:[]
 			}
 		},
 		onLoad() {
+			this.getOrderList();
 		},
 		methods: {
+			// 获取用户订单
+			async getOrderList() {
+				const res = await orderApi.orderList(this.queryInfo);
+				if(this.queryInfo.page_num * this.queryInfo.page_size >= res.data.total) {
+					this.hasMore = false;
+				}
+				this.list = [...this.list,...res.data.list];
+			},
 			/**
 			 * 转换图片追加到数组中
 			 */
@@ -92,17 +127,37 @@
 				}
 			},
 			//! 按钮点击的切换
-			changeTab(id, index) {
-				console.log(id);
+			changeTab(status, index) {
 				this.current = index;
 			},
 			//! 滑动页面的切换
 			change(e) {
+				//!清除数据
+				this.clearData();
+				// 获取对应的status
+				this.queryInfo.status = this.tabList[e.target.current].status;
+				console.log(this.tabList[e.target.current].status)
 				this.current = e.target.current;
+				this.getOrderList();
 			},
 			//! 数据滚动到底部的监听
 			lower() {
-				console.log("到达底部");
+				if(this.hasMore) {
+					this.queryInfo.page_num ++;
+					this.getOrderList();
+				}
+			},
+			//! 清除数据
+			clearData() {
+				this.queryInfo = {
+					user_id:getApp().globalData.wxuser.id,
+					page_num: 1,
+					page_size: 10,
+					status:1,
+					sort:'id desc'
+				}
+				this.list = []
+				this.hasMore = true
 			}
 		},
 
@@ -136,8 +191,8 @@
 		.swiper_content {
 			width: 100%;
 			margin-top: 30rpx;
-			// height: calc(100vh - 110rpx);
-			height: 100%;
+			height: calc(100vh - 130rpx);
+			// height: 100%;
 			overflow-y: scroll;
 			padding: 0 20rpx;
 			box-sizing: border-box;
@@ -180,6 +235,11 @@
 							font-weight: 600;
 							overflow: hidden;
 						}
+						.goods_name {
+							width: 100%;
+							margin:20rpx 0;
+							font-size: 28rpx;
+						}
 
 						.status {
 							margin-top: 20rpx;
@@ -190,8 +250,19 @@
 							background-color: $page_color;
 							align-self: flex-end;
 						}
+						.price {
+							font-size: 30rpx;
+							font-weight: 700;
+							color: red;
+						}
 					}
 				}
+			}
+			//内容为空显示
+			.empty {
+				width: 100%;
+				height: 100%;
+				@include flex-center;
 			}
 		}
 	}

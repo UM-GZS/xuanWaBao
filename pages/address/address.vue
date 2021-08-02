@@ -35,7 +35,7 @@
 		</view>
 
 		<view class="bottom" @click="addAddress">
-			<image src="../../static/uview/example/min_button_select.png" class="add_icon"></image>
+			<image src="../../static/user/add.png" class="add_icon"></image>
 			添加收货地址
 		</view>
 
@@ -91,7 +91,7 @@
 					userName: "",
 					userPhone: "",
 					address: "",
-					userDetail: "请选择地址",
+					userDetail: "",
 					isDefault: false
 				},
 				type: '', //页面类型
@@ -123,6 +123,14 @@
 			},
 			// 点击定位
 			clickPosition() {
+				let _this = this;
+				uni.chooseLocation({
+					success:function(res){
+						if(res.name && res.address) {
+							_this.addData.userDetail = res.name;
+						}
+					}
+				})
 			},
 			// 添加时的选择地址打开
 			selectAddress() {

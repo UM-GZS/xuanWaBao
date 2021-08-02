@@ -1,5 +1,9 @@
 <template>
 	<view class="content">
+		<!-- 启动页 -->
+		<view class="startPage" v-if="showStart">
+			旋挖宝
+		</view>
 		<!-- 首页 -->
 		<view :style="{'display':show_index == 0 ?'block':'none'}">
 			<home ref="home" :locName="locName"></home>
@@ -30,7 +34,7 @@
 					:class="{'tabBar_item':item.id!=2,'tabBar_item2':item.id==2}" @tap="cut_index(item.id)">
 					<image v-if="show_index == item.id" :src="`../../static/tabBar/${item.id+1}${item.id+1}.png`">
 					</image>
-					<image v-else :src="`../../static/tabBar/${item.id+1}.png`"
+					<image v-else  :src="`../../static/tabBar/${item.id+1}.png`"
 						:class="item.id==2&&showModal?'rotate-star':'rotate-end'"></image>
 					<view :class="{'tabBar_name':true,'nav_active':show_index == item.id}">{{item.name}}</view>
 				</view>
@@ -52,9 +56,7 @@
 				</view>
 			</view>
 		</view>
-
-
-
+		
 	</view>
 </template>
 
@@ -82,6 +84,8 @@
 				locName: null,
 				//! 控制是否显示弹窗
 				showToast: false,
+				//!显示过渡页面
+				showStart:true,
 				show_index: 0, //控制显示那个组件
 				tab_nav_list: [{
 					'id': 0,
@@ -121,6 +125,7 @@
 			}
 		},
 		onLoad(options) {
+			
 			//！获取用户的地理位置
 			let _this = this
 			this.is_lhp = this.$is_bang
@@ -128,8 +133,26 @@
 			qqmapsdk = new QQMapWX({
 				key: getApp().globalData.tx_map_key
 			});
-			//！ 获取用户地理位置
-			_this.userLocation();
+			
+			
+			//! 显示过渡页面
+			setTimeout(() => {
+				this.showStart = false;
+				uni.setNavigationBarColor({
+					backgroundColor: '#fddf2f',
+					frontColor:'#000000',
+					success() {
+						wx.setNavigationBarTitle({
+						  title: '旋挖宝'
+						})
+						//！ 获取用户地理位置
+						_this.userLocation();
+					},
+					fail(err) {
+						console.log(err)
+					}
+				})
+			},2500)
 
 			//! 视图渲染完才调用
 			this.$nextTick(function() {
@@ -292,6 +315,10 @@
 						}
 						break;
 					case 3:
+					if (!getApp().globalData.wxuser) {
+						getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+						return;
+						}
 						uni.navigateTo({
 							url: "../../subPackages/recruitment/recruitmentIndex"
 						})
@@ -308,18 +335,39 @@
 		},
 		onShareAppMessage(options) {
 			if (options.from === "button") {
-				//! 获取缓存中的数据，编辑转发的内容显示数据
-				let sharInfo = uni.getStorageSync("shareInfo");
 				return {
-					title: `${sharInfo.msg}`,
-					path: '/pages/index/index'
+					title: `旋挖宝资讯`,
+					path: '/pages/index/index',
+					imageUrl:'https://www.szrdrp.com/dl/img/e294454034a9f8f7073183c74ef8d0c0cdef8107.jpeg@600w_338h.jpeg'
 				}
+			}
+			return {
+				title: `旋挖宝`,
+				path: '/pages/index/index',
+				imageUrl:'https://www.szrdrp.com/dl/img/e294454034a9f8f7073183c74ef8d0c0cdef8107.jpeg@600w_338h.jpeg'
 			}
 		}
 	}
 </script>
 
 <style lang="scss">
+	.startPage {
+		position: fixed;
+		left: 0;
+		right: 0;
+		width: 100vw;
+		height: 100vh;
+		background-color: #ffffff;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		letter-spacing: 8rpx;
+		font-size: 60rpx;
+		font-weight: 700;
+		overflow-y: hidden;
+		overflow-x: hidden;
+		z-index: 999999;
+	}
 	.tabBar {
 		width: 100%;
 		height: 98rpx;

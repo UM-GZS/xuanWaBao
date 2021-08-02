@@ -26,10 +26,14 @@
 
 		<!-- 底部按钮 -->
 		<view class="footer">
-			<!-- <view class="collect common" @click="handelCollection">
-            <image src="../../static/uview/common/collect.png" style="width: 55rpx; height: 55rpx;"></image>
-            <text>收藏</text>
-        </view> -->
+			<view class="collect common" @click="handelCollection">
+				<image src="../../static/user/collaction.png" style="width: 50rpx; height: 50rpx;" v-if="collect"
+					@click="collect = false">
+				</image>
+				<image src="../../static/uview/common/collect.png" style="width: 50rpx; height: 53rpx;" v-else
+					@click="collect = true"></image>
+				<text>收藏</text>
+			</view>
 			<button open-type="share" class="contact common" style="margin-left: 30rpx;">
 				<image src="../../static/information/share.png" style="width: 50rpx; height: 45rpx;"></image>
 				<text>分享</text>
@@ -45,6 +49,7 @@
 	export default {
 		data() {
 			return {
+				collect:false,
 				pageId: '',
 				detail: null,
 				userCover: "",
@@ -79,7 +84,7 @@
 			},
 			contactSeller() {
 				uni.makePhoneCall({
-					phoneNumber:this.detail.phone,
+					phoneNumber: this.detail.phone,
 					fail(err) {
 						console.warn(err)
 					}
@@ -91,10 +96,10 @@
 		},
 		onShareAppMessage(res) {
 			return {
-				title:this.detail.name,
-				imageUrl:this.baseUrl + this.detail.small_img_urls,
-				desc:'旋挖宝二手交易',
-				path:`/subPackages/vehicleBuy/secondHandDetail?id=`+ this.detail.id
+				title: this.detail.name,
+				imageUrl: this.baseUrl + this.detail.small_img_urls,
+				desc: '旋挖宝二手交易',
+				path: `/subPackages/vehicleBuy/secondHandDetail?id=` + this.detail.id
 			}
 		}
 	};

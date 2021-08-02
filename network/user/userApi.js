@@ -36,6 +36,12 @@ export default {
 	 */
 	repairList(data) {
 		return global_request('/api/er/list',data,'GET')
+	},
+	/**
+	 * 用户搜索记录
+	 */
+	searchHistory(data) {
+		return global_request('/api/history/list',data,'GET');
 	}
 	
 }

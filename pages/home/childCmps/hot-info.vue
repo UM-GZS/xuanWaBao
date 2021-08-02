@@ -92,7 +92,7 @@
 			width: 100%;
 			.hot_list {
 				width: 100%;
-				padding: 30rpx 50rpx;
+				padding: 30rpx 0;
 				.hot_item {
 					width: 100%;
 					background-color: #ffffff;
@@ -109,18 +109,26 @@
 						flex: 1;
 						width: 100%;
 						height: 100%;
-						margin-left: 10rpx;
+						margin-left: 20rpx;
 						//! 头部标题
 						.head {
 							width: 100%;
 							display: flex;
 							justify-content: space-between;
 							align-items: center;
+							
 							.title {
+								flex: 1;
+								display: -webkit-box;
+								-webkit-box-orient: vertical;
+								-webkit-line-clamp: 1;
+								overflow: hidden;
 								font-weight: 700;
-								font-size: 30rpx;
+								font-size: 32rpx;
 							}
 							.time {
+								width: 150rpx;
+								text-align: right;
 								font-weight: 500;
 								font-size: 25rpx;
 								color: $gray_color;
@@ -131,8 +139,9 @@
 							width: 100%;
 							margin-top: 15rpx;
 							margin-bottom: 15rpx;
-							color: $gray_color;
+							color: #808080;
 							display: -webkit-box;
+							font-size: 26rpx;
 							-webkit-box-orient: vertical;
 							-webkit-line-clamp: 2;
 							overflow: hidden;

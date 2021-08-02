@@ -14,16 +14,16 @@
 				<!-- 求职招聘 -->
 				<scroll-view @scrolltolower="lower" scroll-y v-if="swiperIndex==0" enable-flex
 					style="width: 100%;height: 100%;padding-bottom:10rpx;">
-					<view class="list">
+					<view class="list" v-if="sendList.length > 0">
 						<view class="item" v-for="item in sendList" :key="item.id">
 							<view class="left_cover">
-								<image :src="item.cover"></image>
+								<image :src="baseUrl + JSON.parse(item.urls)[0].img"></image>
 							</view>
 							<view class="right_info">
-								<view class="name">{{item.name}}</view>
-								<view class="subtitle">{{item.company}}公司 {{item.num}} 人</view>
-								<view class="price">{{item.price}}</view>
-								<view class="info">{{item.address}} | {{item.year}} | {{item.limit}}</view>
+								<view class="name">{{item.post}}</view>
+								<view class="subtitle">{{item.status_name}}</view>
+								<view class="price">{{item.salary}}</view>
+								<view class="info">{{item.address}}</view>
 							</view>
 						</view>
 					</view>
@@ -33,7 +33,7 @@
 				<scroll-view @scrolltolower="lower" scroll-y v-else enable-flex
 					style="width: 100%;height: 100%;padding-bottom:10rpx;">
 
-					<view class="second_hand">
+					<view class="second_hand" v-if="secondTrading.length > 0">
 						<view class="item" v-for="item in secondTrading" :key="item.id">
 							<view class="left_cover">
 								<image :src="baseUrl + item.small_img_urls"></image>
@@ -51,6 +51,9 @@
 							</view>
 						</view>
 					</view>
+					<view class="empty" v-else>
+						<u-empty text="暂无二手交易数据" mode="list"></u-empty>
+					</view>
 				</scroll-view>
 			</swiper-item>
 		</swiper>
@@ -59,6 +62,7 @@
 
 <script>
 	import secondHandApi from "../../network/secondHand/secondHand.js";
+	import jobApi from "../../network/job/jobApi.js";
 	export default {
 		components: {},
 		data() {
@@ -82,42 +86,17 @@
 					page_size: 20,
 					sort: 'id desc'
 				},
+				//! 用户的求职列表
+				queryInfo:{
+					user_id:getApp().globalData.wxuser.id,
+					gender:getApp().globalData.wxuser.gender,
+					page_num:1,
+					page_size:20,
+					sort: 'id desc'
+				},
 				//! 二手交易列表
 				secondTrading: [],
-				sendList: [{
-						id: 1,
-						cover: "../../static/index/sw1.jpg",
-						name: '挖机司机',
-						company: "jshfk",
-						num: 99,
-						price: "15-20k",
-						address: "北京",
-						year: "1年",
-						limit: "学历不限"
-					},
-					{
-						id: 2,
-						cover: "../../static/index/sw1.jpg",
-						name: '挖机司机',
-						company: "jshfk",
-						num: 99,
-						price: "15-20k",
-						address: "北京",
-						year: "1年",
-						limit: "学历不限"
-					},
-					{
-						id: 3,
-						cover: "../../static/index/sw1.jpg",
-						name: '挖机司机',
-						company: "jshfk",
-						num: 99,
-						price: "15-20k",
-						address: "北京",
-						year: "1年",
-						limit: "学历不限"
-					},
-				]
+				sendList:[]
 			}
 		},
 		onLoad() {
@@ -136,7 +115,7 @@
 				let index = this.current
 				switch (index) {
 					case 0:
-						// this.getScondTrading()
+						this.getSendList()
 						break;
 					case 1:
 						this.getScondTrading()
@@ -146,11 +125,15 @@
 						break;
 				}
 			},
+			//! 获取求职列表
+			async getSendList() {
+				const res = await jobApi.listJob(this.queryInfo);
+				this.sendList = res.data.list;
+			},
 			//! 获取二手列表
 			async getScondTrading() {
 				const res = await secondHandApi.getList(this.tradingQueryInfo);
 				this.secondTrading = [...this.secondTrading, ...res.data.list];
-
 			},
 			//! 按钮点击的切换
 			changeTab(id, index) {

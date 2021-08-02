@@ -2,12 +2,12 @@
 	<view class="repair_wrap">
 		<!-- 头部搜索框 -->
 		<!-- 切换按钮 -->
-		<!-- <view class="swiper_tab">
+		<view class="swiper_tab">
 			<view class="tab_item" @click="changeTab(item.id,index)" v-for="(item,index) in tabList" :key="index">
 				<text style="margin-left: 10rpx;"
 					:style="current === index ? 'color:black':'color:$gray_color'">{{ item.title }}</text>
 			</view>
-		</view> -->
+		</view>
 
 		<!-- 内容区域 -->
 		<swiper @change="change" :current="current" class="swiper_content" enable-flex>
@@ -26,7 +26,7 @@
 									{{ item.info }}
 								</view>
 								<view class="status">
-									<text>待收货</text>
+									<text>待维修</text>
 								</view>
 							</view>
 						</view>
@@ -146,8 +146,8 @@
 		.swiper_content {
 			width: 100%;
 			margin-top: 30rpx;
-			// height: calc(100vh - 110rpx);
-			height: 100%;
+			height: calc(100vh - 130rpx);
+			// height: 100%;
 			overflow-y: scroll;
 			padding: 0 20rpx;
 			box-sizing: border-box;

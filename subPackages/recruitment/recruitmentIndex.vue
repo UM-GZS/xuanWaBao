@@ -14,7 +14,7 @@
 				<!-- 全部 -->
 				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;box-sizing: border-box;" scroll-y
 					enable-flex v-if="swiperIndex==0">
-					<view class="list" v-for="item in list" :key="item.id">
+					<view class="list" v-for="item in list" :key="item.id" @click="jobDetail(item)">
 						<view class="item">
 							<view class="left_cover">
 								<image :src="item.cover"></image>
@@ -82,7 +82,7 @@
 						id: 1,
 						cover: "../../static/index/sw1.jpg",
 						name: '挖机司机',
-						company: "xxx",
+						company: "亮节",
 						num: 99,
 						price: "15-20",
 						address: "北京",
@@ -93,7 +93,7 @@
 						id: 2,
 						cover: "../../static/index/sw1.jpg",
 						name: '挖机司机',
-						company: "xxx",
+						company: "亮节",
 						num: 99,
 						price: "15-20",
 						address: "北京",
@@ -104,7 +104,7 @@
 						id: 3,
 						cover: "../../static/index/sw1.jpg",
 						name: '挖机司机',
-						company: "xxx",
+						company: "亮节",
 						num: 99,
 						price: "15-20",
 						address: "北京",
@@ -115,7 +115,7 @@
 						id: 3,
 						cover: "../../static/index/sw1.jpg",
 						name: '挖机司机',
-						company: "xxx",
+						company: "亮节",
 						num: 99,
 						price: "15-20",
 						address: "北京",
@@ -125,7 +125,7 @@
 						id: 3,
 						cover: "../../static/index/sw1.jpg",
 						name: '挖机司机',
-						company: "xxx",
+						company: "亮节",
 						num: 99,
 						price: "15-20",
 						address: "北京",
@@ -135,7 +135,7 @@
 						id: 3,
 						cover: "../../static/index/sw1.jpg",
 						name: '挖机司机',
-						company: "xxx",
+						company: "亮节",
 						num: 99,
 						price: "15-20",
 						address: "北京",
@@ -198,6 +198,12 @@
 				}
 				uni.navigateTo({
 					url:"./addJob"
+				})
+			},
+			// 跳转详情界面
+			jobDetail(id) {
+				uni.navigateTo({
+					url:"./recruitmentDetail"
 				})
 			},
 			goDetail(id) {
