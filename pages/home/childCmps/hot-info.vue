@@ -69,7 +69,8 @@
 			detail(item) {
 				//! 判断用户是否完成登录
 				if(!getApp().globalData.wxuser) {
-					return getApp().globalData.global_Toast(true,"请先完成登录",function(res) {})
+					this.$emit('userLogin');
+					return;
 				}
 				uni.navigateTo({
 					url:`/subPackages/information/informationDetail?id=${item.id}`,

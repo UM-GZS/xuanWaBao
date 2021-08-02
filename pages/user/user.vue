@@ -126,7 +126,8 @@
 			},
 			goAddress() {
 				if(!getApp().globalData.wxuser) {
-					return getApp().globalData.global_Toast(true,"请先完成登录",function(res){});
+					this.login();
+					return ;
 				}
 				uni.navigateTo({
 					url: "/pages/address/address"
@@ -135,7 +136,7 @@
 			goUserCenter() {
 				//! 判断用户是否登录
 				if (!getApp().globalData.wxuser) {
-					getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+					this.login();
 					return;
 				}else {
 					uni.navigateTo({
@@ -183,7 +184,7 @@
 			},
 			goMySend(){
 				if (!getApp().globalData.wxuser) {
-					getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+					this.login();
 					return;
 				}
 				uni.navigateTo({
@@ -192,7 +193,7 @@
 			},
 			goMyVehicle(){
 				if (!getApp().globalData.wxuser) {
-					getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+					this.login();
 					return;
 				}
 				uni.navigateTo({
@@ -201,7 +202,7 @@
 			},
 			goMyCollection(){
 				if (!getApp().globalData.wxuser) {
-					getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+					this.login();
 					return;
 				}
 				uni.navigateTo({
@@ -210,7 +211,7 @@
 			},
 			goProve() {
 				if (!getApp().globalData.wxuser) {
-					getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+					this.login();
 					return;
 				}
 				uni.navigateTo({

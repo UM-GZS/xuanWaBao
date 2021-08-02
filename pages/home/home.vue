@@ -17,7 +17,7 @@
 			</view>
 		</view>
 		<!-- 热点推送 -->
-		<hot-info></hot-info>
+		<hot-info @userLogin="hasLogin"></hot-info>
 		<!-- 招聘信息 -->
 		<recruit-info></recruit-info>
 		<!-- 商品特惠 -->
@@ -28,6 +28,8 @@
 <script>
 	//! 网络请求
 	import homeApi from "../../network/home/homeApi.js";
+	//! 用户接口
+	import userApi from "../../network/user/userApi.js";
 	//! 组件
 	import headSearch from "../../components/head-search/head-search.vue";
 	import hotInfo from "./childCmps/hot-info.vue";
@@ -82,8 +84,7 @@
 		},
 		watch: {
 			locName: {
-				handler(newValue, oldValue) {
-				},
+				handler(newValue, oldValue) {},
 				immediate: true,
 				deep: true
 			}
@@ -121,11 +122,20 @@
 				// 	url: "../../subPackages/home/location"
 				// })
 			},
+			//! 子组件传递给父组件完成用户登录
+			hasLogin() {
+				// 调用登录方法
+				this.login();
+			},
 			//! 切换对应的页面
 			serviceClick(id) {
 				//! 根据id对应跳转界面
 				switch (id) {
 					case 1:
+						if (!getApp().globalData.wxuser) {
+							this.login()
+							return;
+						}
 						uni.navigateTo({
 							url: "../../subPackages/vehicleBuy/vehicleBuy"
 						});
@@ -133,22 +143,26 @@
 					case 2:
 						//! 设备维修 判断用户是否完成登录
 						if (!getApp().globalData.wxuser) {
-							getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+							this.login()
 							return;
-						} else {
-							uni.navigateTo({
-								url: "../../subPackages/home/repair"
-							})
 						}
+						uni.navigateTo({
+							url: "../../subPackages/home/repair"
+						})
+
 						break;
 					case 3:
+						if (!getApp().globalData.wxuser) {
+							this.login()
+							return;
+						}
 						uni.navigateTo({
 							url: "../../subPackages/oldMachine/oldMachineIndex"
 						})
 						break;
 					case 4:
 						if (!getApp().globalData.wxuser) {
-							getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+							this.login();
 							return;
 						}
 						uni.navigateTo({
@@ -156,7 +170,44 @@
 						})
 						break;
 				}
-			}
+			},
+			//! 用户登录
+			async login() {
+				let that = this
+				// let wxuser = uni.getStorageSync('wxuser')
+				// if (wxuser.phone) {
+				// 	return
+				// }
+				let code = ''
+				uni.login({
+					success(resCode) {
+						code = resCode.code
+					}
+				})
+				uni.getUserProfile({
+					desc: '微信一键登录',
+					lang: 'zh_CN',
+					success: async res => {
+						console.log(res)
+						let query = {
+							code: code,
+							userHead: res.userInfo.avatarUrl,
+							userName: res.userInfo.nickName,
+							userGender: res.userInfo.gender, // 0:未知,1:男,2:女
+							userCity: res.userInfo.city,
+							userProvince: res.userInfo.province
+						}
+						let resData = await userApi.login(query)
+						console.log("登录结果", resData)
+						//! 存储到全局
+						uni.setStorageSync('wxuser', resData.data)
+						getApp().globalData.wxuser = resData.data
+					},
+					complete: () => {
+						console.log("完成获取")
+					}
+				}) //getUserProfile end
+			},
 		}
 	}
 </script>

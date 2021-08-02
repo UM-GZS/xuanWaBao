@@ -34,7 +34,7 @@
 					:class="{'tabBar_item':item.id!=2,'tabBar_item2':item.id==2}" @tap="cut_index(item.id)">
 					<image v-if="show_index == item.id" :src="`../../static/tabBar/${item.id+1}${item.id+1}.png`">
 					</image>
-					<image v-else  :src="`../../static/tabBar/${item.id+1}.png`"
+					<image v-else :src="`../../static/tabBar/${item.id+1}.png`"
 						:class="item.id==2&&showModal?'rotate-star':'rotate-end'"></image>
 					<view :class="{'tabBar_name':true,'nav_active':show_index == item.id}">{{item.name}}</view>
 				</view>
@@ -56,7 +56,7 @@
 				</view>
 			</view>
 		</view>
-		
+
 	</view>
 </template>
 
@@ -69,6 +69,8 @@
 	import information from "@/pages/information/information.vue";
 	import category from "@/pages/category/category.vue";
 	import user from "@/pages/user/user.vue";
+	//!网络请求
+	import userApi from "../../network/user/userApi.js";
 	export default {
 		components: {
 			home,
@@ -85,7 +87,7 @@
 				//! 控制是否显示弹窗
 				showToast: false,
 				//!显示过渡页面
-				showStart:true,
+				showStart: true,
 				show_index: 0, //控制显示那个组件
 				tab_nav_list: [{
 					'id': 0,
@@ -125,7 +127,7 @@
 			}
 		},
 		onLoad(options) {
-			
+
 			//！获取用户的地理位置
 			let _this = this
 			this.is_lhp = this.$is_bang
@@ -133,17 +135,17 @@
 			qqmapsdk = new QQMapWX({
 				key: getApp().globalData.tx_map_key
 			});
-			
-			
+
+
 			//! 显示过渡页面
 			setTimeout(() => {
 				this.showStart = false;
 				uni.setNavigationBarColor({
 					backgroundColor: '#fddf2f',
-					frontColor:'#000000',
+					frontColor: '#000000',
 					success() {
 						wx.setNavigationBarTitle({
-						  title: '旋挖宝'
+							title: '旋挖宝'
 						})
 						//！ 获取用户地理位置
 						_this.userLocation();
@@ -152,7 +154,7 @@
 						console.log(err)
 					}
 				})
-			},2500)
+			}, 2500)
 
 			//! 视图渲染完才调用
 			this.$nextTick(function() {
@@ -299,6 +301,10 @@
 				//! 根据id对应跳转界面
 				switch (id) {
 					case 1:
+						if (!getApp().globalData.wxuser) {
+							this.login();
+							return;
+						}
 						uni.navigateTo({
 							url: "../../subPackages/vehicleBuy/vehicleBuy"
 						})
@@ -306,45 +312,83 @@
 					case 2:
 						//! 设备维修 判断用户是否完成登录
 						if (!getApp().globalData.wxuser) {
-							getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
+							this.login();
 							return;
-						} else {
-							uni.navigateTo({
-								url: "../../subPackages/home/repair"
-							})
 						}
+						uni.navigateTo({
+							url: "../../subPackages/home/repair"
+						})
 						break;
 					case 3:
-					if (!getApp().globalData.wxuser) {
-						getApp().globalData.global_Toast(true, "请先完成登录", function(res) {});
-						return;
+						if (!getApp().globalData.wxuser) {
+							this.login();
+							return;
 						}
 						uni.navigateTo({
 							url: "../../subPackages/recruitment/recruitmentIndex"
 						})
 						break;
 					case 4:
+						if (!getApp().globalData.wxuser) {
+							this.login();
+							return;
+						}
 						uni.navigateTo({
 							url: "../../subPackages/oldMachine/oldMachineIndex"
 						})
 						break;
 				}
-			}
-
-
+			},
+			//! 用户登录
+			async login() {
+				let that = this
+				// let wxuser = uni.getStorageSync('wxuser')
+				// if (wxuser.phone) {
+				// 	return
+				// }
+				let code = ''
+				uni.login({
+					success(resCode) {
+						code = resCode.code
+					}
+				})
+				uni.getUserProfile({
+					desc: '微信一键登录',
+					lang: 'zh_CN',
+					success: async res => {
+						console.log(res)
+						let query = {
+							code: code,
+							userHead: res.userInfo.avatarUrl,
+							userName: res.userInfo.nickName,
+							userGender: res.userInfo.gender, // 0:未知,1:男,2:女
+							userCity: res.userInfo.city,
+							userProvince: res.userInfo.province
+						}
+						let resData = await userApi.login(query)
+						console.log("登录结果", resData)
+						//! 存储到全局
+						uni.setStorageSync('wxuser', resData.data)
+						getApp().globalData.wxuser = resData.data
+					},
+					complete: () => {
+						console.log("完成获取")
+					}
+				}) //getUserProfile end
+			},
 		},
 		onShareAppMessage(options) {
 			if (options.from === "button") {
 				return {
 					title: `旋挖宝资讯`,
 					path: '/pages/index/index',
-					imageUrl:'https://www.szrdrp.com/dl/img/e294454034a9f8f7073183c74ef8d0c0cdef8107.jpeg@600w_338h.jpeg'
+					imageUrl: 'https://www.szrdrp.com/dl/img/e294454034a9f8f7073183c74ef8d0c0cdef8107.jpeg@600w_338h.jpeg'
 				}
 			}
 			return {
 				title: `旋挖宝`,
 				path: '/pages/index/index',
-				imageUrl:'https://www.szrdrp.com/dl/img/e294454034a9f8f7073183c74ef8d0c0cdef8107.jpeg@600w_338h.jpeg'
+				imageUrl: 'https://www.szrdrp.com/dl/img/e294454034a9f8f7073183c74ef8d0c0cdef8107.jpeg@600w_338h.jpeg'
 			}
 		}
 	}
@@ -368,6 +412,7 @@
 		overflow-x: hidden;
 		z-index: 999999;
 	}
+
 	.tabBar {
 		width: 100%;
 		height: 98rpx;
