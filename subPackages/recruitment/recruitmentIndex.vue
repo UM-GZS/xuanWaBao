@@ -32,19 +32,22 @@
 				<!-- 我的 -->
 				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;padding-bottom:110rpx;" scroll-y
 					enable-flex v-else>
-					<view class="list" v-for="item in myList" :key="item.id">
-						<view class="item">
-							<view class="left_cover">
-								<image :src="baseUrl + JSON.parse(item.urls)[0].img"></image>
-							</view>
-							<view class="right_info">
-								<view class="name">{{item.uname}}</view>
-								<view class="subtitle">{{item.status_name}}</view>
-								<view class="price">{{item.salary}}</view>
-								<view class="info">{{item.address}} | {{item.gender_name}} | {{item.post}}</view>
+					<view v-if="myList.length>0">
+						<view class="list" v-for="item in myList" :key="item.id">
+							<view class="item">
+								<view class="left_cover">
+									<image :src="baseUrl + JSON.parse(item.urls)[0].img"></image>
+								</view>
+								<view class="right_info">
+									<view class="name">{{item.uname}}</view>
+									<view class="subtitle">{{item.status_name}}</view>
+									<view class="price">{{item.salary}}</view>
+									<view class="info">{{item.address}} | {{item.gender_name}} | {{item.post}}</view>
+								</view>
 							</view>
 						</view>
 					</view>
+					<nonedata v-else :text="`列表为空`"></nonedata>
 				</scroll-view>
 
 			</swiper-item>
@@ -62,8 +65,9 @@
 
 <script>
 	import jobApi from "../../network/job/jobApi"
+	import nonedata from "../../components/none-data/none-data"
 	export default {
-		components: {},
+		components: {nonedata},
 		data() {
 			return {
 				//! 数据切换标题数据

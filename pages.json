@@ -199,6 +199,13 @@
 						"navigationBarTitleText":"认证信息",
 						"navigationBarBackgroundColor":"#FDDF2F"
 					}
+				},
+				{
+					"path":"user/personalProve",
+					"style":{
+						"navigationBarTitleText":"个人认证",
+						"navigationBarBackgroundColor":"#FDDF2F"
+					}
 				}
 			]
 		}

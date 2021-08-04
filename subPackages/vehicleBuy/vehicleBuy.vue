@@ -19,7 +19,7 @@
 							<!-- 图片以及文字内容 -->
 							<view class="info_content">
 								<view class="left_pic">
-									<image style="width: 100%;height: 100%;" :src="baseUrl+item.small_img_urls">
+									<image style="width: 90%;height: 90%;" :src="baseUrl+item.small_img_urls">
 									</image>
 								</view>
 								<view class="right_msg">
@@ -35,8 +35,8 @@
 									<!-- 收藏以及分享 -->
 									<view class="edit">
 										<!-- 收藏 -->
-										<view class="collect common userBg">
-											<text style="margin-left: 10rpx;">{{item.person_type_name}}</text>
+										<view class="collect common userBg" style="margin:10rpx 0 10rpx 10rpx;">
+											<text style="padding-bottom:5rpx">{{item.person_type_name}}</text>
 										</view>
 										<!-- 分享 -->
 										<view class="share common">
@@ -59,7 +59,7 @@
 							<!-- 图片以及文字内容 -->
 							<view class="info_content">
 								<view class="left_pic">
-									<image style="width: 100%;height: 100%;" :src="baseUrl+item.small_img_urls">
+									<image style="width: 90%;height: 90%;" :src="baseUrl+item.small_img_urls">
 									</image>
 								</view>
 								<view class="right_msg">
@@ -116,7 +116,7 @@
 							<!-- 图片以及文字内容 -->
 							<view class="info_content">
 								<view class="left_pic">
-									<image style="width: 100%;height: 100%;" src="../../static/index/sw1.jpg">
+									<image style="width: 80%;height: 80%;" src="../../static/index/sw1.jpg">
 									</image>
 								</view>
 								<view class="right_msg">
@@ -419,6 +419,7 @@
 				border-radius: 15rpx;
 				padding: 0 30rpx;
 				margin-bottom: 10rpx;
+				
 
 				//! 图片以及文字内容
 				.info_content {
@@ -426,7 +427,7 @@
 					margin: 20rpx 0;
 					display: flex;
 					align-items: center;
-
+					height: 280rpx;
 					.left_pic {
 						width: 240rpx;
 						height: 250rpx;
@@ -471,7 +472,7 @@
 						}
 
 						.user_info {
-							margin: 8rpx 0;
+							margin: 3rpx 0;
 							display: flex;
 							justify-content: space-between;
 							align-items: center;
@@ -504,12 +505,12 @@
 						//! 车辆租赁样式
 						.vehicel_title {
 							width: 100%;
-							font-size: 35rpx;
-							font-weight: 600;
+							font-size: 32rpx;
+							font-weight: 580;
 							@include clamp2;
 						}
 						.vehicel_desc {
-							font-size: 28rpx;
+							font-size: 26rpx;
 							color: $gray_color;
 							margin-top: 20rpx;
 							@include clamp2;
@@ -519,16 +520,16 @@
 							width: 100%;
 							flex-wrap: wrap;
 							.item {
-								font-size: 25rpx;
-								margin-top: 20rpx;
+								font-size: 22rpx;
+								margin-top: 15rpx;
 								padding: 10rpx 20rpx;
 								color: #ffffff;
-								background-color: $page_color;
-								border-radius: 15rpx;
+								background-color: #ffa02e;
+								border-radius: 10rpx;
 							}
 						}
 						.vehicel_price {
-							font-size: 35rpx;
+							font-size: 32rpx;
 							font-weight: 700;
 							margin-top: 20rpx;
 						}
@@ -557,7 +558,6 @@
 				//! 图片以及文字内容
 				.info_content {
 					width: 100%;
-					margin: 20rpx 0;
 					display: flex;
 					align-items: center;
 
@@ -584,7 +584,7 @@
 							-webkit-line-clamp: 2;
 							font-size: 30rpx;
 							font-weight: 600;
-							overflow: hidden;
+							// overflow: hidden;
 						}
 
 						.share {

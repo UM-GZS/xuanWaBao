@@ -557,8 +557,8 @@
 				transform: translateX(-50%);
 
 				image {
-					width: 100rpx;
-					height: 100rpx;
+					width: 68rpx;
+					height: 68rpx;
 					background-color: #000;
 					border-radius: 50%;
 					transform: rotate(45deg);

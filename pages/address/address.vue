@@ -72,7 +72,7 @@
 		</u-popup>
 		
 
-		<u-picker mode="region" v-model="addressShow" :area-code='["11", "1101", "110101"]' @confirm="fonfirmAddress">
+		<u-picker mode="region" v-model="addressShow" :area-code='["11", "1101", "110101"]' @confirm="confirmAddress">
 		</u-picker>
 
 
@@ -81,6 +81,8 @@
 
 <script>
 	import addressApi from "../../network/user/addressApi.js";
+	let QQMapWX = require('../../utils/map/qqmap-wx-jssdk.js');
+	let qqmapsdk;
 	export default {
 		data() {
 			return {
@@ -104,6 +106,9 @@
 			this.type = options.type
 			this.wxuser = uni.getStorageSync('wxuser')
 			this.getList()
+			qqmapsdk = new QQMapWX({
+				key: getApp().globalData.tx_map_key
+			});
 		},
 		methods: {
 			getList() {
@@ -126,9 +131,45 @@
 				let _this = this;
 				uni.chooseLocation({
 					success:function(res){
+						qqmapsdk.reverseGeocoder({
+							location: {
+								latitude: res.latitude,
+								longitude: res.longitude
+							},
+							success: function(addressRes) {
+								let {province,city,district} = addressRes.result.address_component
+								_this.addData.address = province+city+district
+							}
+						})
+
 						if(res.name && res.address) {
 							_this.addData.userDetail = res.name;
 						}
+					}
+				})
+			},
+			goAddress() {
+				const _this = this;
+				uni.getLocation({
+					type: 'wgs84',
+					success(res) {
+						//根据坐标获取当前位置名称，显示在顶部:腾讯地图逆地址解析,前面已引入SDK
+						qqmapsdk.reverseGeocoder({
+							location: {
+								latitude: res.latitude,
+								longitude: res.longitude
+							},
+							success: function(addressRes) {
+								console.log(addressRes);
+								
+								// _this.location = addressRes.result.ad_info;
+								// _this.locName = addressRes.result.ad_info.city;
+							}
+						})
+					},
+					fail: function(err) {
+						//! 说明用户拒绝了首次的获取地理位置
+						_this.locName = "获取失败";
 					}
 				})
 			},
@@ -137,7 +178,7 @@
 				this.addressShow = true
 			},
 			// 拿取选择的地址
-			fonfirmAddress(e) {
+			confirmAddress(e) {
 				this.addData.address = e.province.label + e.city.label + e.area.label
 			},
 			// 地址弹出层的提交
@@ -424,6 +465,7 @@
 				display: flex;
 				justify-content: flex-end;
 				margin-top: 20rpx;
+				margin-bottom: 10rpx;
 			}
 
 			.save_btn {

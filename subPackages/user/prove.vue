@@ -16,7 +16,7 @@
 			<view class="sub_label">个人认证类型认证资源资源资源资源资源</view>
 
 			<u-cell-group class="cell_wrap">
-				<u-cell-item title="个人认证" :title-style="labelCss"></u-cell-item>
+				<u-cell-item title="个人认证" :title-style="labelCss" @click="goPersonalProve"></u-cell-item>
 				<u-cell-item title="个人车主认证" :title-style="labelCss"></u-cell-item>
 				<u-cell-item title="个人司机认证" :title-style="labelCss"></u-cell-item>
 			</u-cell-group>
@@ -39,7 +39,12 @@
 			};
 		},
 		methods: {
-
+			// 去个人认证
+			goPersonalProve(){
+				uni.redirectTo({
+					 url: '../user/personalProve'
+				});
+			}
 		}
 	};
 </script>
