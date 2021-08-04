@@ -46,7 +46,7 @@
 									<view class="collect common" @click.stop="collect(item,index)">
 										<image src="../../static/information/collect.png" v-if="item.isCollect" style="width: 35rpx;height: 35rpx;">
 										</image>
-										<image src="../../static/uview/common/collect.png" v-else style="width: 40rpx;height: 40rpx;">
+										<image src="../../static/uview/common/collect.png" v-else style="width: 35rpx;height: 35rpx;">
 										</image>
 										<text style="margin-left: 10rpx;">收藏</text>
 									</view>
@@ -171,7 +171,6 @@
 					this.login();//! 调用登录接口
 					return ;
 				}
-				
 				//! 判断当前数据是否收藏
 				if(item.isCollect) {
 					// 用当前商品id去匹配对应的用户收藏id
@@ -340,7 +339,7 @@
 					-webkit-line-clamp: 1;
 					font-size: 32rpx;
 					color: #38393B;
-					font-weight: 600;
+					font-weight: 800;
 					overflow: hidden;
 				}
 

@@ -415,7 +415,7 @@
 
 					image {
 						width: 40rpx;
-						height: 40rpx;
+						height: 30rpx;
 					}
 				}
 			}

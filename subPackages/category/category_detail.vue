@@ -66,12 +66,12 @@
 		<!-- 底部按钮 -->
 		<view class="footer">
 			<view class="collect common" v-if="order_types != 0" @click.stop="collect">
-				<image src="../../static/user/collaction.png" style="width: 50rpx; height: 50rpx;" v-if="isCollect"></image>
-				<image src="../../static/uview/common/collect.png" style="width: 50rpx; height: 53rpx;" v-else></image>
+				<image src="../../static/user/collaction.png" style="width: 45rpx; height: 45rpx;" v-if="isCollect"></image>
+				<image src="../../static/uview/common/collect.png" style="width: 45rpx; height: 45rpx;" v-else></image>
 				<text>收藏</text>
 			</view>
 			<button open-type="contact" class="contact common" style="margin-left: 30rpx;">
-				<image src="../../static/user/server.png" style="width: 50rpx; height: 50rpx;"></image>
+				<image src="../../static/index/server.png" style="width: 50rpx; height: 50rpx;"></image>
 				<text>客服</text>
 			</button>
 			<view class="buy" @click="buyNow">立刻购买</view>
@@ -230,7 +230,6 @@
 			//! 立即购买判断用户有没有登录
 			buyNow() {
 				if (!getApp().globalData.wxuser) {
-					
 					this.login(); //! 调用登录方法
 					return;
 				}

@@ -28,14 +28,17 @@
 								<view class="goods_name">
 									{{ item.goods_name }}
 								</view>
-								<view class="status">
-									<text v-if="item.status === 1">待付款</text>
-									<text v-if="item.status === 2">待发货</text>
-									<text v-if="item.status === 3">待收货</text>
-								</view>
-								<!-- 价格 -->
-								<view class="price">
-									总价:{{ item.act_pay }}
+								<!-- 信息内容 -->
+								<view class="other_msg">
+									<!-- 价格 -->
+									<view class="price">
+										总价:{{ item.act_pay }}
+									</view>
+									<view class="status">
+										<text v-if="item.status === 1">待付款</text>
+										<text v-if="item.status === 2">待发货</text>
+										<text v-if="item.status === 3">待收货</text>
+									</view>
 								</view>
 							</view>
 						</view>
@@ -241,19 +244,25 @@
 							font-size: 28rpx;
 						}
 
-						.status {
-							margin-top: 20rpx;
-							margin-bottom: 20rpx;
-							padding: 10rpx 30rpx;
-							color: #ffffff;
-							font-size: 28rpx;
-							background-color: $page_color;
-							align-self: flex-end;
-						}
-						.price {
-							font-size: 30rpx;
-							font-weight: 700;
-							color: red;
+						.other_msg {
+							width: 100%;
+							display: flex;
+							justify-content: space-between;
+							align-items: center;
+							.status {
+								margin-top: 20rpx;
+								margin-bottom: 20rpx;
+								padding: 10rpx 30rpx;
+								color: #ffffff;
+								font-size: 28rpx;
+								background-color: $page_color;
+								align-self: flex-end;
+							}
+							.price {
+								font-size: 30rpx;
+								font-weight: 700;
+								color: red;
+							}
 						}
 					}
 				}
