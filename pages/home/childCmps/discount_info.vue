@@ -75,9 +75,9 @@
 				justify-content: space-between;
 				flex-wrap: wrap;
 				.discount_item {
-					flex: 0 0 30%;
-					padding: 20rpx 20rpx;
-					margin-bottom: 25rpx;
+					flex: 0 0 31%;
+					padding: 20rpx 20rpx 2rpx 20rpx;
+					margin-bottom: 20rpx;
 					display: flex;
 					flex-direction: column;
 					align-items: center;
@@ -86,12 +86,12 @@
 					.pic {
 						width: 100%;
 						height: 160rpx;
+						border: 1rpx solid #bbbbbb;
 						margin-bottom: 10rpx;
 					}
 					.info {
 						width: 100%;
-						margin-top: 10rpx;
-						margin-bottom: 10rpx;
+						// margin-top: 10rpx;
 						font-size: 22rpx;
 						color: #38393B;
 						display: -webkit-box;
@@ -100,8 +100,9 @@
 						overflow: hidden;
 					}
 					.price{
+						margin-top: 5rpx;
 						align-self: flex-start;
-						font-size: 30rpx;
+						font-size: 28rpx;
 						color: #ff2400;
 						font-weight: 700;
 					}

@@ -66,14 +66,15 @@
 					width: 100%;
 					background-color: #ffffff;
 					border-radius: 15rpx;
-					padding: 20rpx 10rpx;
+					padding: 30rpx 20rpx;
 					margin-bottom: 20rpx;
 					display: flex;
 					align-items: center;
 
 					.left_img {
-						width: 150rpx;
-						height: 150rpx;
+						border: 1rpx solid #b3b3b3;
+						width: 127rpx;
+						height: 127rpx;
 					}
 
 					.right_info {

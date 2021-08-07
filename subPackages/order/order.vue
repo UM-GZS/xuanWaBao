@@ -126,7 +126,7 @@
 		<!-- 提示用户复制客服电话 -->
 		<u-top-tips ref="uTips" z-index="10080"></u-top-tips>
 		<!-- 订单提交成功的遮罩层 -->
-		<u-mask :show="showOrder" @click="showOrder = false">
+		<u-mask :show="showOrder" @click="accept">
 			<view class="warp">
 				<view class="rect" @tap.stop>
 					<view class="title">
@@ -175,12 +175,13 @@
 		onLoad() {
 			// 获取vuex中的购物车订单
 			this.carData = this.$store.state.shopCarData;
+			console.log("购物车",this.carData)
 			this.getAddress(this.carData.user_id);
 		},
 		onShow() {
 			//! 获取vuex中收货地址的数据
 			const address = this.$store.state.deliveryAddress;
-			if(Object.keys(address).length > 0) {
+			if(address) {
 				this.userAddress = address;
 			}
 		},
@@ -194,7 +195,8 @@
 					def: true //! 获取默认地址
 				}
 				const res = await userApi.getAddressList(queryInfo);
-				if (res.data.list) {
+				console.log("用户收货地址",res)
+				if (res.data.list.length > 0) {
 					this.userAddress = res.data.list[0];
 				}
 
@@ -239,6 +241,9 @@
 			//! 点击完成后回退页面
 			accept() {
 				this.showOrder = false;
+				//! 清除数据 清除vuex中的收货地址
+				this.$store.commit('clearAddress');
+				this.userAddress = null;
 				uni.navigateBack({
 					delta: 1
 				})

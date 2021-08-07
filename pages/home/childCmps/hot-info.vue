@@ -59,7 +59,7 @@
 			async getArticle() {
 				let queryInfo = {
 					page_num:1,
-					page_size:3,
+					page_size:2,
 					sort:'id desc'
 				}
 				const res = await articleApi.articleList(queryInfo);
@@ -88,7 +88,7 @@
 		width: 100%;
 		height: 100%;
 		padding: 0 30rpx;
-		margin-top: 160rpx;
+		margin-top: 210rpx;
 		.hot_info {
 			width: 100%;
 			.hot_list {
@@ -98,13 +98,14 @@
 					width: 100%;
 					background-color: #ffffff;
 					border-radius: 15rpx;
-					padding: 20rpx 10rpx;
+					padding: 30rpx 20rpx;
 					margin-bottom: 20rpx;
 					display: flex;
 					align-items: center;
 					.left_img{
-						width: 150rpx;
-						height: 150rpx;
+						border: 1rpx solid #b3b3b3;
+						width: 127rpx;
+						height: 127rpx;
 					}
 					.right_info {
 						flex: 1;

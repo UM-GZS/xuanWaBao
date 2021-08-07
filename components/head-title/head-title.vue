@@ -7,8 +7,8 @@
 		</view>
 		<view class="show_more">
 			<view style="display: flex;align-items: center;">
-				<text style="color: #817e7f;margin-right: 10rpx;">更多</text>
-				<image src="../../static/index/more.png" style="width: 25rpx;height: 30rpx;"></image>
+				<text style="color: #808080;margin-right: 10rpx;font-size: 25rpx;">更多</text>
+				<image src="../../static/index/more.png" style="width: 20rpx;height: 30rpx;"></image>
 			</view>
 		</view>
 	</view>

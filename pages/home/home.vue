@@ -229,18 +229,19 @@
 				position: absolute;
 				box-sizing: border-box;
 				left: 0;
-				bottom: -140rpx;
+				bottom: -165rpx;
 				z-index: 100;
 				width: 100%;
 				padding: 0 30rpx;
-				height: 170rpx;
+				// height: 170rpx;
 
 				.service_list {
 					width: 100%;
 					height: 100%;
 					display: flex;
 					justify-content: flex-start;
-					padding: 20rpx;
+					padding-top: 40rpx;
+					padding-bottom: 33rpx;
 					align-content: center;
 					border-radius: 20rpx;
 					background-color: #ffffff;
@@ -256,13 +257,13 @@
 						.desc {
 							margin-top: 20rpx;
 							font-weight: 700;
-							font-size: 28rpx;
+							font-size: 25rpx;
 							color: #000000;
 						}
 
 						.s_icon {
-							width: 85rpx;
-							height: 110rpx;
+							width: 67.5rpx;
+							height: 67.5rpx;
 						}
 					}
 				}

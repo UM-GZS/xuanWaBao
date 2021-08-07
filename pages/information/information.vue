@@ -329,11 +329,12 @@
 				flex-direction: column;
 				background-color: #ffffff;
 				border-radius: 15rpx;
-				padding: 30rpx 30rpx 5rpx 30rpx;
+				padding: 32rpx 32rpx 5rpx 32rpx;
 				margin-bottom: 10rpx;
 
 				.info_title {
 					width: 100%;
+					padding-left: 8rpx;
 					display: -webkit-box;
 					-webkit-box-orient: vertical;
 					-webkit-line-clamp: 1;
@@ -351,8 +352,9 @@
 					align-items: center;
 
 					.left_pic {
-						width: 200rpx;
-						height: 200rpx;
+						align-self: flex-start;
+						width: 188.5rpx;
+						height: 188.5rpx;
 						border: 1rpx solid #bbbbbb;
 					}
 

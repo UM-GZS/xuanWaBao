@@ -64,7 +64,7 @@ const store = new Vuex.Store({
 		/**
 		 * 用户收货地址数据
 		 */
-		deliveryAddress:{},
+		deliveryAddress:null,
 		/**
 		 * 车辆买卖的tabs选择
 		 */
@@ -102,6 +102,10 @@ const store = new Vuex.Store({
 		 */
 		chooseAddress(state,payload) {
 			state.deliveryAddress = payload;
+		},
+		//!清除用户收货地址
+		clearAddress(state) {
+			state.deliveryAddress = null;
 		}
 	}
 })
