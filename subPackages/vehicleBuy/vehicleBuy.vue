@@ -19,7 +19,7 @@
 							<!-- 图片以及文字内容 -->
 							<view class="info_content">
 								<view class="left_pic">
-									<image style="width: 90%;height: 90%;" :src="baseUrl+item.small_img_urls">
+									<image style="width: 100%;height: 100%;" :src="baseUrl+item.small_img_urls">
 									</image>
 								</view>
 								<view class="right_msg">
@@ -34,15 +34,17 @@
 									</view>
 									<!-- 收藏以及分享 -->
 									<view class="edit">
-										<!-- 收藏 -->
-										<view class="collect common userBg" style="margin:10rpx 0 10rpx 10rpx;">
+										<view class="collect common userBg" >
 											<text style="padding-bottom:5rpx">{{item.person_type_name}}</text>
 										</view>
-										<!-- 分享 -->
+									</view>
+									<view class="edit">
 										<view class="share common">
 											<text style="color:#000;">￥{{item.price}}</text>
 										</view>
 									</view>
+
+
 								</view>
 							</view>
 						</view>
@@ -59,7 +61,7 @@
 							<!-- 图片以及文字内容 -->
 							<view class="info_content">
 								<view class="left_pic">
-									<image style="width: 90%;height: 90%;" :src="baseUrl+item.small_img_urls">
+									<image style="width: 100%;height: 100%;" :src="baseUrl+item.small_img_urls">
 									</image>
 								</view>
 								<view class="right_msg">
@@ -116,7 +118,7 @@
 							<!-- 图片以及文字内容 -->
 							<view class="info_content">
 								<view class="left_pic">
-									<image style="width: 80%;height: 80%;" src="../../static/index/sw1.jpg">
+									<image style="width: 100%;height: 100%;" src="../../static/index/sw1.jpg">
 									</image>
 								</view>
 								<view class="right_msg">
@@ -179,8 +181,8 @@
 				tabList: [{
 						id: 1,
 						title: '新机置换',
-						img: '../../static/information/hotInfo.png',
-						activeImg: '../../static/information/hotInfo_active.png'
+						img: '../../static/vehicle/xinji.png',
+						activeImg: '../../static/vehicle/xinji2.png'
 					},
 					{
 						id: 2,
@@ -191,7 +193,7 @@
 					{
 						id: 3,
 						title: '车辆租赁',
-						img: '../../static/information/industry.png',
+						img: '../../static/vehicle/chuzu.png',
 						activeImg: '../../static/vehicle/chuzu2.png'
 					}
 				],
@@ -441,6 +443,8 @@
 						display: flex;
 						height: 100%;
 						flex-direction: column;
+						display: flex;
+						justify-content: center;
 						
 						.desc {
 							width: 100%;
@@ -505,7 +509,7 @@
 						//! 车辆租赁样式
 						.vehicel_title {
 							width: 100%;
-							font-size: 32rpx;
+							font-size: 30rpx;
 							font-weight: 580;
 							@include clamp2;
 						}
@@ -572,9 +576,10 @@
 						flex: 1;
 						margin-left: 10rpx;
 						display: flex;
-						height: 100%;
+						height: 90%;
 						flex-direction: column;
-						justify-content: flex-start;
+						justify-content: space-between;
+
 
 						.desc {
 							width: 100%;
@@ -591,7 +596,6 @@
 							margin: 0;
 							padding: 0;
 							background: transparent;
-							// font-size: 25rpx;
 							color: $gray_color;
 
 							&::after {

@@ -1,5 +1,5 @@
 <template>
-	<view class="repair_wrap">
+	<view class="repair_wrap" v-if="true">
 		<view class="form">
 			<u-form ref="uForm" :rules="rules" :model="form">
 
@@ -43,6 +43,33 @@
 			</view>
 		</u-mask>
 	</view>
+
+
+	<!-- 审核状态 -->
+	<view v-else class="audition_status">
+		<view class="status_wrap">
+			<!-- 这是身份认证提交成功的状态 -->
+			<view class="top_status" v-if="true">
+				<u-icon name="checkmark-circle-fill" color="#40e09c" size="84"></u-icon>
+				<view>提交成功</view>
+			</view>
+			<!-- 这是身份认证已经失败的状态 -->
+			<view class="top_status" v-else>
+				<u-icon name="plus-circle-fill" color="#fd5d3a" size="84" style="transform: rotate(45deg);"></u-icon>
+				<view>身份认证失败</view>
+			</view>
+			<!-- 状态步骤，放入图片即可 -->
+			<view class="step">
+				<!-- 这里放入状态图片 -->
+				<image src="" alt="身份验证" />
+			</view>
+			<view class="tips">
+				提示：用户进行信息认证后，信息无法进行修改，认证通过后，姓名无法修改
+			</view>
+
+		</view>
+	</view>
+
 </template>
 
 <script>
@@ -293,5 +320,41 @@
         }
 
 		
+	}
+	// 身份认证的审核状态
+	.audition_status{
+		background-color: #fff;
+		margin: 25rpx;
+		height: 520rpx;
+		border-radius: 10rpx;
+		padding: 20rpx 30rpx;
+		.status_wrap{
+			display: flex;
+			flex-direction: column;
+			.top_status{
+				text-align: center;
+				font-size: 37rpx;
+				color:#000;
+				margin-top: 80rpx;
+			}
+			.step{
+				margin: 50rpx 0 30rpx 0;
+				border: 1px solid #e3e3e3;
+				border-radius: 15rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100rpx;
+				image{
+					width: 100%;
+					height: 100%;
+				}
+			}
+			.tips{
+				margin-top: 30rpx;
+				color: #808080;
+				font-size: 20rpx;
+			}
+		}
 	}
 </style>
