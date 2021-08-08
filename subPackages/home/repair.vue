@@ -9,19 +9,19 @@
 					<u-input placeholder="请输入联系人电话号码" v-model="form.phone" />
 				</u-form-item>
 				<u-form-item label-width="150" label="设备类型">
-					<u-input v-model="typeLabel" @click="selectType" placeholder="请选择设备类型" type="select" />
-					<u-select label-name="name" value-name="id" v-model="showDevice" :list="typeList"
-						@confirm="confirmType"></u-select>
+					<u-input v-model="typeLabel.label" @click="selectType" placeholder="请选择设备类型" type="select" />
+					<!-- <u-select label-name="name" value-name="id" v-model="showDevice" :list="typeList"
+						@confirm="confirmType"></u-select> -->
 				</u-form-item>
 				<u-form-item label-width="150" label="设备品牌">
-					<u-input v-model="brandLabel" @click="selectBrand" placeholder="请输入设备品牌" type="select" />
-					<u-select label-name="name" value-name="id" v-model="showDeviceBrand" @confirm="confirmBrand"
-						:list="brandList"></u-select>
+					<u-input v-model="brandLabel.label" @click="selectBrand" placeholder="请输入设备品牌" type="select" />
+					<!-- <u-select label-name="name" value-name="id" v-model="showDeviceBrand" @confirm="confirmBrand"
+						:list="brandList"></u-select> -->
 				</u-form-item>
 				<u-form-item label-width="150" label="设备型号">
-					<u-input v-model="modelLabel" @click="selectModel" placeholder="请选择设备型号" type="select" />
-					<u-select label-name="name" value-name="id" v-model="showDeviceType" @confirm="confirmModel"
-						:list="modelList"></u-select>
+					<u-input v-model="modelLabel.label" @click="selectModel" placeholder="请选择设备型号" type="select" />
+					<!-- <u-select label-name="name" value-name="id" v-model="showDeviceType" @confirm="confirmModel"
+						:list="modelList"></u-select> -->
 				</u-form-item>
 				<u-form-item label-position="top" label-width="150" label="故障说明:" prop="info">
 					<u-input clearable type="textarea" :border="true" height="140" :auto-height="true"
@@ -37,6 +37,81 @@
 		<view class="footer">
 			<view class="submit" @click="beforeSubmit">确认提交维修订单</view>
 		</view>
+		<!-- 设备类型弹窗 -->
+		<u-mask :show="showDevice" @click="cancelType">
+			<view class="repairSelect">
+				<view class="repairRect" @tap.stop>
+					<view class="header">
+						<view class="left" @click="cancelType">
+							取 消
+						</view>
+						<view class="center">
+							请选择设备类型
+						</view>
+						<view class="right" :class="typeLabel.id ? 'confirmColor' :''" @click.stop="confirmType">
+							确 定
+						</view>
+					</view>
+					<!-- 选择数据 -->
+					<scroll-view class="repairContent" enable-flex scroll-y>
+						<view class="repairContent_item" v-for="(item,index) in typeList" :key="index"
+							@click="confirmTypeBefore(item,index)" :class="index === deviceIndex ? 'activeItem' : ''">
+							{{ item.name }}
+						</view>
+					</scroll-view>
+				</view>
+			</view>
+		</u-mask>
+		<!-- 设备品牌弹窗 -->
+		<u-mask :show="showDeviceBrand" @click="cancelBrand">
+			<view class="repairSelect">
+				<view class="repairRect" @tap.stop>
+					<view class="header">
+						<view class="left" @click="cancelBrand">
+							取 消
+						</view>
+						<view class="center">
+							请选择品牌类型
+						</view>
+						<view class="right" :class="brandLabel.id ? 'confirmColor' :''" @click.stop="confirmBrand">
+							确 定
+						</view>
+					</view>
+					<!-- 选择数据 -->
+					<scroll-view class="repairContent" enable-flex scroll-y>
+						<view class="repairContent_item" v-for="(item,index) in brandList" :key="index"
+							@click="confirmBrandBefore(item,index)" :class="index === brandIndex ? 'activeItem' : ''">
+							{{ item.name }}
+						</view>
+					</scroll-view>
+				</view>
+			</view>
+		</u-mask>
+		<!-- 型号类型 -->
+		<u-mask :show="showDeviceType" @click="cancelModel">
+			<view class="repairSelect">
+				<view class="repairRect" @tap.stop>
+					<view class="header">
+						<view class="left" @click="cancelModel">
+							取 消
+						</view>
+						<view class="center">
+							请选择型号类型
+						</view>
+						<view class="right" :class="modelLabel.id ? 'confirmColor' :''" @click.stop="confirmModel">
+							确 定
+						</view>
+					</view>
+					<!-- 选择数据 -->
+					<scroll-view class="repairContent" enable-flex scroll-y>
+						<view class="repairContent_item" v-for="(item,index) in modelList" :key="index"
+							@click="confirmModelBefore(item,index)" :class="index === typeIndex ? 'activeItem' : ''">
+							{{ item.name }}
+						</view>
+					</scroll-view>
+				</view>
+			</view>
+		</u-mask>
 		<!-- 弹窗提示用户确认信息 -->
 		<u-mask :show="showConfirm" @click="showConfirm = false">
 			<view class="warp">
@@ -65,18 +140,34 @@
 				action: '',
 				//默认显示的图片列表
 				fileList: [],
+				//! 设备类型下标
+				deviceIndex: null,
+				brandIndex: null,
+				typeIndex: null,
 				//! 控制显示组件
-				showDevice: false,
-				showDeviceBrand: false,
-				showDeviceType: false,
+				showDevice: false, // 设备类型
+				showDeviceBrand: false, // 设备品牌
+				showDeviceType: false, // 设备型号
 				// 显示确认弹窗按钮
 				showConfirm: false,
 				/**
 				 * 用于显示选择的名称
 				 */
-				typeLabel: '',
-				brandLabel: '',
-				modelLabel: '',
+				typeLabel: {
+					id: 0,
+					label: '',
+					name: ''
+				},
+				brandLabel: {
+					id: 0,
+					label: '',
+					name: ''
+				},
+				modelLabel: {
+					id: 0,
+					label: '',
+					name: ''
+				},
 				// 校验规则
 				rules: {
 					name: [{
@@ -150,7 +241,7 @@
 					return;
 				}
 				//! 判断用户是否上传图片
-				if(this.form.urls.length < 3) {
+				if (this.form.urls.length < 3) {
 					getApp().globalData.global_Toast(true, "请上传设备正前方、侧方、后方照片", function(res) {});
 					return;
 				}
@@ -158,8 +249,7 @@
 					if (valid) {
 						// 显示弹窗
 						this.showConfirm = true;
-					} else {
-					}
+					} else {}
 				});
 			},
 			//! 确认提交
@@ -184,16 +274,19 @@
 			},
 			/**
 			 * 点击各种类型切换时判断上一个是否已经选择
-			 * 品牌选择
+			 * 品牌类型选择
 			 */
 			async selectType() {
 				let queryInfo = {
+					page_num: 1,
+					page_size: 9999,
 					sort: 'id desc'
 				}
 				const typeRes = await repair.deviceType(queryInfo);
 				this.typeList = typeRes.data.list;
 				this.showDevice = true
 			},
+			//! 选择设备品牌
 			async selectBrand() {
 				if (!this.form.types_id) {
 					getApp().globalData.global_Toast(true, "请完成上一个设备选择", function(res) {});
@@ -202,6 +295,8 @@
 				//! 请求数据
 				let queryInfo = {
 					types_id: this.form.types_id,
+					page_num: 1,
+					page_size: 999,
 					sort: 'id desc'
 				};
 				const brandRes = await repair.deviceBrand(queryInfo);
@@ -217,6 +312,8 @@
 				let queryInfo = {
 					types_id: this.form.types_id,
 					brand_id: this.form.brand_id,
+					page_num: 1,
+					page_size: 999,
 					sort: 'id desc'
 				}
 				const modelRes = await repair.deviceModel(queryInfo);
@@ -225,25 +322,97 @@
 			},
 			// 对应的选中事件
 			// 设备类型
-			confirmType(e) {
+			//! 设备类型选择前
+			confirmTypeBefore(item, index) {
+				console.log("是否打印", item)
+				this.deviceIndex = index;
+				//! 记录数据
+				this.typeLabel.id = item.id;
+				this.typeLabel.name = item.name;
+			},
+			// 设备类型的取消选择
+			cancelType() {
+				//! 判断用户是否选择数据清除数据
+				if (!this.typeLabel.label) {
+					this.typeLabel.id = 0;
+					this.typeLabel.name = '';
+					this.deviceIndex = null;
+				}
+				this.showDevice = false
+			},
+			// 品牌选择事件
+			confirmType() {
+				if (!this.typeLabel.id) {
+					return getApp().globalData.global_Toast(true, "请选择设备类型", function(res) {})
+				}
 				//! 当设备的类型切换后清除之前选中的数据，实现数据的联动
-				this.brandLabel = '';
-				this.modelLabel = '';
+				//! 清除之前的数据用于重新获取
+				this.brandLabel.label = '';
+				this.modelLabel.label = '';
+				//清除下标
+				this.brandIndex = null;
+				this.typeIndex = null;
 				this.form.brand_id = '';
 				this.form.types_id = '';
 				//! 赋值显示
-				this.typeLabel = e[0].label;
-				this.form.types_id = e[0].value;
+				this.typeLabel.label = this.typeLabel.name;
+				this.form.types_id = this.typeLabel.id;
+				this.showDevice = false;
+			},
+			//!品牌选择前
+			confirmBrandBefore(item, index) {
+				this.brandIndex = index;
+				//! 记录数据
+				this.brandLabel.id = item.id;
+				this.brandLabel.name = item.name;
+			},
+			//! 判断用户是否选择设备品牌
+			cancelBrand() {
+				//! 判断是否选择数据
+				if (!this.brandLabel.label) {
+					this.brandLabel.id = 0;
+					this.brandLabel.name = '';
+					this.brandIndex = null;
+				}
+				this.showDeviceBrand = false;
 			},
 			// 品牌选择
-			confirmBrand(e) {
-				this.brandLabel = e[0].label;
-				this.form.brand_id = e[0].value;
+			confirmBrand() {
+				if (!this.brandLabel.id) {
+					return getApp().globalData.global_Toast(true, "请选择品牌", function(res) {})
+				}
+				this.brandLabel.label = this.brandLabel.name;
+				this.form.brand_id = this.brandLabel.id;
+				
+				//! 切换时清除设备型号的选中以及数据
+				this.typeIndex = null;
+				this.modelLabel.label = '';
+				this.form.model_id = '';
+				//! 显示弹窗
+				this.showDeviceBrand = false;
 			},
-			// 型号选择
+			//! 型号选择前事件
+			confirmModelBefore(item, index) {
+				this.typeIndex = index;
+				this.modelLabel.id = item.id;
+				this.modelLabel.name = item.name;
+			},
+			cancelModel() {
+				if (!this.modelLabel.label) {
+					this.modelLabel.id = 0;
+					this.modelLabel.name = '';
+					this.typeIndex = null;
+				}
+				this.showDeviceType = false;
+			},
+			// 型号确定选择事件
 			confirmModel(e) {
-				this.modelLabel = e[0].label;
-				this.form.model_id = e[0].value;
+				if (!this.modelLabel.id) {
+					return getApp().globalData.global_Toast(true, "请选择型号", function(res) {})
+				}
+				this.modelLabel.label = this.modelLabel.name;
+				this.form.model_id = this.modelLabel.id;
+				this.showDeviceType = false;
 			},
 			//! 监听图片的上传
 			onSuccess(data, index, lists, name) {
@@ -271,9 +440,25 @@
 					urls: [] // 维修设备图片
 				}
 				this.$refs.uUpload.clear();
-				this.typeLabel = '';
-				this.brandLabel = '';
-				this.modelLabel = '';
+				//! 清除默认数据
+				this.typeLabel = {
+					id: 0,
+					label: '',
+					name: ''
+				}
+				this.brandLabel = {
+					id: 0,
+					label: '',
+					name: ''
+				}
+				this.modelLabel = {
+					id: 0,
+					label: '',
+					name: ''
+				}
+				this.deviceIndex = null
+				this.brandIndex = null
+				this.typeIndex = null
 				this.fileList = [];
 			}
 		},
@@ -310,12 +495,75 @@
 			}
 		}
 
+		.repairSelect {
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-end;
+			height: 100%;
+
+			.repairRect {
+				width: 100%;
+				background-color: #ffffff;
+
+				.header {
+					width: 100%;
+					display: flex;
+					padding: 30rpx;
+					justify-content: space-between;
+					align-items: center;
+					border-bottom: 1rpx solid #dddddd;
+
+					.right {
+						color: $gray_color;
+					}
+
+					.confirmColor {
+						color: #f99a08;
+					}
+				}
+
+				.repairContent {
+					margin: 0;
+					padding: 30rpx 40rpx;
+					width: 100%;
+					height: 400rpx;
+					box-sizing: border-box;
+
+					.repairContent_item {
+						width: 30%;
+						margin-right: 3%;
+						float: left;
+						height: 70rpx;
+						padding: 10rpx 10rpx;
+						font-weight: 600;
+						color: #565656;
+						line-height: 50rpx;
+						text-align: center;
+						border-radius: 15rpx;
+						border: 1rpx solid $gray_color;
+						margin-bottom: 20rpx;
+						display: -webkit-box;
+						-webkit-box-orient: vertical;
+						-webkit-line-clamp: 1;
+						overflow: hidden;
+					}
+
+					.activeItem {
+						background-color: #f99a08;
+						color: #ffffff;
+						border: none;
+					}
+				}
+			}
+		}
+
 		// 显示确认按钮弹窗
 		.warp {
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			height: 100%;
+
 			.rect {
 				display: flex;
 				flex-direction: column;
@@ -324,17 +572,20 @@
 				border-radius: 20rpx;
 				padding: 30rpx;
 				background-color: #fff;
+
 				.confirm_title {
 					margin-bottom: 30rpx;
 					font-size: 35rpx;
 					font-weight: 600;
 				}
+
 				.confirm_content {
 					margin-bottom: 30rpx;
 					font-size: 28rpx;
 					font-weight: 300;
 					letter-spacing: 3rpx;
 				}
+
 				// 确认按钮
 				.confirm {
 					width: 80%;
@@ -347,6 +598,6 @@
 			}
 		}
 
-		
+
 	}
 </style>

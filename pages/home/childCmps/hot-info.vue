@@ -106,6 +106,7 @@
 						border: 1rpx solid #b3b3b3;
 						width: 127rpx;
 						height: 127rpx;
+						align-self: flex-start;
 					}
 					.right_info {
 						flex: 1;

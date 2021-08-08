@@ -11,7 +11,7 @@
 					<u-input placeholder="用户姓名" v-model="form.name" />
 				</u-form-item>
 
-                <u-form-item label-width="165" label="身份证号码:"  :label-style="labelCss">
+				<u-form-item label-width="165" label="身份证号码:" :label-style="labelCss">
 					<u-input placeholder="请输入身份证号码" v-model="form.code" />
 				</u-form-item>
 
@@ -19,7 +19,7 @@
 					<u-upload multiple :file-list="fileList" :show-progress="false" ref="uUpload" :action="action"
 						:auto-upload="true" @on-remove="onRemove" @on-success="onSuccess"></u-upload>
 				</u-form-item>
-                <view class="tips">提示：用户进行信息认证后，信息无法进行修改，认证通过后，姓名无法修改</view>
+				<view class="tips">提示：用户进行信息认证后，信息无法进行修改，认证通过后，姓名无法修改</view>
 			</u-form>
 		</view>
 		<!-- 提交维修订单 -->
@@ -134,10 +134,10 @@
 					user_id: '', // 用户id
 					name: '', // 名称
 					phone: '', // 手机号码
-                    code: '', // 身份证号
-                    urls:[]
-                },
-                labelCss: {
+					code: '', // 身份证号
+					urls: []
+				},
+				labelCss: {
 					fontWeight: 580,
 					color: '#000000'
 				}
@@ -156,10 +156,10 @@
 			//! 提交按钮
 			beforeSubmit() {
 				//! 提交前的判断
-                if (!this.form.phone) {
-                    getApp().globalData.global_Toast(true, "请填写当前手机号", function(res) {});
-                    return;
-                }
+				if (!this.form.phone) {
+					getApp().globalData.global_Toast(true, "请填写当前手机号", function(res) {});
+					return;
+				}
 				if (!this.form.name) {
 					getApp().globalData.global_Toast(true, "请填写真实姓名", function(res) {});
 					return;
@@ -169,7 +169,7 @@
 					return;
 				}
 				//! 判断用户是否上传图片
-				if(this.form.urls.length !== 2) {
+				if (this.form.urls.length !== 2) {
 					getApp().globalData.global_Toast(true, "请上传身份证正反两面照片", function(res) {});
 					return;
 				}
@@ -177,8 +177,7 @@
 					if (valid) {
 						// 显示弹窗
 						this.showConfirm = true;
-					} else {
-					}
+					} else {}
 				});
 			},
 			//! 确认提交
@@ -187,16 +186,16 @@
 				let form = {
 					...this.form,
 					urls: JSON.stringify(this.form.urls)
-                };
-                
-                console.log(form);
-                
-                uni.showToast({
-                    title: '认证信息待接入',
-                    duration: 2000
-                });
-                
-                return
+				};
+
+				console.log(form);
+
+				uni.showToast({
+					title: '认证信息待接入',
+					duration: 2000
+				});
+
+				return
 				// 发起提交请求
 				const orderRes = await repair.deviceOrder(form);
 				// 判断返回的结果是否成功
@@ -210,8 +209,8 @@
 					})
 				}
 			},
-		
-		
+
+
 			//! 监听图片的上传
 			onSuccess(data, index, lists, name) {
 				//! 追加数据
@@ -239,8 +238,8 @@
 				this.brandLabel = '';
 				this.modelLabel = '';
 				this.fileList = [];
-            }
-            
+			}
+
 		},
 	}
 </script>
@@ -251,10 +250,10 @@
 
 		.form {
 			width: 95%;
-            margin: 30rpx auto 0 auto;
-			padding:0 20rpx 110rpx 20rpx;
+			margin: 30rpx auto 0 auto;
+			padding: 0 20rpx 110rpx 20rpx;
 			background-color: #ffffff;
-            border-radius: 10rpx;
+			border-radius: 10rpx;
 		}
 
 		.footer {
@@ -263,8 +262,8 @@
 			padding: 10rpx 30rpx;
 			height: 90rpx;
 			background-color: #ffffff;
-            position: fixed;
-            bottom: 0;
+			position: fixed;
+			bottom: 0;
 
 
 			.submit {
@@ -284,6 +283,7 @@
 			align-items: center;
 			justify-content: center;
 			height: 100%;
+
 			.rect {
 				display: flex;
 				flex-direction: column;
@@ -292,17 +292,20 @@
 				border-radius: 20rpx;
 				padding: 30rpx;
 				background-color: #fff;
+
 				.confirm_title {
 					margin-bottom: 30rpx;
 					font-size: 35rpx;
 					font-weight: 600;
 				}
+
 				.confirm_content {
 					margin-bottom: 30rpx;
 					font-size: 28rpx;
 					font-weight: 300;
 					letter-spacing: 3rpx;
 				}
+
 				// 确认按钮
 				.confirm {
 					width: 80%;
@@ -314,30 +317,35 @@
 				}
 			}
 		}
-        .tips{
-            font-size: 20rpx;
-            color: #808080;
-        }
 
-		
+		.tips {
+			font-size: 20rpx;
+			color: #808080;
+		}
+
+
 	}
+
 	// 身份认证的审核状态
-	.audition_status{
+	.audition_status {
 		background-color: #fff;
 		margin: 25rpx;
 		height: 520rpx;
 		border-radius: 10rpx;
 		padding: 20rpx 30rpx;
-		.status_wrap{
+
+		.status_wrap {
 			display: flex;
 			flex-direction: column;
-			.top_status{
+
+			.top_status {
 				text-align: center;
 				font-size: 37rpx;
-				color:#000;
+				color: #000;
 				margin-top: 80rpx;
 			}
-			.step{
+
+			.step {
 				margin: 50rpx 0 30rpx 0;
 				border: 1px solid #e3e3e3;
 				border-radius: 15rpx;
@@ -345,12 +353,14 @@
 				justify-content: center;
 				align-items: center;
 				height: 100rpx;
-				image{
+
+				image {
 					width: 100%;
 					height: 100%;
 				}
 			}
-			.tips{
+
+			.tips {
 				margin-top: 30rpx;
 				color: #808080;
 				font-size: 20rpx;
