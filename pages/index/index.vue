@@ -49,10 +49,11 @@
 					<view class="icon">
 						<image :src="item.icon"></image>
 					</view>
-					<view>{{item.name}}</view>
+					<view class="item_title show_title">{{item.name}}</view>
 				</view>
 				<view class="close_icon" @click.stop="showModal=false">
-					<image src="../../static/uview/example/min_button.png"></image>
+					<!-- <image src="../../static/uview/example/min_button.png"></image> -->
+					<image src="../../static/index/cancel.png"></image>
 				</view>
 			</view>
 		</view>
@@ -395,6 +396,86 @@
 </script>
 
 <style lang="scss">
+	/**
+	 * 显示字体
+	 */
+	@keyframes showTitle {
+		form {
+			display: none;
+		}
+		to {
+			display: block;
+		}
+	}
+	/**
+	 * 车辆买卖图片位置
+	 */
+	@keyframes carPosition {
+		form {
+			position: absolute;
+			bottom: 30rpx;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+		to {
+			position: absolute;
+			bottom: 120rpx;
+			left:200rpx;
+		}
+	}
+	/**
+	 * 设备维修
+	 */
+	@keyframes repairPosition {
+		form {
+			position: absolute;
+			bottom: 30rpx;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+		to {
+			position: absolute;
+			bottom: 230rpx;
+			left: 41.5%;
+			// transform: translateX(-48%);
+		}
+	}
+	/**
+	 * 求职招聘
+	 */
+	@keyframes jobPosition {
+		form {
+			position: absolute;
+			bottom: 30rpx;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+		to {
+			position: absolute;
+			bottom: 230rpx;
+			left: 59%;
+			// transform: translateX(-48%);
+		}
+	}
+	/**
+	 * 旧机置换
+	 */
+	@keyframes machinePosition {
+		form {
+			position: absolute;
+			bottom: 30rpx;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+		to {
+			position: absolute;
+			bottom: 120rpx;
+			left: 73.5%;
+			// transform: translateX(-78%);
+		}
+	}
+	
+	
 	.startPage {
 		position: fixed;
 		left: 0;
@@ -514,70 +595,101 @@
 		z-index: 100000;
 		left: 50%;
 		color: #fff;
-		animation: showZeroAlert .3s;
+		// animation: showZeroAlert .3s;
 		display: flex;
 		transform: translateX(-50%);
 
 		.list {
+			width: 100vw;
+			height: 100vh;
 			position: relative;
 			@include flex-center;
 
 			.item {
+				position: absolute;
+				bottom: 30rpx;
+				left: 50%;
+				transform: translateX(-50%);
 				.icon {
 					background-color: #fff;
-					width: 120rpx;
-					height: 120rpx;
+					width: 104rpx;
+					height: 104rpx;
 					border-radius: 50%;
 					overflow: hidden;
 					@include flex-center;
 
 					image {
-						width: 80rpx;
-						height: 80rpx;
+						width: 62.5rpx;
+						height: 62.5rpx;
 						border-bottom: 10rpx;
 					}
 				}
+				.item_title {
+					font-size: 25rpx;
+					animation: showTitle 0.8s;
+					animation-fill-mode: forwards;
+				}
 			}
-
+			
+			.item:nth-child(1) {
+				animation: carPosition 0.8s ease 1;
+				animation-fill-mode: forwards;
+			}
 			.item:nth-child(2) {
-				margin-bottom: 200rpx;
-				margin-left: 30rpx;
-				margin-right: 30rpx;
+				animation: repairPosition 0.8s ease 1;
+				animation-fill-mode: forwards;
 			}
-
 			.item:nth-child(3) {
-				margin-bottom: 200rpx;
-				margin-right: 30rpx;
+				animation: jobPosition 0.8s ease 1;
+				animation-fill-mode: forwards;
 			}
+			.item:nth-child(4) {
+				animation: machinePosition 0.8s ease 1;
+				animation-fill-mode: forwards;
+			}
+			// .item:nth-child(2) {
+			// 	margin-bottom: 200rpx;
+			// 	margin-left: 30rpx;
+			// 	margin-right: 30rpx;
+			// }
+
+			// .item:nth-child(3) {
+			// 	margin-bottom: 200rpx;
+			// 	margin-right: 30rpx;
+			// }
 
 			.close_icon {
+				width: 104rpx;
+				height: 104rpx;
 				position: absolute;
 				bottom: 30rpx;
 				left: 50%;
 				transform: translateX(-50%);
-
+				z-index: 1000;
 				image {
-					width: 104rpx;
-					height: 104rpx;
-					background-color: #000;
+					width: 100%;
+					height: 100%;
+					// background-color: #000;
 					border-radius: 50%;
-					transform: rotate(45deg);
+					// transform: rotate(45deg);
 				}
 			}
 		}
-
-
 	}
 
-	@keyframes showZeroAlert {
-		0% {
-			transform: translate(-50%, 100px);
-		}
+	
+	
+	
+	
+	// @keyframes showZeroAlert {
+	// 	0% {
+	// 		transform: translate(-50%, 100px);
+	// 	}
 
-		100% {
-			transform: translate(-50%, 0);
-		}
-	}
+	// 	100% {
+	// 		transform: translate(-50%, 0);
+	// 	}
+	// }
 
 	.rotate-star {
 		// 展示遮罩层时把外层加号隐藏，避免视图混淆
