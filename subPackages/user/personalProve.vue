@@ -189,11 +189,11 @@
 				};
 
 				console.log(form);
-
-				uni.showToast({
-					title: '认证信息待接入',
-					duration: 2000
-				});
+				
+				// uni.showToast({
+				// 	title: '认证信息待接入',
+				// 	duration: 2000
+				// });
 
 				return
 				// 发起提交请求

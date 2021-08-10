@@ -11,7 +11,7 @@
 
 		<!-- 内容区域 -->
 		<swiper @change="change" :current="current" class="swiper_content" enable-flex>
-			<swiper-item v-for="(swiperItem,swiperIndex) in tabList" :key="swiperIndex">
+			<swiper-item v-for="(swiperItem,swiperIndex) in tabList" :key="swiperIndex" class="swiper_item">
 				<!-- 每一项内容区域 -->
 				<scroll-view @scrolltolower="lower" style="width: 100%;height: 100%;" scroll-y enable-flex>
 					<view class="info_item" v-for="(item,index) in list" :key="index">
@@ -149,8 +149,13 @@
 			height: calc(100vh - 130rpx);
 			// height: 100%;
 			overflow-y: scroll;
-			padding: 0 20rpx;
+			// padding: 0 20rpx;
 			box-sizing: border-box;
+			.swiper_item {
+				width: 100%;
+				box-sizing: border-box;
+				padding: 0 20rpx;
+			}
 
 			.info_item {
 				width: 100%;

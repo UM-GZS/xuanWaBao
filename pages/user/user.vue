@@ -49,6 +49,9 @@
 							slot="icon"></u-image>
 					</u-cell-item>
 				</button>
+				<u-cell-item title="退出登录" :arrow="false" @click="exit" v-if="hasLogin">
+					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/exit.png" slot="icon"></u-image>
+				</u-cell-item>
 			</u-cell-group>
 		</view>
 		<!-- 登陆后没有手机号时弹出 -->
@@ -69,6 +72,7 @@
 	export default {
 		data() {
 			return {
+				hasLogin:false,
 				code: "",
 				userInfo: {
 					uname: "未登录",
@@ -83,6 +87,8 @@
 			ontrueGetList() {
 				let that = this
 				let wxuser = uni.getStorageSync('wxuser')
+				//! 记录用户数据
+				this.hasLogin = wxuser;
 				if (wxuser) {
 					this.userInfo = wxuser
 				}
@@ -121,6 +127,8 @@
 						if (!resData.data.phone) {
 							that.addPhoneShow = true
 						}
+						//! 显示退出按钮
+						this.hasLogin = true
 					}
 				}) //getUserProfile end
 			},
@@ -217,8 +225,22 @@
 				uni.navigateTo({
 					url:"../../subPackages/user/prove"
 				})
+			},
+			//! 用户退出登录
+			exit() {
+				//! 清除缓存数据
+				wx.removeStorageSync("wxuser");
+				getApp().globalData.wxuser = null;
+				//! 清除数据
+				this.userInfo = {
+					uname: "未登录",
+					headpic_url: "../../static/tabBar/5.png",
+					phone: "请登录获取手机号码"
+				},
+				this.hasLogin = false
+				this.addPhoneShow = false
+				this.phone =  "" //用户手机号
 			}
-
 		}
 
 	}

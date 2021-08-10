@@ -34,7 +34,7 @@
 									<view class="name common">
 										<image style="width: 30rpx;height: 30rpx;" :src="url + item.user_url">
 										</image>
-										<text style="margin-left: 10rpx;">{{ item.user_name }}</text>
+										<text style="margin-left: 15rpx;">{{ item.user_name }}</text>
 									</view>
 									<view class="time" style="color: #B3B3B3;font-size: 23rpx;">
 										{{ item.create_time | filterDate }}
@@ -44,17 +44,17 @@
 								<view class="edit">
 									<!-- 收藏 -->
 									<view class="collect common" @click.stop="collect(item,index)">
-										<image src="../../static/information/collect.png" v-if="item.isCollect" style="width: 35rpx;height: 35rpx;">
+										<image src="../../static/information/collect.png" v-if="item.isCollect" style="width: 28rpx;height: 29rpx;">
 										</image>
-										<image src="../../static/uview/common/collect.png" v-else style="width: 35rpx;height: 35rpx;">
+										<image src="../../static/uview/common/collect.png" v-else style="width: 28rpx;height: 29rpx;">
 										</image>
-										<text style="margin-left: 10rpx;">收藏</text>
+										<text style="margin-left: 16.5rpx;font-size: 27rpx;">收藏</text>
 									</view>
 									<!-- 分享 -->
 									<button open-type="share" class="share common" style="margin-left: 30rpx;" @click.stop="share(item)">
-										<image src="../../static/information/share.png" style="width: 30rpx;height: 30rpx;">
+										<image src="../../static/information/share.png" style="width: 25rpx;height: 27.5rpx;">
 										</image>
-										<text style="margin-left: 10rpx;">分享</text>
+										<text style="margin-left: 16.5rpx;font-size: 27rpx;">分享</text>
 									</button>
 								</view>
 							</view>

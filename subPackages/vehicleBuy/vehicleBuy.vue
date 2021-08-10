@@ -410,9 +410,15 @@
 			margin-top: 30rpx;
 			height: 100%;
 			overflow-y: scroll;
-			padding: 0 20rpx 0 20rpx;
+			// padding: 0 20rpx 0 20rpx;
 			box-sizing: border-box;
-
+			
+			.swiper_wrap {
+				width: 100%;
+				box-sizing: border-box;
+				padding: 0 20rpx;
+			}
+			
 			.info_item {
 				width: 100%;
 				display: flex;
