@@ -31,11 +31,14 @@
 			</view>
 			<view class="tabBar_list" :style="{paddingBottom:is_lhp?'40rpx':''}">
 				<view v-for="(item) in tab_nav_list" :key="item.id"
-					:class="{'tabBar_item':item.id!=2,'tabBar_item2':item.id==2}" @tap="cut_index(item.id)">
+					:class="{'tabBar_item':item.id!=2,'tabBar_item2':item.id==2}" 
+					@tap="cut_index(item.id)"
+					:style="item.id == 2 ? 'margin-bottom:25rpx' : ''">
 					<image v-if="show_index == item.id" :src="`../../static/tabBar/${item.id+1}${item.id+1}.png`">
 					</image>
 					<image v-else :src="`../../static/tabBar/${item.id+1}.png`"
-						:class="item.id==2&&showModal?'rotate-star':'rotate-end'"></image>
+						:class="item.id==2&&showModal?'rotate-star':'rotate-end'" 
+						:style="item.id == 2 ? 'width:104rpx;height:104rpx':''"></image>
 					<view :class="{'tabBar_name':true,'nav_active':show_index == item.id}">{{item.name}}</view>
 				</view>
 			</view>
@@ -562,13 +565,14 @@
 		z-index: 100;
 		pointer-events: none;
 
+		//! 中间凸起样式
 		.tabBar_miden_border {
-			width: 100rpx;
-			height: 50rpx;
-			border-top: 2rpx solid #E5E5E5;
-			border-radius: 50rpx 50rpx 0 0;
-			/* 左上、右上、右下、左下 */
-			background: #fff;
+			// width: 100rpx;
+			// height: 50rpx;
+			// border-top: 2rpx solid #E5E5E5;
+			// border-radius: 50rpx 50rpx 0 0;
+			// /* 左上、右上、右下、左下 */
+			// background: #fff;
 		}
 	}
 

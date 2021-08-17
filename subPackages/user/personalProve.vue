@@ -1,5 +1,5 @@
 <template>
-	<view class="repair_wrap" v-if="true">
+	<view class="repair_wrap" v-if="!showSuccess">
 		<view class="form">
 			<u-form ref="uForm" :rules="rules" :model="form">
 
@@ -61,7 +61,7 @@
 			<!-- 状态步骤，放入图片即可 -->
 			<view class="step">
 				<!-- 这里放入状态图片 -->
-				<image src="" alt="身份验证" />
+				<u-steps :list="successList" mode="number" :current="1" activeColor="#40e09c" style="width: 100%;font-size: 18.5rpx;height: 100%;" un-active-color="#808080"></u-steps>
 			</view>
 			<view class="tips">
 				提示：用户进行信息认证后，信息无法进行修改，认证通过后，姓名无法修改
@@ -77,6 +77,7 @@
 	export default {
 		data() {
 			return {
+				showSuccess:false,
 				//! 自动上传图片的地址
 				action: '',
 				//默认显示的图片列表
@@ -93,6 +94,12 @@
 				typeLabel: '',
 				brandLabel: '',
 				modelLabel: '',
+				// 成功提交后显示的下标值
+				successList:[
+					{name:'提交'},
+					{name:'身份认证'},
+					{name:'等待审核'}
+				],
 				// 校验规则
 				rules: {
 					name: [{
@@ -188,12 +195,13 @@
 					urls: JSON.stringify(this.form.urls)
 				};
 
+				this.showConfirm = false;
 				console.log(form);
 				
-				// uni.showToast({
-				// 	title: '认证信息待接入',
-				// 	duration: 2000
-				// });
+				uni.showToast({
+					title: '认证信息待接入',
+					duration: 2000
+				});
 
 				return
 				// 发起提交请求
@@ -330,7 +338,7 @@
 	.audition_status {
 		background-color: #fff;
 		margin: 25rpx;
-		height: 520rpx;
+		// height: 520rpx;
 		border-radius: 10rpx;
 		padding: 20rpx 30rpx;
 
@@ -347,12 +355,12 @@
 
 			.step {
 				margin: 50rpx 0 30rpx 0;
+				padding: 23rpx  0;
 				border: 1px solid #e3e3e3;
 				border-radius: 15rpx;
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				height: 100rpx;
 
 				image {
 					width: 100%;

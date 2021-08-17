@@ -242,8 +242,8 @@ import validApi from "../../utils/validate/validity.js";
 				if(!this.formData.phone || !validApi.validPhone(this.formData.phone)) {
 					return getApp().globalData.global_Toast(true,"请输入正确的手机号码",function(res){})
 				}
-				if(!this.formData.gender) {
-					return getApp().globalData.global_Toast(true,"请填写性别",function(res){})
+				if(!this.formData.gender == "男" || !this.formData.gender == "女") {
+					return getApp().globalData.global_Toast(true,"请输入性别:男或女",function(res){})
 				}
 				if(!this.formData.email || !validApi.validEmail(this.formData.email)) {
 					return getApp().globalData.global_Toast(true,"请填写正确的邮箱地址",function(res){})
@@ -279,7 +279,7 @@ import validApi from "../../utils/validate/validity.js";
 					user_id:wxuser.id,
 					name:this.formData.name,
 					phone:this.formData.phone,
-					gender:this.formData.gender,
+					gender:this.formData.gender == '男' ? 1 : 2,
 					age:this.formData.age,
 					post:this.formData.post,
 					address:this.formData.address,

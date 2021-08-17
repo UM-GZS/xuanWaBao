@@ -27,15 +27,15 @@
 		<!-- 底部按钮 -->
 		<view class="footer">
 			<view class="collect common" @click="handelCollection">
-				<image src="../../static/user/collaction.png" style="width: 50rpx; height: 50rpx;" v-if="collect"
+				<image src="../../static/user/collaction.png" style="width: 45rpx; height: 45rpx;" v-if="collect"
 					@click="collect = false">
 				</image>
-				<image src="../../static/uview/common/collect.png" style="width: 50rpx; height: 53rpx;" v-else
+				<image src="../../static/uview/common/collect.png" style="width: 45rpx; height: 45rpx;" v-else
 					@click="collect = true"></image>
 				<text>收藏</text>
 			</view>
 			<button open-type="share" class="contact common" style="margin-left: 30rpx;">
-				<image src="../../static/information/share.png" style="width: 50rpx; height: 45rpx;"></image>
+				<image src="../../static/information/share.png" style="width: 45rpx; height: 45rpx;"></image>
 				<text>分享</text>
 			</button>
 			<view class="buy" @click="contactSeller">联系卖家</view>
@@ -205,7 +205,7 @@
 			color: $gray_color;
 
 			.common {
-				padding: 30rpx 0;
+				// padding: 30rpx 0;
 				display: flex;
 				flex-direction: column;
 				justify-content: center;

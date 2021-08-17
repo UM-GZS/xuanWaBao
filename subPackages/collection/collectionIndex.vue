@@ -56,10 +56,10 @@
 								<view class="right_info">
 									<view class="name">{{ item.name }}</view>
 									<view class="subtitle">{{ item.name }}</view>
-									<view class="price">
+									<!-- <view class="price">
 										<view>直营车辆</view>
 										<view>分期</view>
-									</view>
+									</view> -->
 									<view class="info">￥{{ item.price }}</view>
 								</view>
 							</view>
@@ -424,8 +424,8 @@
 
 						.name {
 							font-size: 30rpx;
-							font-weight: 560;
-							color: #38393b;
+							font-weight: 400;
+							color: #38393B;
 							display: -webkit-box;
 							overflow: hidden;
 							-webkit-box-orient: vertical;
@@ -433,10 +433,10 @@
 						}
 
 						.subtitle {
-							margin-top: 8rpx;
-							font-size: 26rpx;
+							margin-top: 25rpx;
+							font-size: 21rpx;
 							font-weight: 560;
-							color: #888888;
+							color: #999999;
 							display: -webkit-box;
 							overflow: hidden;
 							-webkit-box-orient: vertical;
@@ -496,15 +496,15 @@
 
 						.name {
 							font-size: 34rpx;
-							font-weight: 560;
-							color: #38393b;
+							font-weight: 400;
+							color: #38393B;
 						}
 
 						.subtitle {
 							margin-top: 15rpx;
 							font-size: 30rpx;
-							font-weight: 560;
-							color: #888888;
+							font-weight: 300;
+							color: #38393B;
 						}
 
 						.price {
@@ -519,6 +519,8 @@
 							position: absolute;
 							bottom: 0;
 							left: 15rpx;
+							font-size: 23rpx;
+							color: #808080;
 						}
 					}
 				}

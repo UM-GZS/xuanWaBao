@@ -6,7 +6,7 @@
 		<!-- 用户信息 -->
 		<view class="user_info">
 			<view class="left_box">
-				<image src="../../static/information/industry_active.png" style="width: 40rpx;height: 40rpx;border-radius: 50%;"></image>
+				<image :src="url + detail.user_url" style="width: 40rpx;height: 40rpx;border-radius: 50%;"></image>
 				<view class="user_msg">
 					<view class="name">
 						{{ detail.user_name }}
