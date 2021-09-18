@@ -3,21 +3,16 @@
 		<!-- 头部信息 -->
 		<view class="goods_info">
 			<!-- 上边内容 -->
-			<view class="goods_content">
+			<view class="goods_content" v-for="(item, index) in carData.items" :key="index">
 				<!-- 左边图片 -->
 				<view class="left_pic">
-					<image style="width: 100%;height: 100%;" :src="url + carData.url"></image>
+					<image style="width: 100%;height: 100%;" :src="url + item.img_url"></image>
 				</view>
 				<!--右边详情 -->
 				<view class="right_msg">
 					<view class="name">
-						{{ carData.goods_name }}
+						{{ item.goods_name }}
 					</view>
-					<!-- 车辆拥有的服务 -->
-					<!-- <view class="desc">
-						<view class="desc_item">直营车辆</view>
-						<view class="desc_item">分期</view>
-					</view> -->
 					<!-- 已选型号 -->
 					<view class="select_type">
 						<view class="type_title" style="margin-bottom: 10rpx;">
@@ -25,16 +20,16 @@
 						</view>
 						<view class="select_item" >
 							<view class="model">
-								{{ carData.goods_model }}
+								{{ item.goods_model }}
 							</view>
 							<view class="model_count" >
-								x{{ carData.quantity }}
+								x{{ item.quantity }}
 							</view>
 						</view>
 					</view>
 					<!-- 当前商品的价格 -->
 					<view class="price">
-						￥{{ carData.price }}
+						￥{{ item.price }}
 					</view>
 				</view>
 			</view>
@@ -111,6 +106,7 @@
 			<text>买家留言</text>
 			<u-input v-model="remark" input-align="right" height="60" type="text" placeholder="留言建议提前协商" trim />
 		</view>
+		<view class="page-null"></view>
 		<!-- 订单提交 -->
 		<view class="order_submit">
 			<view class="order_price">
@@ -169,14 +165,15 @@
 				//! 型号列表
 				modelList: [],
 				//!用户收货地址
-				userAddress: null
+				userAddress: null,
+				userInfo: getApp().globalData.wxuser
 			}
 		},
 		onLoad() {
 			// 获取vuex中的购物车订单
 			this.carData = this.$store.state.shopCarData;
 			console.log("购物车",this.carData)
-			this.getAddress(this.carData.user_id);
+			this.getAddress();
 		},
 		onShow() {
 			//! 获取vuex中收货地址的数据
@@ -187,9 +184,9 @@
 		},
 		methods: {
 			//! 获取用户的收货地址
-			async getAddress(user_id) {
+			async getAddress() {
 				let queryInfo = {
-					user_id,
+					user_id: this.userInfo.id,
 					page_num: 1,
 					page_size: 20,
 					def: true //! 获取默认地址
@@ -213,17 +210,17 @@
 				if(!this.userAddress) {
 					return getApp().globalData.global_Toast(true,"请选择收货地址",function(res){})
 				}
-				//! 过滤地址数据
-				let address = {
-					deliv_name:this.userAddress.name,
-					deliv_phone:this.userAddress.phone,
-					deliv_address:this.userAddress.region +  this.userAddress.detail
-				}
 				//! 订单的对象数据
 				let queryInfo = {
-					...this.carData,
-					remark:this.remark,
-					...address
+					user_id: this.userInfo.id,
+					order_types: this.carData.order_types,
+					deliv_name: this.userAddress.name,
+					deliv_phone: this.userAddress.phone,
+					deliv_address: this.userAddress.region + this.userAddress.detail,
+					remark: this.remark,
+					status: 1,
+					act_pay: this.carData.act_pay,
+					items: JSON.stringify(this.carData.items),
 				}
 				
 				const orderRes = await orderApi.addOrder(queryInfo);
@@ -485,7 +482,10 @@
 				}
 			}
 		}
-
-
+	}
+	
+	.page-null {
+		width: 100%;
+		height: 150rpx;
 	}
 </style>
