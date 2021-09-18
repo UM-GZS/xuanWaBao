@@ -35,3 +35,60 @@ $gray_color:#b5b5b5; //! 可以用于描述等灰色按钮
 		-webkit-line-clamp: 2;
 		overflow: hidden;
 	}
+	
+.flex {
+	display: flex;
+}
+
+.flex_wrap {
+	flex-wrap: wrap;
+}
+
+.flex_column{
+	flex-direction: column;
+}
+
+.flex_row {
+	flex-direction: row;
+}
+
+.flex_allcenter {
+	justify-content: center;
+	align-items: center;
+}
+
+.flex_middle {
+	align-items: center;
+}
+
+.flex_line {
+	align-items: baseline;
+}
+
+.flex_start {
+	align-items: flex-start;
+}
+
+.flex_end {
+	align-items: flex-end;
+}
+
+.flex_space {
+	justify-content: space-around;
+}
+
+.flex_between {
+	justify-content: space-between;
+}
+
+.flex_center {
+	justify-content: center;
+}
+
+.flex_left {
+	justify-content: flex-start;
+}
+
+.flex_right {
+	justify-content: flex-end;
+}

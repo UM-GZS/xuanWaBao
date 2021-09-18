@@ -74,7 +74,10 @@
 				<image src="../../static/index/server.png" style="width: 50rpx; height: 50rpx;"></image>
 				<text>客服</text>
 			</button>
-			<view class="buy" @click="buyNow">立刻购买</view>
+			<view class="buttom">
+				<view class="collect" @click="collectNow">加入购物车</view>
+				<view class="buy" @click="buyNow">立刻购买</view>
+			</view>
 		</view>
 		<!-- 弹出层给用户选择 -->
 		<u-mask :show="showSelect" @click="showSelect = false">
@@ -111,7 +114,7 @@
 					</view>
 					<!-- next step-->
 					<view class="next_step" @click="nextStep">
-						下一步
+						{{isShowCollect ? '确定' : '下一步'}}
 					</view>
 				</view>
 			</view>
@@ -125,6 +128,7 @@
 	import categoryApi from '../../network/category/category.js';
 	import machineApi from '../../network/machine/machine.js';
 	import collectApi from '../../network/user/collect.js';
+	import cartApi from '../../network/cart/cartApi.js';
 	//! 防抖函数
 	import tools from '../../utils/debounce/debounce.js';
 	export default {
@@ -154,7 +158,9 @@
 					quantity: null // 数量
 				},
 				//! 产品的详情图
-				goodsDetailPic:[]
+				goodsDetailPic:[],
+				isShowCollect: false, // 控制弹窗类型
+				userInfo: getApp().globalData.wxuser,
 			}
 		},
 		onLoad(options) {
@@ -233,7 +239,17 @@
 					this.login(); //! 调用登录方法
 					return;
 				}
-				this.showSelect = true
+				this.showSelect = true;
+				this.isShowCollect = false;
+			},
+			// 加入购物车
+			collectNow() {
+				if (!getApp().globalData.wxuser) {
+					this.login(); //! 调用登录方法
+					return;
+				}
+				this.showSelect = true;
+				this.isShowCollect = true;
 			},
 			//! 用户登录
 			async login() {
@@ -344,7 +360,7 @@
 				this.modelData.quantity = e.value;
 			},
 			//!跳转订单界面
-			nextStep() {
+			async nextStep() {
 				//! 判断用户是否已经选择内容
 				if (!this.modelData.goods_model) {
 					return getApp().globalData.global_Toast(true, "请选择商品的型号", function(res) {})
@@ -359,23 +375,38 @@
 				let totalPrice = this.detailData.price * this.modelData.quantity;
 				//! 提取出要发起订单的数据
 				let orderData = {
-					user_id: getApp().globalData.wxuser.id, // 用户id
 					order_types:this.order_types, //! 订单类型(0:新机置换订单,1:租凭订单,2:商品订单)
-					goods_id: this.detailData.id, // 商品id
-					goods_name: this.detailData.name, // 商品名称
-					goods_model: this.modelData.goods_model, // 型号名称
-					url: this.detailData.small_img_urls, // 图片
-					price: this.detailData.price, // 商品的单价
 					act_pay: totalPrice, //! 商品的总价格
 					quantity: this.modelData.quantity, // 数量
-					status: 1 //! 表示当前订单是待付款的状态
+					items: [{
+						goods_id: this.detailData.id, // 商品id
+						goods_name: this.detailData.name, // 商品名称
+						goods_model: this.modelData.goods_model, // 型号名称
+						img_url: this.detailData.small_img_urls, // 图片
+						price: this.detailData.price, // 商品的单价
+						quantity: this.modelData.quantity, // 数量
+					}],
 				}
 				//! 用户点击下一步时写入将购物车数据写入vuex中
-				this.$store.commit("nextOrder", orderData);
-				this.showSelect = false;
-				uni.navigateTo({
-					url: "../order/order"
-				})
+				if (this.isShowCollect) {
+					let cartDetail = {
+						user_id: this.userInfo.id,
+						goods_id: this.detailData.id,
+						goods_name: this.detailData.name,
+						imgUrl: this.detailData.small_img_urls,
+						price: this.detailData.price,
+						goods_model: this.modelData.goods_model,
+						quantity: this.modelData.quantity,
+					}
+					const resData = await cartApi.addCart(cartDetail)
+					if (resData.code === 200) return getApp().globalData.global_Toast(true, "该商品已加入购物车", (res) => this.showSelect = false)
+				}else {
+					this.$store.commit("nextOrder", orderData);
+					this.showSelect = false;
+					uni.navigateTo({
+						url: "../order/order"
+					})
+				}
 			}
 		},
 	}
@@ -529,16 +560,33 @@
 				}
 			}
 
-			.buy {
+			.buttom {
 				height: 100%;
 				margin-left: 30rpx;
 				flex: 1;
-				background-color: $page_color;
 				@include flex-center;
 				font-weight: 500;
 				color: black;
-				font-size: 35rpx;
+				font-size: 30rpx;
 				border-radius: 50rpx;
+				
+				&>view {
+					width: 50%;
+					height: 100%;
+					line-height: 70rpx;
+					text-align: center;
+				}
+				
+				.collect {
+					background-color: #FDDF2F;
+					border-radius: 50rpx 0rpx 0rpx 50rpx;
+				}
+				
+				.buy {
+					background: #F76F7D;
+					border-radius: 0rpx 50rpx 50rpx 0rpx;
+					color: #FFFFFF;
+				}
 			}
 		}
 

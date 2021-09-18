@@ -14,10 +14,13 @@
 		<!-- 发布和收藏 -->
 		<view class="send_collection_wrap">
 			<view class="send_collection_ctrl">
-
 				<view class="" @click="goMySend">
 					<image src="/static/user/send.png" mode=""></image>
 					<text>我的发布</text>
+				</view>
+				<view class="" @click="goMyCart">
+					<image src="/static/user/cart.png" mode="" class="ctrl_image"></image>
+					<text>购物车</text>
 				</view>
 				<view @click="goMyCollection">
 					<image src="/static/user/collaction.png" mode=""></image>
@@ -190,6 +193,15 @@
 					icon: "none"
 				})
 			},
+			goMyCart(){
+				if (!getApp().globalData.wxuser) {
+					this.login();
+					return;
+				}
+				uni.navigateTo({
+					url: "../../subPackages/cart/cart"
+				})
+			},
 			goMySend(){
 				if (!getApp().globalData.wxuser) {
 					this.login();
@@ -303,7 +315,7 @@
 			@include flex-center;
 
 			.send_collection_ctrl {
-				width: 500rpx;
+				width: 600rpx;
 				padding: 30rpx 50rpx;
 				background-color: #FFFFFF;
 				box-shadow: #dddddd 0px 0px 20rpx;
@@ -313,10 +325,15 @@
 					@include flex-col;
 					align-items: center;
 
-					image {
+					&>image {
 						width: 60rpx;
 						height: 60rpx;
 						padding-bottom: 20rpx;
+					}
+					
+					.ctrl_image {
+						width: 72rpx;
+						height: 56rpx;
 					}
 				}
 			}
