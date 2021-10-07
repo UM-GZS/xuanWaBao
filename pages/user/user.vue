@@ -315,7 +315,7 @@
 			@include flex-center;
 
 			.send_collection_ctrl {
-				width: 600rpx;
+				width: 650rpx;
 				padding: 30rpx 50rpx;
 				background-color: #FFFFFF;
 				box-shadow: #dddddd 0px 0px 20rpx;

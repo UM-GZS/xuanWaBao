@@ -2,7 +2,7 @@
 	<view class="content">
 		<!-- 启动页 -->
 		<view class="startPage" v-if="showStart">
-			旋挖宝
+			<image src="../../static/index/upImage.jpg"></image>
 		</view>
 		<!-- 首页 -->
 		<view :style="{'display':show_index == 0 ?'block':'none'}">
@@ -495,6 +495,11 @@
 		overflow-y: hidden;
 		overflow-x: hidden;
 		z-index: 999999;
+		
+		&>image {
+			width: 100%;
+			height: 100%;
+		}
 	}
 
 	.tabBar {
