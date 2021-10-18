@@ -18,7 +18,7 @@
 						<!-- 图片以及文字内容 -->
 						<view class="info_content">
 							<view class="left_pic">
-								<image style="width: 100%;height: 100%;" :src="url + item.url">
+								<image style="width: 100%;height: 100%;" :src="url + item.items[0].img_url">
 								</image>
 							</view>
 							<view class="right_msg">
@@ -26,7 +26,7 @@
 									订单类型:{{ item.order_types_name }}
 								</view>
 								<view class="goods_name">
-									{{ item.goods_name }}
+									{{ item.items[0].goods_name }}
 								</view>
 								<!-- 信息内容 -->
 								<view class="other_msg">

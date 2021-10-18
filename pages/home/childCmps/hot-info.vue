@@ -14,7 +14,7 @@
 							<view class="title">{{ item.name }}</view>
 							<view class="time">{{ item.create_time | filterDate }}</view>
 						</view>
-						<view class="content">{{ item.info1 }} {{ item.info2 }}{{ item.info3 }}</view>
+						<view class="content" v-html="item.info"></view>
 						<!-- 操作描述 -->
 						<view class="other" style="font-size: 24rpx;">
 							<view class="name" style="display: flex;align-items: center;margin-right: 30rpx;">

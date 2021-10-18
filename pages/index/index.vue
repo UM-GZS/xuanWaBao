@@ -2,7 +2,7 @@
 	<view class="content">
 		<!-- 启动页 -->
 		<view class="startPage" v-if="showStart">
-			<image src="../../static/index/upImage.jpg"></image>
+			<image src="../../static/index/upImage.png"></image>
 		</view>
 		<!-- 首页 -->
 		<view :style="{'display':show_index == 0 ?'block':'none'}">

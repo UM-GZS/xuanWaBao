@@ -26,9 +26,7 @@
 								</image>
 							</view>
 							<view class="right_msg">
-								<view class="desc">
-									{{ item.info1 }}{{ item.info2 }}{{ item.info3 }}
-								</view>
+								<view class="desc" v-html="item.info"></view>
 								<!-- 用户信息 -->
 								<view class="user_info">
 									<view class="name common">
