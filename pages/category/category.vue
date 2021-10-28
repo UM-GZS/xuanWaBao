@@ -1,7 +1,7 @@
 <template>
 	<view class="cate_wrap">
 		<view class="header_search">
-			<u-search input-align="center" bg-color="#F2F2F2" height="65" placeholder="输入您想要的商品或服务" v-model="searchData" @custom="search" @search="search"></u-search>
+			<u-search input-align="center" bg-color="#FFFFFF" height="65" placeholder="输入您想要的商品或服务" v-model="searchData" @custom="search" @search="search"></u-search>
 		</view>
 		<view class="content_wrap">
 			<!-- 左边的分类类别 -->
@@ -215,6 +215,7 @@
 <style lang="scss" scoped>
 	.cate_wrap {
 		width: 100%;
+		background: #F2F2F2;
 
 		.content_wrap {
 			width: 100%;

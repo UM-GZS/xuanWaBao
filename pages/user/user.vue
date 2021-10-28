@@ -11,9 +11,8 @@
 				<view class="progress" v-if="hasLogin">
 					<view class="progress_text flex flex_between">
 						<view>{{userInfo.user_level_name}}会员</view>
-						<view>0/{{barData[userInfo.user_experience]}}</view>
+						<view>{{userInfo.user_experience}}/{{barData[userInfo.user_level]}}</view>
 					</view>
-					<!-- 'width: ' + ((userInfo.user_level * 1) / 100).toFixed(2) + '%' -->
 					<view class="progress_bar">
 						<view class="bar_item" :style="progressBar"></view>
 					</view>
@@ -51,26 +50,26 @@
 				</u-cell-item> -->
 				<u-cell-item title="我的车辆" :arrow="false" @click="goMyVehicle">
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/cheliang.png"
-						slot="icon"></u-image>
+						slot="icon" mode="aspectFit"></u-image>
 				</u-cell-item>
 				<u-cell-item title="订单中心" :arrow="false" @click="goOrder">
-					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/order.png" slot="icon"></u-image>
+					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/order.png" slot="icon" mode="aspectFit"></u-image>
 				</u-cell-item>
 				<u-cell-item title="认证信息" @click="goProve" :arrow="false">
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;"
-						src="/static/user/renzhengxinxi.png" slot="icon"></u-image>
+						src="/static/user/renzhengxinxi.png" slot="icon" mode="aspectFit"></u-image>
 				</u-cell-item>
 				<u-cell-item title="收货地址" :arrow="false" @click="goAddress">
-					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/address_position.png" slot="icon"></u-image>
+					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/address_position.png" slot="icon" mode="aspectFit"></u-image>
 				</u-cell-item>
 				<button class="customer" open-type="contact">
 					<u-cell-item title="联系客服" :arrow="false">
-						<u-image class="spec_image" width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/server.png"
-							slot="icon"></u-image>
+						<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/server.png"
+							slot="icon" mode="aspectFit"></u-image>
 					</u-cell-item>
 				</button>
 				<u-cell-item title="退出登录" :arrow="false" @click="exit" v-if="hasLogin">
-					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/exit.png" slot="icon"></u-image>
+					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/exit.png" slot="icon" mode="aspectFit"></u-image>
 				</u-cell-item>
 			</u-cell-group>
 		</view>
@@ -106,6 +105,7 @@
 		},
 		computed: {
 			progressBar() {
+				if (this.userInfo.user_experience >= this.barData[this.userInfo.user_level]) return 'width: 100%';
 				return `width: ${this.userInfo.user_experience / this.barData[this.userInfo.user_level] * 100}%`
 			}
 		},
@@ -292,11 +292,12 @@
 
 <style lang="scss">
 	page {
-		background-color: #FFFFFF;
+		background: #FFFFFF;
 	}
 
 	.user_wrap {
 		width: 100vw;
+		
 
 		// 用户信息
 		.user_info {
@@ -393,14 +394,6 @@
 			.u-border-top:after,
 			.u-border:after {
 				border-bottom: 5rpx solid #e3e3e3;
-			}
-			
-			u-cell-group u-cell-item u-image {
-				width: 60rpx;
-			}
-			
-			u-cell-group u-cell-item .spec_image image{
-				width: 40rpx;
 			}
 		}
 	}

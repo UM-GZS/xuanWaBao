@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<view class="container_top flex flex_middle flex_right">
+		<view class="container_top flex flex_middle flex_right" v-if="goodsList.length > 0">
 			<view class="top_edit" @click="editClick">{{isEdit ? '完成' : '编辑'}}</view>
 		</view>
 
@@ -15,8 +15,8 @@
 						<text class="label_list" v-for="(label, ind) in item.label" :key="ind">{{label}}</text>
 					</view>
 					<view class="info_name">{{item.goods_name}}</view>
-					<view class="info_detail flex flex_middle" :class="isEdit ? 'flex_between' : 'flex_right'">
-						<view class="detail_model" v-if="isEdit" @click="openPopup">{{item.goods_model}}</view>
+					<view class="info_detail flex flex_middle flex_between">
+						<view class="detail_model" @click="openPopup(item.goods_id, index)">{{item.goods_model}}</view>
 						<view class="detail_quantity">
 							<view class="quantity_change flex flex_middle" v-if="isEdit">
 								<text @click="quantityChange('reduce', index)">-</text>
@@ -57,12 +57,48 @@
 				<view class="right_settlement" @click="cartPay" v-else>结算({{totalQuantity}})</view>
 			</view>
 		</view>
+
+		<u-mask :show="showSelect" @click="showSelect = false">
+			<view class="popup_warp">
+				<view class="rect" @tap.stop>
+					<view class="info">
+						<view class="left">
+							<image :src="url + currentDetail.small_img_urls" style="width: 100%;height: 100%;"></image>
+						</view>
+						<view class="right">
+							<view class="price">￥{{ currentDetail.price }}</view>
+							<view class="select_type">
+								<text>已选择</text>
+								<text style="margin-left: 15rpx;">{{ currentDetail.currentModel!= null ? currentDetail.modelList[currentDetail.currentModel].name : '' }}</text>
+							</view>
+						</view>
+					</view>
+					<!-- 型号 -->
+					<view class="model">
+						<view class="title">型号</view>
+						<view class="model_list">
+							<view class="model_item" :class="index === currentDetail.currentModel ? 'activeModel' : ''" v-for="(item, index) in currentDetail.modelList" :key="item.id" @click="chooseModel(item, index)">
+								{{ item.name }}
+							</view>
+						</view>
+					</view>
+					<!-- 购买数量 -->
+					<view class="buy_count">
+						<view>购买数量</view>
+						<u-number-box :disabled="currentDetail.goods_model ? false : true" v-model="currentDetail.quantity" @change="valChange"></u-number-box>
+					</view>
+					<!-- next step-->
+					<view class="next_step" @click="nextStep">确定</view>
+				</view>
+			</view>
+		</u-mask>
 	</view>
 </template>
 
 <script>
 	import cartApi from '../../network/cart/cartApi.js';
-	import noneData from "../../components/none-data/none-data"
+	import categoryApi from '../../network/category/category.js';
+	import noneData from "../../components/none-data/none-data";
 
 	export default {
 		data() {
@@ -74,7 +110,10 @@
 				goodsList: [],
 				totalPrice: 0,
 				totalQuantity: 0,
-				showMask: false
+				showMask: false,
+				showSelect: false,
+				currentDetail: {},
+				currentGoods: null
 			}
 		},
 		components: {
@@ -88,6 +127,64 @@
 			this.getCartList();
 		},
 		methods: {
+			// 当前编辑商品弹窗
+			async openPopup(goodsId, index) {
+				if (!this.isEdit) return;
+				let queryInfo = {
+					goods_id: goodsId,
+					page_num: 1,
+					page_size: 99,
+					sort: 'id desc'
+				}
+				categoryApi.goodsModel(queryInfo).then(resData => {
+					let currentModel = resData.data.list.findIndex(item => item.name == this.goodsList[index].goods_model);
+					this.currentDetail.currentModel = currentModel;
+					this.currentDetail.quantity = this.goodsList[index].quantity;
+					this.currentDetail.goods_model = this.goodsList[index].goods_model;
+					this.currentGoods = index;
+					this.currentDetail.modelList = resData.data.list;
+					this.getCurrentGoods(goodsId);
+				})
+			},
+			// 获取当前编辑商品
+			getCurrentGoods(goodsId) {
+				categoryApi.goodsDetail({ id: goodsId }).then(resData => {
+					this.currentDetail = { ...this.currentDetail, ...resData.data };
+					this.showSelect = true;
+				})
+			},
+			// 选择当前编辑商品型号
+			chooseModel(item, index) {
+				this.currentDetail.currentModel = index;
+				this.currentDetail.goods_model = item.name;
+			},
+			// 步进器的改变
+			valChange(e) {
+				this.currentDetail.quantity = e.value;
+			},
+			// 当前编辑商品点击确定
+			async nextStep() {
+				let currentData = this.currentDetail;
+				if (!currentData.quantity) {
+					return getApp().globalData.global_Toast(true, "请选择型号数量", function(res) {})
+				}
+				let cartDetail = {
+					id: this.goodsList[this.currentGoods].id,
+					user_id: this.userInfo.id,
+					goods_id: currentData.id,
+					goods_name: currentData.name,
+					imgUrl: currentData.small_img_urls,
+					price: currentData.price,
+					goods_model: currentData.goods_model,
+					quantity: currentData.quantity,
+				}
+				const resData = await cartApi.updateCart(cartDetail)
+				if (resData.code === 200) return getApp().globalData.global_Toast(true, "商品修改成功~", res => {
+					this.showSelect = false;
+					this.goodsList[this.currentGoods].goods_model = currentData.goods_model;
+					this.goodsList[this.currentGoods].quantity = currentData.quantity;
+				})
+			},
 			// 获取购物车列表
 			async getCartList() {
 				const resData = await cartApi.cartList({ id: this.userInfo.id })
@@ -158,12 +255,14 @@
 					this.totalPrice = 0;
 					this.totalQuantity = 0;
 					this.isAllRadio = false;
+					this.isEdit = !this.isEdit;
 					this.goodsList = [];
 					this.getCartList();
 				});
 			},
 			// 点击弹窗mask确认按钮
 			maskSubmit() {
+				this.showMask = false;
 				let cartList = this.goodsList.filter(item => item.isRadio);
 				let orderData = {
 					order_types: 2,
@@ -172,10 +271,9 @@
 					items: cartList,
 				}
 				this.$store.commit("nextOrder", orderData);
-				this.showMask = false;
-				uni.navigateTo({
-					url: "../order/order"
-				})
+				setTimeout(() => {
+					uni.navigateTo({ url: "../order/order" })
+				}, 1000)
 			}
 		}
 	}
@@ -395,21 +493,21 @@
 			height: 300rpx;
 			background: #FFFFFF;
 			border-radius: 16rpx;
-			
+
 			.mask_close {
 				position: absolute;
 				top: 0rpx;
 				right: 20rpx;
 				font-size: 50rpx;
 			}
-			
+
 			.mask_title {
 				width: 100%;
 				font-size: 34rpx;
 				font-weight: bold;
 				text-align: center;
 			}
-			
+
 			.mask_tips {
 				margin: 40rpx 0rpx;
 				width: 100%;
@@ -417,7 +515,7 @@
 				color: #808080;
 				text-align: center;
 			}
-			
+
 			.mask_button {
 				width: 80%;
 				height: 60rpx;
@@ -428,6 +526,100 @@
 				text-align: center;
 				background: #FFDF2C;
 				border-radius: 25rpx;
+			}
+		}
+	}
+
+	.popup_warp {
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+		justify-content: flex-end;
+		height: 100%;
+
+		.rect {
+			width: 100%;
+			// height: 680rpx;
+			padding: 30rpx;
+			border-top-left-radius: 30rpx;
+			border-top-right-radius: 30rpx;
+			background-color: #ffffff;
+			padding-bottom: 20rpx;
+
+			.info {
+				width: 100%;
+				display: flex;
+
+				.left {
+					width: 160rpx;
+					height: 160rpx;
+					border: 1rpx solid $gray_color;
+				}
+
+				.right {
+					margin-left: 30rpx;
+					display: flex;
+					flex-direction: column;
+					justify-content: flex-end;
+
+					.price {
+						color: #ff0000;
+						font-weight: 800;
+						font-size: 35rpx;
+					}
+
+					.select_type {
+						display: flex;
+						font-size: 25rpx;
+						margin-top: 10rpx;
+						font-weight: 600;
+						color: $gray_color;
+					}
+				}
+			}
+
+			//!型号
+			.model {
+				width: 100%;
+				margin-top: 20rpx;
+				margin-bottom: 10rpx;
+
+				.model_list {
+					width: 100%;
+					margin-top: 20rpx;
+					margin-bottom: 20rpx;
+					display: flex;
+					flex-wrap: wrap;
+
+					.model_item {
+						padding: 10rpx 25rpx;
+						border-radius: 15rpx;
+						margin-right: 15rpx;
+						margin-bottom: 15rpx;
+						background-color: #f2f2f2;
+					}
+
+					.activeModel {
+						background-color: #cdcbce;
+					}
+				}
+			}
+
+			//!购买数量
+			.buy_count {
+				width: 100%;
+				@include flex-jcsb;
+				margin-top: 10rpx;
+				margin-bottom: 30rpx;
+			}
+
+			.next_step {
+				margin: 30rpx auto;
+				width: 80%;
+				height: 60rpx;
+				background-color: $page_color;
+				border-radius: 50rpx;
+				@include flex-center;
 			}
 		}
 	}

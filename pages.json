@@ -237,6 +237,11 @@
 				"name": "商品详情",
 				"path": "subPackages/category/category_detail",
 				"query": "order_types=2&id=32"
+			},
+			{
+				"name": "购买记录",
+				"path": "subPackages/user/userCenter/shoppingRecord",
+				"query": ""
 			}
 		]
 	}

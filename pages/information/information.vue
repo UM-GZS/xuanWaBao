@@ -288,6 +288,7 @@
 		width: 100%;
 		height: 100%;
 		padding-bottom: 100rpx;
+		background: #F2F2F2;
 
 		.swiper_tab {
 			// margin-top: 10rpx;
