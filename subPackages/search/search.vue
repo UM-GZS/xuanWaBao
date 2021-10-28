@@ -32,13 +32,13 @@
 						<!--  右边内容 -->
 						<view class="right_info">
 							<view class="title">{{ item.name }}</view>
-							<view class="sales">
+							<!-- <view class="sales">
 								<text>已售</text>
 								<text>{{ item.sales }}</text>
 								<text>/</text>
 								<text>剩余</text>
 								<text>{{ item.inventory }}</text>
-							</view>
+							</view> -->
 							<view class="other">
 								<view class="price">
 									<text>￥</text>
@@ -83,13 +83,17 @@
 					historyList:[]
 				}
 			},
-			onLoad() {
+			onLoad(options) {
 				// 判断用户是否登录
 				let wxuser = getApp().globalData.wxuser;
 				if(wxuser) {
 					this.queryInfo.user_id = wxuser.id;
 					this.userId = wxuser.id;
 					this.getUserHistory();
+				}
+				if (options.searchData) {
+					this.queryInfo.keyword = options.searchData;
+					this.search();
 				}
 			 // let his = uni.getStorageSync("history");
 			 // if(his) {
@@ -247,9 +251,7 @@
 								color: #03bb22;
 							}
 							.other {
-								position: absolute;
-								bottom: 0;
-								left: 0;
+								margin-top: 50rpx;
 								font-weight: 800;
 								color: red;
 							}

@@ -18,7 +18,7 @@
 						<!-- 图片以及文字内容 -->
 						<view class="info_content">
 							<view class="left_pic">
-								<image style="width: 100%;height: 100%;" :src="url + item.url">
+								<image style="width: 100%;height: 100%;" :src="url + item.items[0].img_url">
 								</image>
 							</view>
 							<view class="right_msg">
@@ -26,7 +26,7 @@
 									订单类型:{{ item.order_types_name }}
 								</view>
 								<view class="goods_name">
-									{{ item.goods_name }}
+									{{ item.items[0].goods_name }}
 								</view>
 								<!-- 信息内容 -->
 								<view class="other_msg">
@@ -38,6 +38,7 @@
 										<text v-if="item.status === 1">待付款</text>
 										<text v-if="item.status === 2">待发货</text>
 										<text v-if="item.status === 3">待收货</text>
+										<text v-if="item.status === 5">已完成</text>
 									</view>
 								</view>
 							</view>
@@ -63,11 +64,11 @@
 				url: getApp().globalData.requesturl,
 				//! 数据切换标题数据
 				tabList: [
-					// {
-					// 	id: 1,
-					// 	title: '全部',
-					// 	status:0
-					// },
+					{
+						id: 1,
+						title: '全部',
+						status:0
+					},
 					{
 						id: 2,
 						title: '待付款',
@@ -94,7 +95,7 @@
 					user_id:getApp().globalData.wxuser.id,
 					page_num: 1,
 					page_size: 10,
-					status:1,
+					status:0,
 					sort:'id desc'
 				},
 				// 判断是否还有更多数据
@@ -173,7 +174,6 @@
 		height: 100%;
 
 		.swiper_tab {
-			margin-top: 10rpx;
 			width: 100%;
 			height: 90rpx;
 			background-color: #ffffff;

@@ -26,9 +26,7 @@
 								</image>
 							</view>
 							<view class="right_msg">
-								<view class="desc">
-									{{ item.info1 }}{{ item.info2 }}{{ item.info3 }}
-								</view>
+								<view class="desc" v-html="item.info"></view>
 								<!-- 用户信息 -->
 								<view class="user_info">
 									<view class="name common">
@@ -290,6 +288,7 @@
 		width: 100%;
 		height: 100%;
 		padding-bottom: 100rpx;
+		background: #F2F2F2;
 
 		.swiper_tab {
 			// margin-top: 10rpx;

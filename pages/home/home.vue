@@ -218,6 +218,7 @@
 		height: 100%;
 		padding-bottom: 110rpx;
 		position: relative;
+		background: #F2F2F2;
 
 		//! 头部内容
 		.header {

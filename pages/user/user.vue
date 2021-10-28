@@ -3,12 +3,25 @@
 
 		<!-- 用户信息 -->
 		<view class="user_info">
-			<view class="left_info" @click="login">
-				<text class="name">{{userInfo.uname}}</text>
-				<text class="phone">{{userInfo.phone}}</text>
-			</view>
 			<view class="right_cover" @click="login">
 				<image :src="userInfo.headpic_url" mode=""></image>
+			</view>
+			<view class="left_info" @click="login">
+				<view class="name">{{userInfo.uname}}</view>
+				<view class="progress" v-if="hasLogin">
+					<view class="progress_text flex flex_between">
+						<view>{{userInfo.user_level_name}}会员</view>
+						<view>{{userInfo.user_experience}}/{{barData[userInfo.user_level]}}</view>
+					</view>
+					<view class="progress_bar">
+						<view class="bar_item" :style="progressBar"></view>
+					</view>
+				</view>
+				<view class="progress" v-else>点击头像进行登录</view>
+				<!-- <text class="phone">{{userInfo.phone}}</text> -->
+			</view>
+			<view class="user_right">
+				<image src="../../static/index/more.png" @click="goUserCenter" v-if="hasLogin"></image>
 			</view>
 		</view>
 		<!-- 发布和收藏 -->
@@ -31,29 +44,32 @@
 		<!-- 按钮控制 -->
 		<view class="btn_control">
 			<u-cell-group>
-				<u-cell-item title="个人中心" :arrow="false" @click="goUserCenter">
+				<!-- <u-cell-item title="个人中心" :arrow="false" @click="goUserCenter">
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/usercenter.png"
 						slot="icon"></u-image>
-				</u-cell-item>
+				</u-cell-item> -->
 				<u-cell-item title="我的车辆" :arrow="false" @click="goMyVehicle">
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/cheliang.png"
-						slot="icon"></u-image>
+						slot="icon" mode="aspectFit"></u-image>
+				</u-cell-item>
+				<u-cell-item title="订单中心" :arrow="false" @click="goOrder">
+					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/order.png" slot="icon" mode="aspectFit"></u-image>
 				</u-cell-item>
 				<u-cell-item title="认证信息" @click="goProve" :arrow="false">
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;"
-						src="/static/user/renzhengxinxi.png" slot="icon"></u-image>
+						src="/static/user/renzhengxinxi.png" slot="icon" mode="aspectFit"></u-image>
 				</u-cell-item>
 				<u-cell-item title="收货地址" :arrow="false" @click="goAddress">
-					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/address_position.png" slot="icon"></u-image>
+					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/address_position.png" slot="icon" mode="aspectFit"></u-image>
 				</u-cell-item>
 				<button class="customer" open-type="contact">
 					<u-cell-item title="联系客服" :arrow="false">
-						<u-image width="45rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/server.png"
-							slot="icon"></u-image>
+						<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/server.png"
+							slot="icon" mode="aspectFit"></u-image>
 					</u-cell-item>
 				</button>
 				<u-cell-item title="退出登录" :arrow="false" @click="exit" v-if="hasLogin">
-					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/exit.png" slot="icon"></u-image>
+					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/exit.png" slot="icon" mode="aspectFit"></u-image>
 				</u-cell-item>
 			</u-cell-group>
 		</view>
@@ -82,8 +98,15 @@
 					headpic_url: "../../static/tabBar/5.png",
 					phone: "请登录获取手机号码"
 				},
+				barData: [9999, 49999, 99999, 499999],
 				addPhoneShow: false,
 				phone: "" //用户手机号
+			}
+		},
+		computed: {
+			progressBar() {
+				if (this.userInfo.user_experience >= this.barData[this.userInfo.user_level]) return 'width: 100%';
+				return `width: ${this.userInfo.user_experience / this.barData[this.userInfo.user_level] * 100}%`
 			}
 		},
 		methods: {
@@ -142,6 +165,15 @@
 				}
 				uni.navigateTo({
 					url: "/pages/address/address"
+				})
+			},
+			goOrder() {
+				if(!getApp().globalData.wxuser) {
+					this.login();
+					return ;
+				}
+				uni.navigateTo({
+					url: "/pages/user/order_center"
 				})
 			},
 			goUserCenter() {
@@ -258,13 +290,14 @@
 	}
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 	page {
-		background-color: #FFFFFF;
+		background: #FFFFFF;
 	}
 
 	.user_wrap {
 		width: 100vw;
+		
 
 		// 用户信息
 		.user_info {
@@ -273,18 +306,19 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			padding: 30rpx 80rpx 70rpx 80rpx;
+			padding: 30rpx 40rpx 70rpx 40rpx;
 			background-color: $page_color;
 			border-bottom-left-radius: 50rpx;
 			border-bottom-right-radius: 50rpx;
 
 			.left_info {
+				width: 330rpx;
 				display: flex;
 				flex-direction: column;
 
 				.name {
 					font-weight: 600;
-					font-size: 30rpx;
+					font-size: 40rpx;
 				}
 
 				.phone {
@@ -294,15 +328,15 @@
 			}
 
 			.right_cover {
-				height: 120rpx;
-				width: 120rpx;
+				height: 140rpx;
+				width: 140rpx;
 				border-radius: 50%;
 				border: 2rpx solid #e3e3e3;
 				@include flex-center;
 
 				image {
-					width: 110rpx;
-					height: 110rpx;
+					width: 140rpx;
+					height: 140rpx;
 					border-radius: 50%;
 				}
 			}
@@ -315,7 +349,7 @@
 			@include flex-center;
 
 			.send_collection_ctrl {
-				width: 600rpx;
+				width: 650rpx;
 				padding: 30rpx 50rpx;
 				background-color: #FFFFFF;
 				box-shadow: #dddddd 0px 0px 20rpx;
@@ -352,6 +386,7 @@
 					border: none;
 				}
 			}
+			
 			/deep/ .u-border-bottom:after,
 			.u-border-left:after,
 			.u-border-right:after,
@@ -361,8 +396,38 @@
 				border-bottom: 5rpx solid #e3e3e3;
 			}
 		}
-
-
-
+	}
+	
+	.progress {
+		margin-top: 10rpx;
+	}
+	
+	.progress_text {
+		font-size: 20rpx;
+	}
+	
+	.progress_bar {
+		margin-top: 10rpx;
+		width: 332rpx;
+		height: 16rpx;
+		background: #FFFFFF;
+		border-radius: 16rpx;
+		
+		.bar_item {
+			height: 16rpx;
+			background: #9090F4;
+			border-radius: 16rpx;
+		}
+	}
+	
+	.user_right {
+		width: 120rpx;
+		height: 50rpx;
+		text-align: right;
+		
+		&>image {
+			width: 32rpx;
+			height: 50rpx;
+		}
 	}
 </style>

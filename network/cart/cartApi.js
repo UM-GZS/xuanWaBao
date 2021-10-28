@@ -25,5 +25,9 @@ export default {
 	// 删除购物车
 	cartDetele(data) {
 		return global_request('/api/shop/cart/delete', data, 'POST', true);
+	},
+	// 修改购物车
+	updateCart(data) {
+		return global_request('/api/shop/cart/update', data, 'POST', true);
 	}
 }

@@ -54,6 +54,12 @@
 				"navigationBarTitleText": "我的地址",
 				"navigationBarBackgroundColor": "#FDDF2F"
 			}
+		}, {
+			"path": "pages/user/order_center",
+			"style": {
+				"navigationBarTitleText": "订单中心",
+				"navigationBarBackgroundColor": "#FDDF2F"
+			}
 		}
 	],
 	"subPackages": [{
@@ -223,14 +229,20 @@
 	"condition": {
 		"current": 0,
 		"list": [{
-			"name": "购物车",
-			"path": "subPackages/cart/cart",
-			"query": ""
-		},
-		{
-			"name": "商品详情",
-			"path": "subPackages/category/category_detail",
-			"query": "order_types=2&id=32"
-		}]
+				"name": "购物车",
+				"path": "subPackages/cart/cart",
+				"query": ""
+			},
+			{
+				"name": "商品详情",
+				"path": "subPackages/category/category_detail",
+				"query": "order_types=2&id=32"
+			},
+			{
+				"name": "购买记录",
+				"path": "subPackages/user/userCenter/shoppingRecord",
+				"query": ""
+			}
+		]
 	}
 }

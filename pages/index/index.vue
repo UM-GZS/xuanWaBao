@@ -1,8 +1,9 @@
 <template>
 	<view class="content">
 		<!-- 启动页 -->
-		<view class="startPage" v-if="showStart">
-			旋挖宝
+		<view class="startPage flex flex_column flex_middle" v-if="showStart">
+			<image src="../../static/index/brand.png" style="width: 205rpx;height: 250rpx;"></image>
+			<view class="company">深圳市乔硕科技发展有限公司</view>
 		</view>
 		<!-- 首页 -->
 		<view :style="{'display':show_index == 0 ?'block':'none'}">
@@ -486,15 +487,27 @@
 		width: 100vw;
 		height: 100vh;
 		background-color: #ffffff;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		letter-spacing: 8rpx;
 		font-size: 60rpx;
 		font-weight: 700;
 		overflow-y: hidden;
 		overflow-x: hidden;
 		z-index: 999999;
+		
+		&>image {
+			position: relative;
+			top: 20%;
+		}
+		
+		.company {
+			position: absolute;
+			bottom: 129rpx;
+			left: 50%;
+			transform: translate(-50%);
+			font-size: 20rpx;
+			font-weight: 800;
+			letter-spacing: 1rpx;
+			color: #000000;
+		}
 	}
 
 	.tabBar {

@@ -1,5 +1,8 @@
 <template>
 	<view class="cate_wrap">
+		<view class="header_search">
+			<u-search input-align="center" bg-color="#FFFFFF" height="65" placeholder="输入您想要的商品或服务" v-model="searchData" @custom="search" @search="search"></u-search>
+		</view>
 		<view class="content_wrap">
 			<!-- 左边的分类类别 -->
 			<scroll-view @scrolltolower="cate_bottom" class="left_cate" scroll-y enable-flex>
@@ -41,6 +44,7 @@
 
 <script>
 	import categoryApi from "../../network/category/category.js";
+	
 	export default {
 		data() {
 			return {
@@ -81,9 +85,17 @@
 				subCategory: [],
 				// 右边详情数据
 				cate_detail: [],
+				searchData: ''
 			}
 		},
 		methods: {
+			// 点击搜索按钮
+			search() {
+				if (!this.searchData.trim()) return getApp().globalData.global_Toast(true, "请输入搜索内容", (res) => {})
+				uni.navigateTo({
+					url:"../../subPackages/search/search?searchData=" + this.searchData
+				})
+			},
 			//! 组件显示的时候调用的网络请求
 			ontrueGetList() {
 				//! 判断当前界面是否发送过网络请求
@@ -203,6 +215,7 @@
 <style lang="scss" scoped>
 	.cate_wrap {
 		width: 100%;
+		background: #F2F2F2;
 
 		.content_wrap {
 			width: 100%;
@@ -215,6 +228,7 @@
 				height: 100%;
 				padding: 20rpx 10rpx;
 				background-color: #ffffff;
+				border-right: 1px solid #F2F2F2;
 
 				.cate_item {
 					width: 100%;
@@ -287,5 +301,9 @@
 				}
 			}
 		}
+	}
+	
+	.header_search {
+		padding: 15rpx 20rpx;
 	}
 </style>

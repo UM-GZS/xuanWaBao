@@ -2,8 +2,7 @@
 	<view class="detail_wrap" v-if="goodsDetailPic.length > 0">
 		<!-- 头部轮播图 -->
 		<view class="header">
-			<u-swiper mode="number" height="500" indicator-pos="bottomRight" :list="list" duration="2500"
-				:circular="true"></u-swiper>
+			<u-swiper mode="number" height="500" indicator-pos="bottomRight" :list="list" :circular="true"></u-swiper>
 		</view>
 		<!-- 商品详情 -->
 		<view class="goods_info">
@@ -139,7 +138,7 @@
 				//! 地址前缀
 				url: getApp().globalData.requesturl,
 				//! 数量
-				value: 0,
+				value: 1,
 				//!显示订单弹窗
 				showSelect: false,
 				//! 详情对象
@@ -365,6 +364,7 @@
 				if (!this.modelData.goods_model) {
 					return getApp().globalData.global_Toast(true, "请选择商品的型号", function(res) {})
 				}
+				this.modelData.quantity = this.value;
 				if (!this.modelData.quantity) {
 					return getApp().globalData.global_Toast(true, "请选择型号数量", function(res) {})
 				}
