@@ -2,8 +2,8 @@
 	<view>
 		<u-cell-group>
 			<u-cell-item @click="shoppingRecord" icon="none" title="购买记录" :border-top="false"></u-cell-item>
-			<u-cell-item @click="jodRecord" icon="none" title="求职记录" :border-top="false"></u-cell-item>
-			<u-cell-item @click="repairRecord" icon="none" title="维修记录" :border-top="false"></u-cell-item>
+			<!-- <u-cell-item @click="jodRecord" icon="none" title="求职记录" :border-top="false"></u-cell-item> -->
+			<!-- <u-cell-item @click="repairRecord" icon="none" title="维修记录" :border-top="false"></u-cell-item> -->
 		</u-cell-group>
 	</view>
 </template>

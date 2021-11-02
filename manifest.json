@@ -101,7 +101,7 @@
     },
     "quickapp" : {},
     "mp-weixin" : {
-        "appid" : "wx7babe027f5871973",
+        "appid" : "wxcc265fab674c4fa7",
         "setting" : {
             "urlCheck" : true,
             "es6" : true,
@@ -114,7 +114,7 @@
         "usingComponents" : true,
         "permission" : {
             "scope.userLocation" : {
-                "desc" : "旋挖宝将获取您的地理位置信息"
+                "desc" : "小程序将获取您的地理位置信息"
             }
         }
     },

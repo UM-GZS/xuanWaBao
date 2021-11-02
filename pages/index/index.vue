@@ -1,21 +1,21 @@
 <template>
 	<view class="content">
 		<!-- 启动页 -->
-		<view class="startPage flex flex_column flex_middle" v-if="showStart">
+		<!-- <view class="startPage flex flex_column flex_middle" v-if="showStart">
 			<image src="../../static/index/brand.png" style="width: 205rpx;height: 250rpx;"></image>
 			<view class="company">深圳市乔硕科技发展有限公司</view>
-		</view>
+		</view> -->
 		<!-- 首页 -->
-		<view :style="{'display':show_index == 0 ?'block':'none'}">
+		<!-- <view :style="{'display':show_index == 0 ?'block':'none'}">
 			<home ref="home" :locName="locName"></home>
-		</view>
+		</view> -->
 		<!-- 资讯 -->
-		<view :style="{'display':show_index == 1 ?'block':'none'}">
+		<!-- <view :style="{'display':show_index == 1 ?'block':'none'}">
 			<information ref="information" :locName="locName"></information>
-		</view>
+		</view> -->
 		<!-- 弹窗按钮 -->
-		<view :style="{'display':show_index == 2? 'block':'none'}">
-		</view>
+		<!-- <view :style="{'display':show_index == 2? 'block':'none'}">
+		</view> -->
 		<!-- 分类 -->
 		<view :style="{'display':show_index == 3 ?'block':'none'}">
 			<category ref="category"></category>
@@ -92,18 +92,20 @@
 				//! 控制是否显示弹窗
 				showToast: false,
 				//!显示过渡页面
-				showStart: true,
-				show_index: 0, //控制显示那个组件
-				tab_nav_list: [{
-					'id': 0,
-					'name': '首页'
-				}, {
-					'id': 1,
-					'name': '资讯'
-				}, {
-					'id': 2,
-					'name': ''
-				}, {
+				// showStart: true,
+				show_index: 3, //控制显示那个组件
+				tab_nav_list: [
+				// {
+				// 	'id': 0,
+				// 	'name': '首页'
+				// }, {
+				// 	'id': 1,
+				// 	'name': '资讯'
+				// }, {
+				// 	'id': 2,
+				// 	'name': ''
+				// }, 
+				{
 					'id': 3,
 					'name': '分类'
 				}, {
@@ -144,13 +146,13 @@
 
 			//! 显示过渡页面
 			setTimeout(() => {
-				this.showStart = false;
+				// this.showStart = false;
 				uni.setNavigationBarColor({
 					backgroundColor: '#fddf2f',
 					frontColor: '#000000',
 					success() {
 						wx.setNavigationBarTitle({
-							title: '旋挖宝'
+							title: '百勤建设'
 						})
 						//！ 获取用户地理位置
 						_this.userLocation();
@@ -165,7 +167,7 @@
 			this.$nextTick(function() {
 				// 一定要等视图更新完再调用方法   -----------++++++++++++++++重要
 				setTimeout(function() {
-					_this.$refs.home.ontrueGetList() //初次加载第一个页面的请求数据
+					_this.$refs.category.ontrueGetList() //初次加载第一个页面的请求数据
 				}, 100)
 			})
 
@@ -385,13 +387,13 @@
 		onShareAppMessage(options) {
 			if (options.from === "button") {
 				return {
-					title: `旋挖宝资讯`,
+					title: `百勤建设`,
 					path: '/pages/index/index',
 					imageUrl: 'https://www.szrdrp.com/dl/img/e294454034a9f8f7073183c74ef8d0c0cdef8107.jpeg@600w_338h.jpeg'
 				}
 			}
 			return {
-				title: `旋挖宝`,
+				title: `百勤建设`,
 				path: '/pages/index/index',
 				imageUrl: 'https://www.szrdrp.com/dl/img/e294454034a9f8f7073183c74ef8d0c0cdef8107.jpeg@600w_338h.jpeg'
 			}
@@ -526,7 +528,8 @@
 		.tabBar_list {
 			width: 86%;
 			display: flex;
-			justify-content: space-between;
+			// justify-content: space-between;
+			justify-content: space-around;
 
 			image {
 				width: 48rpx;

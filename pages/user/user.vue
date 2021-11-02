@@ -26,11 +26,11 @@
 		</view>
 		<!-- 发布和收藏 -->
 		<view class="send_collection_wrap">
-			<view class="send_collection_ctrl">
-				<view class="" @click="goMySend">
+			<view class="send_collection_ctrl flex flex_space">
+				<!-- <view class="" @click="goMySend">
 					<image src="/static/user/send.png" mode=""></image>
 					<text>我的发布</text>
-				</view>
+				</view> -->
 				<view class="" @click="goMyCart">
 					<image src="/static/user/cart.png" mode="" class="ctrl_image"></image>
 					<text>购物车</text>
@@ -48,17 +48,17 @@
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/usercenter.png"
 						slot="icon"></u-image>
 				</u-cell-item> -->
-				<u-cell-item title="我的车辆" :arrow="false" @click="goMyVehicle">
+				<!-- <u-cell-item title="我的车辆" :arrow="false" @click="goMyVehicle">
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/cheliang.png"
 						slot="icon" mode="aspectFit"></u-image>
-				</u-cell-item>
+				</u-cell-item> -->
 				<u-cell-item title="订单中心" :arrow="false" @click="goOrder">
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/order.png" slot="icon" mode="aspectFit"></u-image>
 				</u-cell-item>
-				<u-cell-item title="认证信息" @click="goProve" :arrow="false">
+				<!-- <u-cell-item title="认证信息" @click="goProve" :arrow="false">
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;"
 						src="/static/user/renzhengxinxi.png" slot="icon" mode="aspectFit"></u-image>
-				</u-cell-item>
+				</u-cell-item> -->
 				<u-cell-item title="收货地址" :arrow="false" @click="goAddress">
 					<u-image width="40rpx" height="40rpx" style="margin-right: 15rpx;" src="/static/user/address_position.png" slot="icon" mode="aspectFit"></u-image>
 				</u-cell-item>
@@ -130,6 +130,7 @@
 				let code = ''
 				uni.login({
 					success(resCode) {
+						console.log(resCode, 88)
 						code = resCode.code
 					}
 				})
@@ -137,6 +138,7 @@
 					desc: '微信一键登录',
 					lang: 'zh_CN',
 					success: async res => {
+						console.log(res, 99)
 						let query = {
 							code: code,
 							userHead: res.userInfo.avatarUrl,
@@ -353,7 +355,7 @@
 				padding: 30rpx 50rpx;
 				background-color: #FFFFFF;
 				box-shadow: #dddddd 0px 0px 20rpx;
-				@include flex-jcsb;
+				// @include flex-jcsb;
 
 				view {
 					@include flex-col;
